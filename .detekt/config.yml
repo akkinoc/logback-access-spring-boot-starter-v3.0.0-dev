@@ -1,0 +1,23 @@
+comments:
+  UndocumentedPublicClass:
+    active: true
+  UndocumentedPublicFunction:
+    active: true
+  UndocumentedPublicProperty:
+    active: true
+formatting:
+  ImportOrdering:
+    active: true
+  NoBlankLineBeforeRbrace:
+    active: false
+  ParameterListWrapping:
+    indentSize: 8
+style:
+  ClassOrdering:
+    active: true
+  ForbiddenComment:
+    active: false
+  FunctionOnlyReturningConstant:
+    active: false
+  NoTabs:
+    active: true

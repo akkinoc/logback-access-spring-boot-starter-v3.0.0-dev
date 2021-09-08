@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "logback.access",
+      "type": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties",
+      "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties",
+      "description": "The configuration properties for Logback-access."
+    }
+  ],
+  "properties": [
+    {
+      "name": "logback.access.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties",
+      "description": "Whether to enable auto-configuration.",
+      "defaultValue": true
+    },
+    {
+      "name": "logback.access.config",
+      "type": "java.lang.String",
+      "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties",
+      "description": "The location of the configuration file. Auto-detected by default: 1. \"classpath:logback-access-test.xml\" 2. \"classpath:logback-access.xml\" 3. \"classpath:logback-access-test-spring.xml\" 4. \"classpath:logback-access-spring.xml\" 5. \"classpath:dev/akkinoc/spring/boot/logback/access/logback-access-spring.xml\""
+    }
+  ],
+  "hints": [
+  ]
+}
