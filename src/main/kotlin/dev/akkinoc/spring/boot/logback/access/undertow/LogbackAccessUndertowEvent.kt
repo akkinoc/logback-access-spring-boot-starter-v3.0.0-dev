@@ -3,6 +3,7 @@ package dev.akkinoc.spring.boot.logback.access.undertow
 import ch.qos.logback.access.spi.IAccessEvent
 import io.undertow.attribute.LocalPortAttribute
 import io.undertow.attribute.LocalServerNameAttribute
+import io.undertow.attribute.QueryStringAttribute
 import io.undertow.attribute.RemoteHostAttribute
 import io.undertow.attribute.RemoteIPAttribute
 import io.undertow.attribute.RemoteUserAttribute
@@ -96,6 +97,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     private val lazyRequestUri: String by lazy { ServletRequestURLAttribute.INSTANCE.readAttribute(exchange) }
 
     /**
+     * @see getQueryString
+     */
+    private val lazyQueryString: String by lazy { QueryStringAttribute.INSTANCE.readAttribute(exchange) }
+
+    /**
      * @see getRequestURL
      */
     private val lazyRequestUrl: String by lazy { ServletRequestLineAttribute.INSTANCE.readAttribute(exchange) }
@@ -132,6 +138,8 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestURI(): String = lazyRequestUri
 
+    override fun getQueryString(): String = lazyQueryString
+
     override fun getRequestURL(): String = lazyRequestUrl
 
     override fun getSessionID(): String {
@@ -143,10 +151,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     }
 
     override fun getThreadName(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getQueryString(): String {
         TODO("Not yet implemented")
     }
 
