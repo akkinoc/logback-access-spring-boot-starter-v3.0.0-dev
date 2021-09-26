@@ -61,8 +61,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
      * @see getRemoteAddr
      */
     private val lazyRemoteAddr: String by lazy {
-        val addr = exchange.sourceAddress
-        addr.address?.hostAddress ?: addr.hostString
+        exchange.sourceAddress.let { it.address?.hostAddress ?: it.hostString }
     }
 
     /**
