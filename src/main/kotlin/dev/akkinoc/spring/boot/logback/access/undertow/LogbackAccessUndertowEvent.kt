@@ -1,6 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.undertow
 
 import ch.qos.logback.access.spi.IAccessEvent
+import ch.qos.logback.access.spi.IAccessEvent.NA
 import io.undertow.attribute.LocalPortAttribute
 import io.undertow.attribute.LocalServerNameAttribute
 import io.undertow.attribute.QueryStringAttribute
@@ -158,9 +159,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestHeaderNames(): Enumeration<String> = enumeration(lazyRequestHeaderMap.keys)
 
-    override fun getRequestHeader(key: String?): String {
-        TODO("Not yet implemented")
-    }
+    override fun getRequestHeader(key: String): String = lazyRequestHeaderMap[key] ?: NA
 
     override fun getSessionID(): String {
         TODO("Not yet implemented")
