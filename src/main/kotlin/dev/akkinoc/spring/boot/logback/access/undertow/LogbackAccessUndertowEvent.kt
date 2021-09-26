@@ -142,7 +142,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestURL(): String = lazyRequestUrl
 
-    override fun getRequestHeader(key: String?): String {
+    override fun getRequestHeaderMap(): MutableMap<String, String> {
         TODO("Not yet implemented")
     }
 
@@ -150,7 +150,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         TODO("Not yet implemented")
     }
 
-    override fun getRequestHeaderMap(): MutableMap<String, String> {
+    override fun getRequestHeader(key: String?): String {
         TODO("Not yet implemented")
     }
 
