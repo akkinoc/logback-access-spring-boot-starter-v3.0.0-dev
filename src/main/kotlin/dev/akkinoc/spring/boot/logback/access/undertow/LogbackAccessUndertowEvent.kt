@@ -3,6 +3,7 @@ package dev.akkinoc.spring.boot.logback.access.undertow
 import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.access.spi.IAccessEvent.NA
 import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
+import ch.qos.logback.access.spi.ServerAdapter
 import io.undertow.attribute.BytesSentAttribute
 import io.undertow.attribute.LocalPortAttribute
 import io.undertow.attribute.LocalServerNameAttribute
@@ -28,7 +29,6 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.NANOSECONDS
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import ch.qos.logback.access.spi.ServerAdapter as IServerAdapter
 
 /**
  * The Logback-access event for the Undertow web server.
@@ -155,6 +155,8 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         return context.servletResponse as HttpServletResponse
     }
 
+    override fun getServerAdapter(): ServerAdapter? = null
+
     override fun getTimeStamp(): Long = timestamp
 
     override fun getElapsedTime(): Long = elapsedTime ?: SENTINEL.toLong()
@@ -219,10 +221,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         TODO("Not yet implemented")
     }
 
-    override fun getServerAdapter(): ch.qos.logback.access.spi.ServerAdapter {
-        TODO("Not yet implemented")
-    }
-
     override fun getResponseHeader(key: String?): String {
         TODO("Not yet implemented")
     }
@@ -258,40 +256,5 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     }
 
     override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"
-
-    /**
-     * The server adapter.
-     *
-     * @property exchange The request/response exchange.
-     */
-    class ServerAdapter(private val exchange: HttpServerExchange) : IServerAdapter {
-
-        /**
-         * The request timestamp.
-         */
-        private val requestTimestamp: Long = run {
-            val currentTimeMillis = currentTimeMillis()
-            val nanoTime = nanoTime()
-            val requestStartTime = exchange.requestStartTime
-            if (requestStartTime == -1L) return@run -1 // just in case the request start time was not recorded
-            val nanos = nanoTime - requestStartTime
-            currentTimeMillis - NANOSECONDS.toMillis(nanos)
-        }
-
-        override fun getRequestTimestamp(): Long = requestTimestamp
-
-        override fun getStatusCode(): Int {
-            return exchange.statusCode
-        }
-
-        override fun getContentLength(): Long {
-            return exchange.responseBytesSent
-        }
-
-        override fun buildResponseHeaderMap(): Map<String, String?> {
-            return exchange.responseHeaders.associate { "${it.headerName}" to it.firstOrNull() }
-        }
-
-    }
 
 }
