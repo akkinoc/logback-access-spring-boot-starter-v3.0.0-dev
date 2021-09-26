@@ -197,23 +197,23 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestParameter(key: String): Array<String> = lazyRequestParameterMap[key] ?: arrayOf(NA)
 
+    override fun getRequestContent(): String {
+        TODO("Not yet implemented")
+    }
+
     override fun getStatusCode(): Int = lazyStatusCode
 
     override fun getContentLength(): Long = lazyContentLength
 
-    override fun getSessionID(): String {
+    override fun getResponseHeaderMap(): Map<String, String> {
         TODO("Not yet implemented")
     }
 
-    override fun getAttribute(key: String?): String {
+    override fun getResponseHeaderNameList(): List<String> {
         TODO("Not yet implemented")
     }
 
-    override fun getCookie(key: String?): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getRequestContent(): String {
+    override fun getResponseHeader(key: String): String {
         TODO("Not yet implemented")
     }
 
@@ -221,15 +221,15 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         TODO("Not yet implemented")
     }
 
-    override fun getResponseHeader(key: String?): String {
+    override fun getSessionID(): String {
         TODO("Not yet implemented")
     }
 
-    override fun getResponseHeaderMap(): MutableMap<String, String> {
+    override fun getAttribute(key: String): String {
         TODO("Not yet implemented")
     }
 
-    override fun getResponseHeaderNameList(): MutableList<String> {
+    override fun getCookie(key: String): String {
         TODO("Not yet implemented")
     }
 
