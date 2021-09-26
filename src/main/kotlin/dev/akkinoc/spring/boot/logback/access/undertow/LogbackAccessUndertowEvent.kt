@@ -236,28 +236,27 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     }
 
     override fun prepareForDeferredProcessing() {
+        lazyServerName
+        lazyLocalPort
+        lazyRemoteAddr
+        lazyRemoteHost
+        lazyRemoteUser
+        lazyProtocol
+        lazyMethod
+        lazyRequestUri
+        lazyQueryString
+        lazyRequestUrl
+        lazyRequestHeaderMap
+        lazyRequestParameterMap
+        lazyStatusCode
+        lazyContentLength
+
+
         // TODO
-        getRequestHeaderMap();
-        getRequestParameterMap();
-        getResponseHeaderMap();
-        getLocalPort();
-        getMethod();
-        getProtocol();
-        getRemoteAddr();
-        getRemoteHost();
-        getRemoteUser();
-        getRequestURI();
-        getRequestURL();
-        getServerName();
-        getTimeStamp();
-        getElapsedTime();
-
-        getStatusCode();
-        getContentLength();
-        getRequestContent();
-        getResponseContent();
-
-//        copyAttributeMap();
+        responseHeaderMap
+        requestContent
+        responseContent
+//        copyAttributeMap()
     }
 
     override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"
