@@ -121,12 +121,12 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
-        return context.servletRequest as? HttpServletRequest
+        return context.servletRequest as HttpServletRequest
     }
 
     override fun getResponse(): HttpServletResponse? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
-        return context.servletResponse as? HttpServletResponse
+        return context.servletResponse as HttpServletResponse
     }
 
     override fun getTimeStamp(): Long = timestamp
