@@ -13,6 +13,7 @@ import io.undertow.attribute.RemoteUserAttribute
 import io.undertow.attribute.RequestMethodAttribute
 import io.undertow.attribute.RequestProtocolAttribute
 import io.undertow.attribute.ResponseCodeAttribute
+import io.undertow.attribute.ThreadNameAttribute
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.attribute.ServletRequestLineAttribute
 import io.undertow.servlet.attribute.ServletRequestURLAttribute
@@ -61,6 +62,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
             ?.let { nanoTimestamp - it }
             ?.takeIf { it >= 0L } // just in case the request start time is set to the future
             ?.let { NANOSECONDS.toMillis(it) }
+
+    /**
+     * @see getThreadName
+     */
+    private val threadName: String = ThreadNameAttribute.INSTANCE.readAttribute(exchange)
 
     /**
      * @see getServerName
@@ -155,6 +161,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getElapsedSeconds(): Long = elapsedTime?.let { MILLISECONDS.toSeconds(it) } ?: SENTINEL.toLong()
 
+    override fun getThreadName(): String = threadName
+
+    override fun setThreadName(value: String) =
+            throw UnsupportedOperationException("The thread name cannot be changed: $value")
+
     override fun getServerName(): String = lazyServerName
 
     override fun getLocalPort(): Int = lazyLocalPort
@@ -190,14 +201,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     override fun getContentLength(): Long = lazyContentLength
 
     override fun getSessionID(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun setThreadName(threadName: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getThreadName(): String {
         TODO("Not yet implemented")
     }
 
