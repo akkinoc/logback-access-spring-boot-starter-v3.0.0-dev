@@ -1,6 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.undertow
 
 import ch.qos.logback.access.spi.IAccessEvent
+import io.undertow.attribute.RemoteUserAttribute
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.System.currentTimeMillis
@@ -18,6 +19,8 @@ import ch.qos.logback.access.spi.ServerAdapter as IServerAdapter
  *
  * * [ch.qos.logback.access.spi.AccessEvent]
  * * [io.undertow.servlet.spec.HttpServletRequestImpl]
+ * * [io.undertow.server.handlers.accesslog.AccessLogHandler]
+ * * [io.undertow.attribute.ExchangeAttribute] subclasses
  *
  * @property exchange The request/response exchange.
  */
@@ -71,6 +74,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         exchange.sourceAddress.hostString
     }
 
+    /**
+     * @see getRemoteUser
+     */
+    private val lazyRemoteUser: String? by lazy { RemoteUserAttribute.INSTANCE.readAttribute(exchange) }
+
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
         return context.servletRequest as? HttpServletRequest
@@ -95,15 +103,13 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRemoteHost(): String = lazyRemoteHost
 
+    override fun getRemoteUser(): String? = lazyRemoteUser
+
     override fun getRequestURI(): String {
         TODO("Not yet implemented")
     }
 
     override fun getRequestURL(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getRemoteUser(): String {
         TODO("Not yet implemented")
     }
 
