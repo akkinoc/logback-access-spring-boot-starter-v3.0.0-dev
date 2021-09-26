@@ -13,6 +13,7 @@ import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.attribute.ServletRequestLineAttribute
 import io.undertow.servlet.attribute.ServletRequestURLAttribute
 import io.undertow.servlet.handlers.ServletRequestContext
+import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import java.util.Enumeration
@@ -106,6 +107,14 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
      */
     private val lazyRequestUrl: String by lazy { ServletRequestLineAttribute.INSTANCE.readAttribute(exchange) }
 
+    /**
+     * @see getRequestHeaderMap
+     */
+    private val lazyRequestHeaderMap: Map<String, String> by lazy {
+        val map = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        exchange.requestHeaders.associateTo(map) { "${it.headerName}" to it.first }
+    }
+
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
         return context.servletRequest as? HttpServletRequest
@@ -142,9 +151,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestURL(): String = lazyRequestUrl
 
-    override fun getRequestHeaderMap(): MutableMap<String, String> {
-        TODO("Not yet implemented")
-    }
+    override fun getRequestHeaderMap(): Map<String, String> = lazyRequestHeaderMap
 
     override fun getRequestHeaderNames(): Enumeration<String> {
         TODO("Not yet implemented")
