@@ -2,6 +2,7 @@ package dev.akkinoc.spring.boot.logback.access.undertow
 
 import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.access.spi.IAccessEvent.NA
+import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
 import io.undertow.attribute.LocalPortAttribute
 import io.undertow.attribute.LocalServerNameAttribute
 import io.undertow.attribute.QueryStringAttribute
@@ -54,12 +55,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     /**
      * @see getElapsedTime
      */
-    private val elapsedTime: Long = exchange.requestStartTime
+    private val elapsedTime: Long? = exchange.requestStartTime
             .takeIf { it != -1L } // just in case the request start time is not recorded
             ?.let { nanoTimestamp - it }
             ?.takeIf { it >= 0L } // just in case the request start time is set to the future
             ?.let { NANOSECONDS.toMillis(it) }
-            ?: -1
 
     /**
      * @see getServerName
@@ -145,9 +145,9 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getTimeStamp(): Long = timestamp
 
-    override fun getElapsedTime(): Long = elapsedTime
+    override fun getElapsedTime(): Long = elapsedTime ?: SENTINEL.toLong()
 
-    override fun getElapsedSeconds(): Long = if (elapsedTime < 0) elapsedTime else MILLISECONDS.toSeconds(elapsedTime)
+    override fun getElapsedSeconds(): Long = elapsedTime?.let { MILLISECONDS.toSeconds(it) } ?: SENTINEL.toLong()
 
     override fun getServerName(): String = lazyServerName
 
