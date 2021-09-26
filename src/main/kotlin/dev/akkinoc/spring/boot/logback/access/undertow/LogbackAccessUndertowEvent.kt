@@ -250,8 +250,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         lazyRequestParameterMap
         lazyStatusCode
         lazyContentLength
-
-
         // TODO
         responseHeaderMap
         requestContent
