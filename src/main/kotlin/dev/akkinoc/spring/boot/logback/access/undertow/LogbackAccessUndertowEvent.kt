@@ -6,6 +6,7 @@ import io.undertow.attribute.LocalServerNameAttribute
 import io.undertow.attribute.RemoteHostAttribute
 import io.undertow.attribute.RemoteIPAttribute
 import io.undertow.attribute.RemoteUserAttribute
+import io.undertow.attribute.RequestProtocolAttribute
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.System.currentTimeMillis
@@ -76,6 +77,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
      */
     private val lazyRemoteUser: String? by lazy { RemoteUserAttribute.INSTANCE.readAttribute(exchange) }
 
+    /**
+     * @see getProtocol
+     */
+    private val lazyProtocol: String by lazy { RequestProtocolAttribute.INSTANCE.readAttribute(exchange) }
+
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
         return context.servletRequest as? HttpServletRequest
@@ -102,15 +108,13 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRemoteUser(): String? = lazyRemoteUser
 
+    override fun getProtocol(): String = lazyProtocol
+
     override fun getRequestURI(): String {
         TODO("Not yet implemented")
     }
 
     override fun getRequestURL(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getProtocol(): String {
         TODO("Not yet implemented")
     }
 
