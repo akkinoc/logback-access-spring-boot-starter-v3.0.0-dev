@@ -56,7 +56,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     private val elapsedTime: Long = exchange.requestStartTime
             .takeIf { it != -1L } // just in case the request start time is not recorded
             ?.let { nanoTimestamp - it }
-            ?.takeIf { it >= 0 } // just in case the request start time is set to the future
+            ?.takeIf { it >= 0L } // just in case the request start time is set to the future
             ?.let { NANOSECONDS.toMillis(it) }
             ?: -1
 
