@@ -142,18 +142,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestURL(): String = lazyRequestUrl
 
-    override fun getSessionID(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun setThreadName(threadName: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getThreadName(): String {
-        TODO("Not yet implemented")
-    }
-
     override fun getRequestHeader(key: String?): String {
         TODO("Not yet implemented")
     }
@@ -163,6 +151,18 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     }
 
     override fun getRequestHeaderMap(): MutableMap<String, String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getSessionID(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun setThreadName(threadName: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getThreadName(): String {
         TODO("Not yet implemented")
     }
 
