@@ -119,6 +119,14 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         unmodifiableMap(map)
     }
 
+    /**
+     * @see getRequestParameterMap
+     */
+    private val lazyRequestParameterMap: Map<String, Array<String>> by lazy {
+        val map = exchange.queryParameters.mapValues { (_, value) -> value.toTypedArray() }
+        unmodifiableMap(map)
+    }
+
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
         return context.servletRequest as HttpServletRequest
@@ -161,6 +169,12 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestHeader(key: String): String = lazyRequestHeaderMap[key] ?: NA
 
+    override fun getRequestParameterMap(): Map<String, Array<String>> = lazyRequestParameterMap
+
+    override fun getRequestParameter(key: String): Array<String> {
+        TODO("Not yet implemented")
+    }
+
     override fun getSessionID(): String {
         TODO("Not yet implemented")
     }
@@ -173,15 +187,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         TODO("Not yet implemented")
     }
 
-    override fun getRequestParameterMap(): MutableMap<String, Array<String>> {
-        TODO("Not yet implemented")
-    }
-
     override fun getAttribute(key: String?): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getRequestParameter(key: String?): Array<String> {
         TODO("Not yet implemented")
     }
 
