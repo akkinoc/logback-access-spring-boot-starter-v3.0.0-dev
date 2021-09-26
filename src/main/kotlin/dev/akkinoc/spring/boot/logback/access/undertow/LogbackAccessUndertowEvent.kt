@@ -2,6 +2,7 @@ package dev.akkinoc.spring.boot.logback.access.undertow
 
 import ch.qos.logback.access.spi.IAccessEvent
 import io.undertow.attribute.LocalPortAttribute
+import io.undertow.attribute.LocalServerNameAttribute
 import io.undertow.attribute.RemoteHostAttribute
 import io.undertow.attribute.RemoteIPAttribute
 import io.undertow.attribute.RemoteUserAttribute
@@ -52,9 +53,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     /**
      * @see getServerName
      */
-    private val lazyServerName: String by lazy {
-        exchange.hostName
-    }
+    private val lazyServerName: String by lazy { LocalServerNameAttribute.INSTANCE.readAttribute(exchange) }
 
     /**
      * @see getLocalPort
