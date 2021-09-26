@@ -10,6 +10,7 @@ import io.undertow.attribute.RemoteIPAttribute
 import io.undertow.attribute.RemoteUserAttribute
 import io.undertow.attribute.RequestMethodAttribute
 import io.undertow.attribute.RequestProtocolAttribute
+import io.undertow.attribute.ResponseCodeAttribute
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.attribute.ServletRequestLineAttribute
 import io.undertow.servlet.attribute.ServletRequestURLAttribute
@@ -127,6 +128,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         unmodifiableMap(map)
     }
 
+    /**
+     * @see getStatusCode
+     */
+    private val lazyStatusCode: Int by lazy { ResponseCodeAttribute.INSTANCE.readAttribute(exchange).toInt() }
+
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
         return context.servletRequest as HttpServletRequest
@@ -173,6 +179,8 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestParameter(key: String): Array<String> = lazyRequestParameterMap[key] ?: arrayOf(NA)
 
+    override fun getStatusCode(): Int = lazyStatusCode
+
     override fun getSessionID(): String {
         TODO("Not yet implemented")
     }
@@ -194,10 +202,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     }
 
     override fun getContentLength(): Long {
-        TODO("Not yet implemented")
-    }
-
-    override fun getStatusCode(): Int {
         TODO("Not yet implemented")
     }
 
