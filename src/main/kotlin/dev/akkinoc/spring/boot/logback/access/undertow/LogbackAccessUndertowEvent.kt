@@ -171,9 +171,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestParameterMap(): Map<String, Array<String>> = lazyRequestParameterMap
 
-    override fun getRequestParameter(key: String): Array<String> {
-        TODO("Not yet implemented")
-    }
+    override fun getRequestParameter(key: String): Array<String> = lazyRequestParameterMap[key] ?: arrayOf(NA)
 
     override fun getSessionID(): String {
         TODO("Not yet implemented")
