@@ -3,6 +3,7 @@ package dev.akkinoc.spring.boot.logback.access.undertow
 import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.access.spi.IAccessEvent.NA
 import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
+import io.undertow.attribute.BytesSentAttribute
 import io.undertow.attribute.LocalPortAttribute
 import io.undertow.attribute.LocalServerNameAttribute
 import io.undertow.attribute.QueryStringAttribute
@@ -133,6 +134,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
      */
     private val lazyStatusCode: Int by lazy { ResponseCodeAttribute.INSTANCE.readAttribute(exchange).toInt() }
 
+    /**
+     * @see getContentLength
+     */
+    private val lazyContentLength: Long by lazy { BytesSentAttribute(false).readAttribute(exchange).toLong() }
+
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
         return context.servletRequest as HttpServletRequest
@@ -181,6 +187,8 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getStatusCode(): Int = lazyStatusCode
 
+    override fun getContentLength(): Long = lazyContentLength
+
     override fun getSessionID(): String {
         TODO("Not yet implemented")
     }
@@ -198,10 +206,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     }
 
     override fun getCookie(key: String?): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getContentLength(): Long {
         TODO("Not yet implemented")
     }
 
