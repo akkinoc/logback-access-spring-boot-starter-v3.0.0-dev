@@ -11,6 +11,7 @@ import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import java.util.Enumeration
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.NANOSECONDS
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -47,7 +48,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
             .takeIf { it != -1L } // just in case the request start time is not recorded
             ?.let { nanoTimestamp - it }
             ?.takeIf { it >= 0 } // just in case the request start time is set to the future
-            ?.let { it / 1_000_000 }
+            ?.let { NANOSECONDS.toMillis(it) }
             ?: -1
 
     /**
@@ -89,7 +90,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getElapsedTime(): Long = elapsedTime
 
-    override fun getElapsedSeconds(): Long = if (elapsedTime < 0) elapsedTime else elapsedTime / 1_000
+    override fun getElapsedSeconds(): Long = if (elapsedTime < 0) elapsedTime else MILLISECONDS.toSeconds(elapsedTime)
 
     override fun getServerName(): String = lazyServerName
 
