@@ -83,7 +83,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     /**
      * @see getRemoteUser
      */
-    private val lazyRemoteUser: String? by lazy { RemoteUserAttribute.INSTANCE.readAttribute(exchange) }
+    private val lazyRemoteUser: String by lazy { RemoteUserAttribute.INSTANCE.readAttribute(exchange) ?: NA }
 
     /**
      * @see getProtocol
@@ -143,7 +143,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRemoteHost(): String = lazyRemoteHost
 
-    override fun getRemoteUser(): String? = lazyRemoteUser
+    override fun getRemoteUser(): String = lazyRemoteUser
 
     override fun getProtocol(): String = lazyProtocol
 
