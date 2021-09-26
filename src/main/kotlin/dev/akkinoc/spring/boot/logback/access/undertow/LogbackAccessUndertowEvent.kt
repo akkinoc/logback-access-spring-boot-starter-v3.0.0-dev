@@ -8,8 +8,8 @@ import io.undertow.attribute.RemoteIPAttribute
 import io.undertow.attribute.RemoteUserAttribute
 import io.undertow.attribute.RequestMethodAttribute
 import io.undertow.attribute.RequestProtocolAttribute
-import io.undertow.attribute.RequestURLAttribute
 import io.undertow.server.HttpServerExchange
+import io.undertow.servlet.attribute.ServletRequestURLAttribute
 import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
@@ -92,7 +92,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     /**
      * @see getRequestURI
      */
-    private val lazyRequestUri: String by lazy { RequestURLAttribute.INSTANCE.readAttribute(exchange) }
+    private val lazyRequestUri: String by lazy { ServletRequestURLAttribute.INSTANCE.readAttribute(exchange) }
 
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
