@@ -66,7 +66,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     /**
      * @see getThreadName
      */
-    private val threadName: String = ThreadNameAttribute.INSTANCE.readAttribute(exchange)
+    private var threadName: String = ThreadNameAttribute.INSTANCE.readAttribute(exchange)
 
     /**
      * @see getServerName
@@ -163,8 +163,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getThreadName(): String = threadName
 
-    override fun setThreadName(value: String) =
-            throw UnsupportedOperationException("The thread name cannot be changed: $value")
+    override fun setThreadName(value: String) = run { threadName = value }
 
     override fun getServerName(): String = lazyServerName
 
