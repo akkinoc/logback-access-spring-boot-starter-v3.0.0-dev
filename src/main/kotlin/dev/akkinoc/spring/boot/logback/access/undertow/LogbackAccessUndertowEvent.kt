@@ -65,6 +65,13 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         addr.address?.hostAddress ?: addr.hostString
     }
 
+    /**
+     * @see getRemoteHost
+     */
+    private val lazyRemoteHost: String by lazy {
+        exchange.sourceAddress.hostString
+    }
+
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
         return context.servletRequest as? HttpServletRequest
@@ -87,15 +94,13 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRemoteAddr(): String = lazyRemoteAddr
 
+    override fun getRemoteHost(): String = lazyRemoteHost
+
     override fun getRequestURI(): String {
         TODO("Not yet implemented")
     }
 
     override fun getRequestURL(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getRemoteHost(): String {
         TODO("Not yet implemented")
     }
 
