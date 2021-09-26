@@ -16,6 +16,8 @@ import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
+import java.util.Collections.enumeration
+import java.util.Collections.unmodifiableMap
 import java.util.Enumeration
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.NANOSECONDS
@@ -113,6 +115,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     private val lazyRequestHeaderMap: Map<String, String> by lazy {
         val map = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
         exchange.requestHeaders.associateTo(map) { "${it.headerName}" to it.first }
+        unmodifiableMap(map)
     }
 
     override fun getRequest(): HttpServletRequest? {
@@ -153,9 +156,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestHeaderMap(): Map<String, String> = lazyRequestHeaderMap
 
-    override fun getRequestHeaderNames(): Enumeration<String> {
-        TODO("Not yet implemented")
-    }
+    override fun getRequestHeaderNames(): Enumeration<String> = enumeration(lazyRequestHeaderMap.keys)
 
     override fun getRequestHeader(key: String?): String {
         TODO("Not yet implemented")
