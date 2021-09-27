@@ -211,8 +211,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getStatusCode(): Int = lazyStatusCode
 
-    override fun getContentLength(): Long = lazyContentLength
-
     override fun getResponseHeaderMap(): Map<String, String> {
         TODO("Not yet implemented")
     }
@@ -224,6 +222,8 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     override fun getResponseHeader(key: String): String {
         TODO("Not yet implemented")
     }
+
+    override fun getContentLength(): Long = lazyContentLength
 
     override fun getResponseContent(): String = lazyResponseContent
 
