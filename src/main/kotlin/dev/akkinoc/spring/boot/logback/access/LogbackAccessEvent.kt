@@ -1,0 +1,66 @@
+package dev.akkinoc.spring.boot.logback.access
+
+import ch.qos.logback.access.spi.IAccessEvent
+import ch.qos.logback.access.spi.IAccessEvent.NA
+import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
+import java.io.Serializable
+import java.lang.System.currentTimeMillis
+import java.util.concurrent.TimeUnit.MILLISECONDS
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import ch.qos.logback.access.spi.ServerAdapter as IServerAdapter
+
+/**
+ * The Logback-access event.
+ *
+ * This class was implemented with reference to:
+ *
+ * * [ch.qos.logback.access.spi.AccessEvent]
+ */
+abstract class LogbackAccessEvent : IAccessEvent, Serializable {
+
+    /**
+     * The value of [getTimeStamp].
+     */
+    private val timestamp: Long = currentTimeMillis()
+
+    /**
+     * The value of [getThreadName].
+     */
+    private var threadName: String = NA
+
+    /**
+     * The value of [getServerName].
+     */
+    protected open val lazyServerName: String? by lazy { evaluateServerName() }
+
+    override fun getTimeStamp(): Long = timestamp
+
+    override fun getElapsedTime(): Long = SENTINEL.toLong()
+
+    override fun getElapsedSeconds(): Long = elapsedTime.let { if (it >= 0L) MILLISECONDS.toSeconds(it) else it }
+
+    override fun getThreadName(): String = threadName
+
+    override fun setThreadName(value: String) = run { threadName = value }
+
+    override fun getRequest(): HttpServletRequest? = null
+
+    override fun getResponse(): HttpServletResponse? = null
+
+    override fun getServerAdapter(): IServerAdapter? = null
+
+    /**
+     * Evaluates the value of [getServerName].
+     */
+    protected open fun evaluateServerName(): String? = request?.serverName
+
+    override fun getServerName(): String = lazyServerName ?: NA
+
+    override fun prepareForDeferredProcessing() {
+        lazyServerName
+    }
+
+    override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"
+
+}
