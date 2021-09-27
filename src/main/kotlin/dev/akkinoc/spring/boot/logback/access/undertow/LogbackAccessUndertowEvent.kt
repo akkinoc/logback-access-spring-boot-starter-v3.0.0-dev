@@ -128,6 +128,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     }
 
     /**
+     * @see getSessionID
+     */
+    private val lazySessionId: String? by lazy { request?.getSession(false)?.id }
+
+    /**
      * @see getRequestParameterMap
      */
     private val lazyRequestParameterMap: Map<String, Array<String>> by lazy {
@@ -212,6 +217,8 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestHeader(key: String): String = lazyRequestHeaderMap[key] ?: NA
 
+    override fun getSessionID(): String = lazySessionId ?: NA
+
     override fun getRequestParameterMap(): Map<String, Array<String>> = lazyRequestParameterMap
 
     override fun getRequestParameter(key: String): Array<String> = lazyRequestParameterMap[key] ?: arrayOf(NA)
@@ -229,10 +236,6 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     override fun getContentLength(): Long = lazyContentLength
 
     override fun getResponseContent(): String = lazyResponseContent
-
-    override fun getSessionID(): String {
-        TODO("Not yet implemented")
-    }
 
     override fun getAttribute(key: String): String {
         TODO("Not yet implemented")
@@ -254,6 +257,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         lazyQueryString
         lazyRequestUrl
         lazyRequestHeaderMap
+        lazySessionId
         lazyRequestParameterMap
         lazyRequestContent
         lazyStatusCode
