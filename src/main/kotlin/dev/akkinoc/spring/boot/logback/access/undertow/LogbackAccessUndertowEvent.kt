@@ -136,6 +136,13 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     }
 
     /**
+     * @see getRequestContent
+     */
+    private val lazyRequestContent: String by lazy {
+        "[UNSUPPORTED]" // TODO: I'd like to support it in a future version
+    }
+
+    /**
      * @see getStatusCode
      */
     private val lazyStatusCode: Int by lazy { ResponseCodeAttribute.INSTANCE.readAttribute(exchange).toInt() }
@@ -144,6 +151,13 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
      * @see getContentLength
      */
     private val lazyContentLength: Long by lazy { BytesSentAttribute(false).readAttribute(exchange).toLong() }
+
+    /**
+     * @see getResponseContent
+     */
+    private val lazyResponseContent: String by lazy {
+        "[UNSUPPORTED]" // TODO: I'd like to support it in a future version
+    }
 
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
@@ -197,9 +211,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getRequestParameter(key: String): Array<String> = lazyRequestParameterMap[key] ?: arrayOf(NA)
 
-    override fun getRequestContent(): String {
-        TODO("Not yet implemented")
-    }
+    override fun getRequestContent(): String = lazyRequestContent
 
     override fun getStatusCode(): Int = lazyStatusCode
 
@@ -217,9 +229,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         TODO("Not yet implemented")
     }
 
-    override fun getResponseContent(): String {
-        TODO("Not yet implemented")
-    }
+    override fun getResponseContent(): String = lazyResponseContent
 
     override fun getSessionID(): String {
         TODO("Not yet implemented")
@@ -246,12 +256,12 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         lazyRequestUrl
         lazyRequestHeaderMap
         lazyRequestParameterMap
+        lazyRequestContent
         lazyStatusCode
         lazyContentLength
+        lazyResponseContent
         // TODO
 //        responseHeaderMap
-//        requestContent
-//        responseContent
 //        copyAttributeMap()
     }
 

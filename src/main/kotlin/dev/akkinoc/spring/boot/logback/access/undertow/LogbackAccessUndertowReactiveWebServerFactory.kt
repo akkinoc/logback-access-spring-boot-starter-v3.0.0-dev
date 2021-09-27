@@ -13,7 +13,6 @@ import org.springframework.http.server.reactive.HttpHandler
 import org.springframework.util.ReflectionUtils.findField
 import org.springframework.util.ReflectionUtils.getField
 import org.springframework.util.ReflectionUtils.makeAccessible
-import io.undertow.server.HttpHandler as UndertowHttpHandler
 
 /**
  * The [ReactiveWebServerFactory] for the Undertow reactive web server.
@@ -25,14 +24,14 @@ import io.undertow.server.HttpHandler as UndertowHttpHandler
  * * [org.springframework.boot.web.embedded.undertow.UndertowWebServerFactoryDelegate]
  * * [org.springframework.boot.web.embedded.undertow.AccessLogHttpHandlerFactory]
  *
- * FIXME: I’d like to fix this class if there is a better way.
- * I couldn't find an extension point for [UndertowHttpHandler], so I'm using reflection to customize it.
- *
  * @property logbackAccessContext The Logback-access context.
  */
 class LogbackAccessUndertowReactiveWebServerFactory(
         private val logbackAccessContext: LogbackAccessContext,
 ) : UndertowReactiveWebServerFactory() {
+
+    // FIXME: I'd like to fix this class if there is a better way.
+    // I couldn't find an extension point for Undertow HttpHandler, so I'm using reflection to customize it.
 
     override fun getWebServer(httpHandler: HttpHandler): WebServer {
         val server = super.getWebServer(httpHandler).let { server ->
