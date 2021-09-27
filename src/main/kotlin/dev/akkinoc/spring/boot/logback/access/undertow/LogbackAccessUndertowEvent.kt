@@ -146,6 +146,15 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     private val lazyStatusCode: Int by lazy { ResponseCodeAttribute.INSTANCE.readAttribute(exchange).toInt() }
 
     /**
+     * @see getResponseHeaderMap
+     */
+    private val lazyResponseHeaderMap: Map<String, String> by lazy {
+        val map = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        exchange.responseHeaders.associateTo(map) { "${it.headerName}" to it.first }
+        unmodifiableMap(map)
+    }
+
+    /**
      * @see getContentLength
      */
     private val lazyContentLength: Long by lazy { BytesSentAttribute(false).readAttribute(exchange).toLong() }
@@ -211,17 +220,11 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
 
     override fun getStatusCode(): Int = lazyStatusCode
 
-    override fun getResponseHeaderMap(): Map<String, String> {
-        TODO("Not yet implemented")
-    }
+    override fun getResponseHeaderMap(): Map<String, String> = lazyResponseHeaderMap
 
-    override fun getResponseHeaderNameList(): List<String> {
-        TODO("Not yet implemented")
-    }
+    override fun getResponseHeaderNameList(): List<String> = lazyResponseHeaderMap.keys.toList()
 
-    override fun getResponseHeader(key: String): String {
-        TODO("Not yet implemented")
-    }
+    override fun getResponseHeader(key: String): String = lazyResponseHeaderMap[key] ?: NA
 
     override fun getContentLength(): Long = lazyContentLength
 
@@ -254,6 +257,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
         lazyRequestParameterMap
         lazyRequestContent
         lazyStatusCode
+        lazyResponseContent
         lazyContentLength
         lazyResponseContent
         // TODO
