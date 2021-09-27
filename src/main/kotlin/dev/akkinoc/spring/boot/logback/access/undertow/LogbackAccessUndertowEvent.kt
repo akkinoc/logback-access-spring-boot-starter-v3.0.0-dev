@@ -138,9 +138,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     /**
      * @see getRequestContent
      */
-    private val lazyRequestContent: String by lazy {
-        "[UNSUPPORTED]" // TODO: I'd like to support it in a future version
-    }
+    private val lazyRequestContent: String by lazy { NA } // TODO: I'd like to support it in a future version
 
     /**
      * @see getStatusCode
@@ -155,9 +153,7 @@ class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAc
     /**
      * @see getResponseContent
      */
-    private val lazyResponseContent: String by lazy {
-        "[UNSUPPORTED]" // TODO: I'd like to support it in a future version
-    }
+    private val lazyResponseContent: String by lazy { NA } // TODO: I'd like to support it in a future version
 
     override fun getRequest(): HttpServletRequest? {
         val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return null
