@@ -3,12 +3,12 @@ package dev.akkinoc.spring.boot.logback.access
 import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.access.spi.IAccessEvent.NA
 import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
+import ch.qos.logback.access.spi.ServerAdapter
 import java.io.Serializable
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import ch.qos.logback.access.spi.ServerAdapter as IServerAdapter
 
 /**
  * The Logback-access event.
@@ -38,7 +38,7 @@ abstract class LogbackAccessEvent : IAccessEvent, Serializable {
 
     override fun getResponse(): HttpServletResponse? = null
 
-    override fun getServerAdapter(): IServerAdapter? = null
+    override fun getServerAdapter(): ServerAdapter? = null
 
     override fun getTimeStamp(): Long = timestamp
 
