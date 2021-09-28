@@ -34,6 +34,12 @@ abstract class LogbackAccessEvent : IAccessEvent, Serializable {
      */
     protected open val lazyServerName: String? by lazy { evaluateServerName() }
 
+    override fun getRequest(): HttpServletRequest? = null
+
+    override fun getResponse(): HttpServletResponse? = null
+
+    override fun getServerAdapter(): IServerAdapter? = null
+
     override fun getTimeStamp(): Long = timestamp
 
     override fun getElapsedTime(): Long = SENTINEL.toLong()
@@ -43,12 +49,6 @@ abstract class LogbackAccessEvent : IAccessEvent, Serializable {
     override fun getThreadName(): String = threadName
 
     override fun setThreadName(value: String) = run { threadName = value }
-
-    override fun getRequest(): HttpServletRequest? = null
-
-    override fun getResponse(): HttpServletResponse? = null
-
-    override fun getServerAdapter(): IServerAdapter? = null
 
     /**
      * Evaluates the value of [getServerName].
