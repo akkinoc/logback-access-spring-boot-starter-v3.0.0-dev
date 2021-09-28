@@ -33,7 +33,12 @@ abstract class LogbackAccessEvent : IAccessEvent, Serializable {
     /**
      * The value of [getServerName].
      */
-    protected open val lazyServerName: String? by lazy { evaluateServerName() }
+    private val lazyServerName: String? by lazy { evaluateServerName() }
+
+    /**
+     * The value of [getElapsedTime].
+     */
+    private val lazyElapsedTime: Long? by lazy { evaluateElapsedTime() }
 
     override fun getRequest(): HttpServletRequest? = null
 
@@ -54,12 +59,18 @@ abstract class LogbackAccessEvent : IAccessEvent, Serializable {
 
     override fun getServerName(): String = lazyServerName ?: NA
 
-    override fun getElapsedTime(): Long = SENTINEL.toLong()
+    /**
+     * Evaluates the value of [getElapsedTime].
+     */
+    protected open fun evaluateElapsedTime(): Long? = null
 
-    override fun getElapsedSeconds(): Long = elapsedTime.let { if (it >= 0L) MILLISECONDS.toSeconds(it) else it }
+    override fun getElapsedTime(): Long = lazyElapsedTime ?: SENTINEL.toLong()
+
+    override fun getElapsedSeconds(): Long = lazyElapsedTime?.let { MILLISECONDS.toSeconds(it) } ?: SENTINEL.toLong()
 
     override fun prepareForDeferredProcessing() {
         lazyServerName
+        lazyElapsedTime
     }
 
     override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"
