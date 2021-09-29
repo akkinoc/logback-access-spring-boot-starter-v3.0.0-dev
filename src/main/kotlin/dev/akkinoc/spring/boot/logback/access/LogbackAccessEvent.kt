@@ -17,18 +17,14 @@ import javax.servlet.http.HttpServletResponse
  * This class was implemented with reference to:
  *
  * * [ch.qos.logback.access.spi.AccessEvent]
+ *
+ * @property timestamp The value of [getTimeStamp].
+ * @property threadName The value of [getThreadName].
  */
-abstract class LogbackAccessEvent : IAccessEvent, Serializable {
-
-    /**
-     * The value of [getTimeStamp].
-     */
-    private val timestamp: Long = currentTimeMillis()
-
-    /**
-     * The value of [getThreadName].
-     */
-    private val threadName: String = currentThread().name
+abstract class LogbackAccessEvent(
+        private val timestamp: Long = currentTimeMillis(),
+        private val threadName: String = currentThread().name,
+) : IAccessEvent, Serializable {
 
     /**
      * The value of [getServerName].
