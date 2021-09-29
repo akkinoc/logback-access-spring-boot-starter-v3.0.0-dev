@@ -44,7 +44,8 @@ data class TestContextClassLoaderCustomizer(
     private fun addClassPath(context: ConfigurableApplicationContext) {
         if (additionalClassPath == null) return
         val urls = arrayOf(additionalClassPath)
-        val parent = checkNotNull(context.classLoader) { "Failed to get the current class loader: $context" }
+        val parent = context.classLoader
+        checkNotNull(parent) { "Failed to get the current class loader: $context" }
         context.classLoader = URLClassLoader(urls, parent)
     }
 
