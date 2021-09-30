@@ -87,7 +87,23 @@ interface LogbackAccessEventSource {
      *
      * @return A serializable Logback-access event source with fixed evaluated values.
      */
-    fun fix(): LogbackAccessEventSource = Fixed(this)
+    fun fix(): LogbackAccessEventSource = Fixed(
+            timeStamp = timeStamp,
+            threadName = threadName,
+            serverName = serverName,
+            localPort = localPort,
+            remoteAddr = remoteAddr,
+            remoteHost = remoteHost,
+            remoteUser = remoteUser,
+            protocol = protocol,
+            method = method,
+            requestURI = requestURI,
+            queryString = queryString,
+            requestURL = requestURL,
+            requestHeaderMap = requestHeaderMap,
+            cookieMap = cookieMap,
+            elapsedTime = elapsedTime,
+    )
 
     /**
      * The serializable Logback-access event source with fixed evaluated values.
@@ -109,24 +125,6 @@ interface LogbackAccessEventSource {
             override val cookieMap: Map<String, String>,
             override val elapsedTime: Long?,
     ) : LogbackAccessEventSource, Serializable {
-
-        constructor(source: LogbackAccessEventSource) : this(
-                timeStamp = source.timeStamp,
-                threadName = source.threadName,
-                serverName = source.serverName,
-                localPort = source.localPort,
-                remoteAddr = source.remoteAddr,
-                remoteHost = source.remoteHost,
-                remoteUser = source.remoteUser,
-                protocol = source.protocol,
-                method = source.method,
-                requestURI = source.requestURI,
-                queryString = source.queryString,
-                requestURL = source.requestURL,
-                requestHeaderMap = source.requestHeaderMap,
-                cookieMap = source.cookieMap,
-                elapsedTime = source.elapsedTime,
-        )
 
         override fun fix(): LogbackAccessEventSource = this
 
