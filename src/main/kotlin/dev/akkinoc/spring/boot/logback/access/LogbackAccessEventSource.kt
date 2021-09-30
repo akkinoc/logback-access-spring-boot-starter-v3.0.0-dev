@@ -33,6 +33,16 @@ interface LogbackAccessEventSource {
     val remoteAddr: String?
 
     /**
+     * The value of [LogbackAccessEvent.getRemoteHost].
+     */
+    val remoteHost: String?
+
+    /**
+     * The value of [LogbackAccessEvent.getRemoteUser].
+     */
+    val remoteUser: String?
+
+    /**
      * The value of [LogbackAccessEvent.getElapsedTime].
      */
     val elapsedTime: Long?
@@ -46,6 +56,8 @@ interface LogbackAccessEventSource {
             override val serverName: String?,
             override val localPort: Int?,
             override val remoteAddr: String?,
+            override val remoteHost: String?,
+            override val remoteUser: String?,
             override val elapsedTime: Long?,
     ) : LogbackAccessEventSource, Serializable {
 
@@ -55,6 +67,8 @@ interface LogbackAccessEventSource {
                 serverName = source.serverName,
                 localPort = source.localPort,
                 remoteAddr = source.remoteAddr,
+                remoteHost = source.remoteHost,
+                remoteUser = source.remoteUser,
                 elapsedTime = source.elapsedTime,
         )
 
