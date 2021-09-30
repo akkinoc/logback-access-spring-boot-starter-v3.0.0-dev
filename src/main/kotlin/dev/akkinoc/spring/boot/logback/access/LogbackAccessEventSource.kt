@@ -15,27 +15,27 @@ interface LogbackAccessEventSource {
     /**
      * The value of [LogbackAccessEvent.getThreadName].
      */
-    val threadName: String?
+    val threadName: String
 
     /**
      * The value of [LogbackAccessEvent.getServerName].
      */
-    val serverName: String?
+    val serverName: String
 
     /**
      * The value of [LogbackAccessEvent.getLocalPort].
      */
-    val localPort: Int?
+    val localPort: Int
 
     /**
      * The value of [LogbackAccessEvent.getRemoteAddr].
      */
-    val remoteAddr: String?
+    val remoteAddr: String
 
     /**
      * The value of [LogbackAccessEvent.getRemoteHost].
      */
-    val remoteHost: String?
+    val remoteHost: String
 
     /**
      * The value of [LogbackAccessEvent.getRemoteUser].
@@ -52,11 +52,11 @@ interface LogbackAccessEventSource {
      */
     class Fixed(
             override val timestamp: Long,
-            override val threadName: String?,
-            override val serverName: String?,
-            override val localPort: Int?,
-            override val remoteAddr: String?,
-            override val remoteHost: String?,
+            override val threadName: String,
+            override val serverName: String,
+            override val localPort: Int,
+            override val remoteAddr: String,
+            override val remoteHost: String,
             override val remoteUser: String?,
             override val elapsedTime: Long?,
     ) : LogbackAccessEventSource, Serializable {
