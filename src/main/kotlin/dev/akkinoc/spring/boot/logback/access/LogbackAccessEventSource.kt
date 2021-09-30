@@ -10,7 +10,7 @@ interface LogbackAccessEventSource {
     /**
      * The value of [LogbackAccessEvent.getTimeStamp].
      */
-    val timestamp: Long
+    val timeStamp: Long
 
     /**
      * The value of [LogbackAccessEvent.getThreadName].
@@ -43,6 +43,31 @@ interface LogbackAccessEventSource {
     val remoteUser: String?
 
     /**
+     * The value of [LogbackAccessEvent.getProtocol].
+     */
+    val protocol: String
+
+    /**
+     * The value of [LogbackAccessEvent.getMethod].
+     */
+    val method: String
+
+    /**
+     * The value of [LogbackAccessEvent.getRequestURI].
+     */
+    val requestURI: String
+
+    /**
+     * The value of [LogbackAccessEvent.getQueryString].
+     */
+    val queryString: String
+
+    /**
+     * The value of [LogbackAccessEvent.getRequestURL].
+     */
+    val requestURL: String
+
+    /**
      * The value of [LogbackAccessEvent.getElapsedTime].
      */
     val elapsedTime: Long?
@@ -51,24 +76,34 @@ interface LogbackAccessEventSource {
      * The Logback-access event source fixed with evaluated values that can be serialized.
      */
     class Fixed(
-            override val timestamp: Long,
+            override val timeStamp: Long,
             override val threadName: String,
             override val serverName: String,
             override val localPort: Int,
             override val remoteAddr: String,
             override val remoteHost: String,
             override val remoteUser: String?,
+            override val protocol: String,
+            override val method: String,
+            override val requestURI: String,
+            override val queryString: String,
+            override val requestURL: String,
             override val elapsedTime: Long?,
     ) : LogbackAccessEventSource, Serializable {
 
         constructor(source: LogbackAccessEventSource) : this(
-                timestamp = source.timestamp,
+                timeStamp = source.timeStamp,
                 threadName = source.threadName,
                 serverName = source.serverName,
                 localPort = source.localPort,
                 remoteAddr = source.remoteAddr,
                 remoteHost = source.remoteHost,
                 remoteUser = source.remoteUser,
+                protocol = source.protocol,
+                method = source.method,
+                requestURI = source.requestURI,
+                queryString = source.queryString,
+                requestURL = source.requestURL,
                 elapsedTime = source.elapsedTime,
         )
 
