@@ -83,9 +83,16 @@ interface LogbackAccessEventSource {
     val elapsedTime: Long?
 
     /**
-     * The Logback-access event source fixed with evaluated values that can be serialized.
+     * Returns a serializable Logback-access event source with fixed evaluated values.
+     *
+     * @return A serializable Logback-access event source with fixed evaluated values.
      */
-    class Fixed(
+    fun fix(): LogbackAccessEventSource = Fixed(this)
+
+    /**
+     * The serializable Logback-access event source with fixed evaluated values.
+     */
+    private data class Fixed(
             override val timeStamp: Long,
             override val threadName: String,
             override val serverName: String,
@@ -120,6 +127,8 @@ interface LogbackAccessEventSource {
                 cookieMap = source.cookieMap,
                 elapsedTime = source.elapsedTime,
         )
+
+        override fun fix(): LogbackAccessEventSource = this
 
     }
 
