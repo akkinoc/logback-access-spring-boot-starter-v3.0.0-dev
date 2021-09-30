@@ -75,7 +75,7 @@ interface LogbackAccessEventSource {
     /**
      * The value of [LogbackAccessEvent.getCookie].
      */
-    val cookie: Map<String, String>
+    val cookieMap: Map<String, String>
 
     /**
      * The value of [LogbackAccessEvent.getElapsedTime].
@@ -99,7 +99,7 @@ interface LogbackAccessEventSource {
             override val queryString: String,
             override val requestURL: String,
             override val requestHeaderMap: Map<String, String>,
-            override val cookie: Map<String, String>,
+            override val cookieMap: Map<String, String>,
             override val elapsedTime: Long?,
     ) : LogbackAccessEventSource, Serializable {
 
@@ -117,7 +117,7 @@ interface LogbackAccessEventSource {
                 queryString = source.queryString,
                 requestURL = source.requestURL,
                 requestHeaderMap = source.requestHeaderMap,
-                cookie = source.cookie,
+                cookieMap = source.cookieMap,
                 elapsedTime = source.elapsedTime,
         )
 
