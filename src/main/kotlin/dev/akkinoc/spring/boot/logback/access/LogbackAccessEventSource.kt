@@ -13,6 +13,11 @@ abstract class LogbackAccessEventSource {
     abstract val timeStamp: Long
 
     /**
+     * The value of [LogbackAccessEvent.getElapsedTime].
+     */
+    abstract val elapsedTime: Long?
+
+    /**
      * The value of [LogbackAccessEvent.getThreadName].
      */
     abstract val threadName: String
@@ -93,11 +98,6 @@ abstract class LogbackAccessEventSource {
     abstract val requestContent: String?
 
     /**
-     * The value of [LogbackAccessEvent.getElapsedTime].
-     */
-    abstract val elapsedTime: Long?
-
-    /**
      * Returns a serializable Logback-access event source with fixed evaluated values.
      *
      * @return A serializable Logback-access event source with fixed evaluated values.
@@ -105,6 +105,7 @@ abstract class LogbackAccessEventSource {
     open fun fix(): LogbackAccessEventSource {
         return Fixed(
                 timeStamp = timeStamp,
+                elapsedTime = elapsedTime,
                 threadName = threadName,
                 serverName = serverName,
                 localPort = localPort,
@@ -121,7 +122,6 @@ abstract class LogbackAccessEventSource {
                 attributeMap = attributeMap,
                 sessionID = sessionID,
                 requestContent = requestContent,
-                elapsedTime = elapsedTime,
         )
     }
 
@@ -130,6 +130,7 @@ abstract class LogbackAccessEventSource {
      */
     private data class Fixed(
             override val timeStamp: Long,
+            override val elapsedTime: Long?,
             override val threadName: String,
             override val serverName: String,
             override val localPort: Int,
@@ -146,7 +147,6 @@ abstract class LogbackAccessEventSource {
             override val attributeMap: Map<String, String>,
             override val sessionID: String?,
             override val requestContent: String?,
-            override val elapsedTime: Long?,
     ) : LogbackAccessEventSource(), Serializable {
 
         override fun fix(): LogbackAccessEventSource = this
