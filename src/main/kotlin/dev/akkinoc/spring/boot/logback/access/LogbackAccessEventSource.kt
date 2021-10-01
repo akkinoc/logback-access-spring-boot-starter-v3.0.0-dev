@@ -63,11 +63,6 @@ interface LogbackAccessEventSource {
     val queryString: String
 
     /**
-     * The value of [LogbackAccessEvent.getRequestURL].
-     */
-    val requestURL: String
-
-    /**
      * The value of [LogbackAccessEvent.getRequestHeaderMap].
      */
     val requestHeaderMap: Map<String, String>
@@ -99,7 +94,6 @@ interface LogbackAccessEventSource {
             method = method,
             requestURI = requestURI,
             queryString = queryString,
-            requestURL = requestURL,
             requestHeaderMap = requestHeaderMap,
             cookieMap = cookieMap,
             elapsedTime = elapsedTime,
@@ -120,7 +114,6 @@ interface LogbackAccessEventSource {
             override val method: String,
             override val requestURI: String,
             override val queryString: String,
-            override val requestURL: String,
             override val requestHeaderMap: Map<String, String>,
             override val cookieMap: Map<String, String>,
             override val elapsedTime: Long?,
