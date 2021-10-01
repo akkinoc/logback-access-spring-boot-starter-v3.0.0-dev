@@ -98,6 +98,11 @@ abstract class LogbackAccessEventSource {
     abstract val requestContent: String?
 
     /**
+     * The value of [LogbackAccessEvent.getStatusCode].
+     */
+    abstract val statusCode: Int
+
+    /**
      * Returns a serializable Logback-access event source with fixed evaluated values.
      *
      * @return A serializable Logback-access event source with fixed evaluated values.
@@ -122,6 +127,7 @@ abstract class LogbackAccessEventSource {
                 attributeMap = attributeMap,
                 sessionID = sessionID,
                 requestContent = requestContent,
+                statusCode = statusCode,
         )
     }
 
@@ -147,6 +153,7 @@ abstract class LogbackAccessEventSource {
             override val attributeMap: Map<String, String>,
             override val sessionID: String?,
             override val requestContent: String?,
+            override val statusCode: Int,
     ) : LogbackAccessEventSource(), Serializable {
 
         override fun fix(): LogbackAccessEventSource = this
