@@ -5,123 +5,125 @@ import java.io.Serializable
 /**
  * The Logback-access event source.
  */
-interface LogbackAccessEventSource {
+abstract class LogbackAccessEventSource {
 
     /**
      * The value of [LogbackAccessEvent.getTimeStamp].
      */
-    val timeStamp: Long
+    abstract val timeStamp: Long
 
     /**
      * The value of [LogbackAccessEvent.getThreadName].
      */
-    val threadName: String
+    abstract val threadName: String
 
     /**
      * The value of [LogbackAccessEvent.getServerName].
      */
-    val serverName: String
+    abstract val serverName: String
 
     /**
      * The value of [LogbackAccessEvent.getLocalPort].
      */
-    val localPort: Int
+    abstract val localPort: Int
 
     /**
      * The value of [LogbackAccessEvent.getRemoteAddr].
      */
-    val remoteAddr: String
+    abstract val remoteAddr: String
 
     /**
      * The value of [LogbackAccessEvent.getRemoteHost].
      */
-    val remoteHost: String
+    abstract val remoteHost: String
 
     /**
      * The value of [LogbackAccessEvent.getRemoteUser].
      */
-    val remoteUser: String?
+    abstract val remoteUser: String?
 
     /**
      * The value of [LogbackAccessEvent.getProtocol].
      */
-    val protocol: String
+    abstract val protocol: String
 
     /**
      * The value of [LogbackAccessEvent.getMethod].
      */
-    val method: String
+    abstract val method: String
 
     /**
      * The value of [LogbackAccessEvent.getRequestURI].
      */
-    val requestURI: String
+    abstract val requestURI: String
 
     /**
      * The value of [LogbackAccessEvent.getQueryString].
      */
-    val queryString: String
+    abstract val queryString: String
 
     /**
      * The value of [LogbackAccessEvent.getRequestHeaderMap].
      */
-    val requestHeaderMap: Map<String, String>
+    abstract val requestHeaderMap: Map<String, String>
 
     /**
      * The value of [LogbackAccessEvent.getCookie].
      */
-    val cookieMap: Map<String, String>
+    abstract val cookieMap: Map<String, String>
 
     /**
      * The value of [LogbackAccessEvent.getRequestParameterMap].
      */
-    val requestParameterMap: Map<String, Array<String>>
+    abstract val requestParameterMap: Map<String, Array<String>>
 
     /**
      * The value of [LogbackAccessEvent.getAttribute].
      */
-    val attributeMap: Map<String, String>
+    abstract val attributeMap: Map<String, String>
 
     /**
      * The value of [LogbackAccessEvent.getSessionID].
      */
-    val sessionID: String?
+    abstract val sessionID: String?
 
     /**
      * The value of [LogbackAccessEvent.getRequestContent].
      */
-    val requestContent: String?
+    abstract val requestContent: String?
 
     /**
      * The value of [LogbackAccessEvent.getElapsedTime].
      */
-    val elapsedTime: Long?
+    abstract val elapsedTime: Long?
 
     /**
      * Returns a serializable Logback-access event source with fixed evaluated values.
      *
      * @return A serializable Logback-access event source with fixed evaluated values.
      */
-    fun fix(): LogbackAccessEventSource = Fixed(
-            timeStamp = timeStamp,
-            threadName = threadName,
-            serverName = serverName,
-            localPort = localPort,
-            remoteAddr = remoteAddr,
-            remoteHost = remoteHost,
-            remoteUser = remoteUser,
-            protocol = protocol,
-            method = method,
-            requestURI = requestURI,
-            queryString = queryString,
-            requestHeaderMap = requestHeaderMap,
-            cookieMap = cookieMap,
-            requestParameterMap = requestParameterMap,
-            attributeMap = attributeMap,
-            sessionID = sessionID,
-            requestContent = requestContent,
-            elapsedTime = elapsedTime,
-    )
+    open fun fix(): LogbackAccessEventSource {
+        return Fixed(
+                timeStamp = timeStamp,
+                threadName = threadName,
+                serverName = serverName,
+                localPort = localPort,
+                remoteAddr = remoteAddr,
+                remoteHost = remoteHost,
+                remoteUser = remoteUser,
+                protocol = protocol,
+                method = method,
+                requestURI = requestURI,
+                queryString = queryString,
+                requestHeaderMap = requestHeaderMap,
+                cookieMap = cookieMap,
+                requestParameterMap = requestParameterMap,
+                attributeMap = attributeMap,
+                sessionID = sessionID,
+                requestContent = requestContent,
+                elapsedTime = elapsedTime,
+        )
+    }
 
     /**
      * The serializable Logback-access event source with fixed evaluated values.
@@ -145,7 +147,7 @@ interface LogbackAccessEventSource {
             override val sessionID: String?,
             override val requestContent: String?,
             override val elapsedTime: Long?,
-    ) : LogbackAccessEventSource, Serializable {
+    ) : LogbackAccessEventSource(), Serializable {
 
         override fun fix(): LogbackAccessEventSource = this
 
