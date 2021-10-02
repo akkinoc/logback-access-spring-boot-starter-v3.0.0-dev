@@ -29,8 +29,8 @@ class LogbackAccessUndertowHttpHandler(
      * @param next The next listener.
      */
     private fun emit(exchange: HttpServerExchange, next: NextListener) {
-        val event = LogbackAccessUndertowEvent(exchange)
-        logbackAccessContext.emit(event)
+        val source = LogbackAccessUndertowEventSource(exchange)
+        logbackAccessContext.emit(source)
         next.proceed()
     }
 
