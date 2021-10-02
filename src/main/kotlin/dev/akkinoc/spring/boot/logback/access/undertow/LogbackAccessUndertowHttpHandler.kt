@@ -1,6 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.undertow
 
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessContext
+import dev.akkinoc.spring.boot.logback.access.LogbackAccessEvent
 import io.undertow.server.ExchangeCompletionListener.NextListener
 import io.undertow.server.HttpHandler
 import io.undertow.server.HttpServerExchange
@@ -30,7 +31,8 @@ class LogbackAccessUndertowHttpHandler(
      */
     private fun emit(exchange: HttpServerExchange, next: NextListener) {
         val source = LogbackAccessUndertowEventSource(exchange)
-        logbackAccessContext.emit(source)
+        val event = LogbackAccessEvent(source)
+        logbackAccessContext.emit(event)
         next.proceed()
     }
 

@@ -1,6 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.tomcat
 
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessContext
+import dev.akkinoc.spring.boot.logback.access.LogbackAccessEvent
 import org.apache.catalina.AccessLog
 import org.apache.catalina.Valve
 import org.apache.catalina.connector.Request
@@ -35,7 +36,8 @@ class LogbackAccessTomcatValve(private val logbackAccessContext: LogbackAccessCo
 
     override fun log(request: Request, response: Response, time: Long) {
         val source = LogbackAccessTomcatEventSource(request, response)
-        logbackAccessContext.emit(source)
+        val event = LogbackAccessEvent(source)
+        logbackAccessContext.emit(event)
     }
 
 }

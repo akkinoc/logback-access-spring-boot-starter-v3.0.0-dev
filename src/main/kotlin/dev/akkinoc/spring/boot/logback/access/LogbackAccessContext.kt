@@ -46,16 +46,6 @@ class LogbackAccessContext(
     /**
      * Emits the Logback-access event.
      *
-     * @param source The Logback-access event source.
-     */
-    fun emit(source: LogbackAccessEventSource) {
-        val event = LogbackAccessEvent(source)
-        emit(event)
-    }
-
-    /**
-     * Emits the Logback-access event.
-     *
      * @param event The Logback-access event.
      */
     fun emit(event: LogbackAccessEvent) {

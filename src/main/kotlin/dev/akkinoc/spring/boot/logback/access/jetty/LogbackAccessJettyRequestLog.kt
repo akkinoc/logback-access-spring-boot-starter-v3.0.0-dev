@@ -1,6 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.jetty
 
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessContext
+import dev.akkinoc.spring.boot.logback.access.LogbackAccessEvent
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.RequestLog
 import org.eclipse.jetty.server.Response
@@ -16,7 +17,8 @@ class LogbackAccessJettyRequestLog(private val logbackAccessContext: LogbackAcce
 
     override fun log(request: Request, response: Response) {
         val source = LogbackAccessJettyEventSource(request, response)
-        logbackAccessContext.emit(source)
+        val event = LogbackAccessEvent(source)
+        logbackAccessContext.emit(event)
     }
 
 }
