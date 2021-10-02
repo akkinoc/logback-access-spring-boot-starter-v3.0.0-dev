@@ -5,8 +5,8 @@ import ch.qos.logback.access.spi.IAccessEvent.NA
 import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
 import ch.qos.logback.access.spi.ServerAdapter
 import java.io.Serializable
-import java.lang.System.currentTimeMillis
-import java.lang.Thread.currentThread
+import java.util.Collections.enumeration
+import java.util.Enumeration
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -14,59 +14,79 @@ import javax.servlet.http.HttpServletResponse
 /**
  * The Logback-access event.
  *
- * This class was implemented with reference to:
- *
- * * [ch.qos.logback.access.spi.AccessEvent]
- *
- * @property timestamp The value of [getTimeStamp].
- * @property threadName The value of [getThreadName].
+ * @property source The Logback-access event source.
+ * @see ch.qos.logback.access.spi.AccessEvent
  */
-abstract class LogbackAccessEvent(
-        private val timestamp: Long = currentTimeMillis(),
-        private val threadName: String = currentThread().name,
-) : IAccessEvent, Serializable {
+class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccessEvent, Serializable {
 
-    /**
-     * The value of [getServerName].
-     */
-    private val lazyServerName: String? by lazy { evaluateServerName() }
+    override fun getRequest(): HttpServletRequest? = source.request
 
-    /**
-     * The value of [getElapsedTime].
-     */
-    private val lazyElapsedTime: Long? by lazy { evaluateElapsedTime() }
+    override fun getResponse(): HttpServletResponse? = source.response
 
-    override fun getRequest(): HttpServletRequest? = null
+    override fun getServerAdapter(): ServerAdapter? = source.serverAdapter
 
-    override fun getResponse(): HttpServletResponse? = null
+    override fun getTimeStamp(): Long = source.timeStamp
 
-    override fun getServerAdapter(): ServerAdapter? = null
+    override fun getElapsedTime(): Long = source.elapsedTime ?: SENTINEL.toLong()
 
-    override fun getTimeStamp(): Long = timestamp
+    override fun getElapsedSeconds(): Long = source.elapsedTime?.let { MILLISECONDS.toSeconds(it) } ?: SENTINEL.toLong()
 
-    override fun getThreadName(): String = threadName
+    override fun getThreadName(): String = source.threadName
 
     override fun setThreadName(value: String) = throw UnsupportedOperationException("Cannot change: $this")
 
-    /**
-     * Evaluates the value of [getServerName].
-     */
-    protected open fun evaluateServerName(): String? = request?.serverName
+    override fun getServerName(): String = source.serverName
 
-    override fun getServerName(): String = lazyServerName ?: NA
+    override fun getLocalPort(): Int = source.localPort
 
-    /**
-     * Evaluates the value of [getElapsedTime].
-     */
-    protected open fun evaluateElapsedTime(): Long? = null
+    override fun getRemoteAddr(): String = source.remoteAddr
 
-    override fun getElapsedTime(): Long = lazyElapsedTime ?: SENTINEL.toLong()
+    override fun getRemoteHost(): String = source.remoteHost
 
-    override fun getElapsedSeconds(): Long = lazyElapsedTime?.let { MILLISECONDS.toSeconds(it) } ?: SENTINEL.toLong()
+    override fun getRemoteUser(): String = source.remoteUser ?: NA
+
+    override fun getProtocol(): String = source.protocol
+
+    override fun getMethod(): String = source.method
+
+    override fun getRequestURI(): String = source.requestURI
+
+    override fun getQueryString(): String = source.queryString
+
+    override fun getRequestURL(): String = source.requestURL
+
+    override fun getRequestHeaderMap(): Map<String, String> = source.requestHeaderMap
+
+    override fun getRequestHeaderNames(): Enumeration<String> = enumeration(source.requestHeaderMap.keys)
+
+    override fun getRequestHeader(key: String): String = source.requestHeaderMap[key] ?: NA
+
+    override fun getCookie(key: String): String = source.cookieMap[key] ?: NA
+
+    override fun getRequestParameterMap(): Map<String, Array<String>> = source.requestParameterMap
+
+    override fun getRequestParameter(key: String): Array<String> = source.requestParameterMap[key] ?: arrayOf(NA)
+
+    override fun getAttribute(key: String): String = source.attributeMap[key] ?: NA
+
+    override fun getSessionID(): String = source.sessionID ?: NA
+
+    override fun getRequestContent(): String = source.requestContent ?: ""
+
+    override fun getStatusCode(): Int = source.statusCode
+
+    override fun getResponseHeaderMap(): Map<String, String> = source.responseHeaderMap
+
+    override fun getResponseHeaderNameList(): List<String> = source.responseHeaderMap.keys.toList()
+
+    override fun getResponseHeader(key: String): String = source.responseHeaderMap[key] ?: NA
+
+    override fun getContentLength(): Long = source.contentLength
+
+    override fun getResponseContent(): String = source.responseContent ?: ""
 
     override fun prepareForDeferredProcessing() {
-        lazyServerName
-        lazyElapsedTime
+        source = source.fix()
     }
 
     override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"

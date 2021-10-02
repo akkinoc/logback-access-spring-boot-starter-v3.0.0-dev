@@ -137,7 +137,7 @@ abstract class LogbackAccessEventSource {
     /**
      * The value of [LogbackAccessEvent.getContentLength].
      */
-    abstract val contentLength: Long?
+    abstract val contentLength: Long
 
     /**
      * The value of [LogbackAccessEvent.getResponseContent].
@@ -184,7 +184,7 @@ abstract class LogbackAccessEventSource {
             override val requestContent: String?,
             override val statusCode: Int,
             override val responseHeaderMap: Map<String, String>,
-            override val contentLength: Long?,
+            override val contentLength: Long,
             override val responseContent: String?,
     ) : LogbackAccessEventSource(), Serializable {
 
