@@ -106,7 +106,7 @@ abstract class LogbackAccessEventSource {
     /**
      * The value of [LogbackAccessEvent.getRequestParameterMap] and [LogbackAccessEvent.getRequestParameter].
      */
-    abstract val requestParameterMap: Map<String, Array<String>>
+    abstract val requestParameterMap: Map<String, List<String>>
 
     /**
      * The value of [LogbackAccessEvent.getAttribute].
@@ -178,7 +178,7 @@ abstract class LogbackAccessEventSource {
             override val requestURL: String,
             override val requestHeaderMap: Map<String, String>,
             override val cookieMap: Map<String, String>,
-            override val requestParameterMap: Map<String, Array<String>>,
+            override val requestParameterMap: Map<String, List<String>>,
             override val attributeMap: Map<String, String>,
             override val sessionID: String?,
             override val requestContent: String?,

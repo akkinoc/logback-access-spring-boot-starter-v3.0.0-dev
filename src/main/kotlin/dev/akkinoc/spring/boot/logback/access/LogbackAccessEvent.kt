@@ -19,71 +19,139 @@ import javax.servlet.http.HttpServletResponse
  */
 class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccessEvent, Serializable {
 
-    override fun getRequest(): HttpServletRequest? = source.request
+    override fun getRequest(): HttpServletRequest? {
+        return source.request
+    }
 
-    override fun getResponse(): HttpServletResponse? = source.response
+    override fun getResponse(): HttpServletResponse? {
+        return source.response
+    }
 
-    override fun getServerAdapter(): ServerAdapter? = source.serverAdapter
+    override fun getServerAdapter(): ServerAdapter? {
+        return source.serverAdapter
+    }
 
-    override fun getTimeStamp(): Long = source.timeStamp
+    override fun getTimeStamp(): Long {
+        return source.timeStamp
+    }
 
-    override fun getElapsedTime(): Long = source.elapsedTime ?: SENTINEL.toLong()
+    override fun getElapsedTime(): Long {
+        return source.elapsedTime ?: SENTINEL.toLong()
+    }
 
-    override fun getElapsedSeconds(): Long = source.elapsedTime?.let { MILLISECONDS.toSeconds(it) } ?: SENTINEL.toLong()
+    override fun getElapsedSeconds(): Long {
+        val elapsedTime = source.elapsedTime ?: return SENTINEL.toLong()
+        return MILLISECONDS.toSeconds(elapsedTime)
+    }
 
-    override fun getThreadName(): String = source.threadName
+    override fun getThreadName(): String {
+        return source.threadName
+    }
 
-    override fun setThreadName(value: String) = throw UnsupportedOperationException("Cannot change: $this")
+    override fun setThreadName(value: String) {
+        throw UnsupportedOperationException("Cannot change: $this")
+    }
 
-    override fun getServerName(): String = source.serverName
+    override fun getServerName(): String {
+        return source.serverName
+    }
 
-    override fun getLocalPort(): Int = source.localPort
+    override fun getLocalPort(): Int {
+        return source.localPort
+    }
 
-    override fun getRemoteAddr(): String = source.remoteAddr
+    override fun getRemoteAddr(): String {
+        return source.remoteAddr
+    }
 
-    override fun getRemoteHost(): String = source.remoteHost
+    override fun getRemoteHost(): String {
+        return source.remoteHost
+    }
 
-    override fun getRemoteUser(): String = source.remoteUser ?: NA
+    override fun getRemoteUser(): String {
+        return source.remoteUser ?: NA
+    }
 
-    override fun getProtocol(): String = source.protocol
+    override fun getProtocol(): String {
+        return source.protocol
+    }
 
-    override fun getMethod(): String = source.method
+    override fun getMethod(): String {
+        return source.method
+    }
 
-    override fun getRequestURI(): String = source.requestURI
+    override fun getRequestURI(): String {
+        return source.requestURI
+    }
 
-    override fun getQueryString(): String = source.queryString
+    override fun getQueryString(): String {
+        return source.queryString
+    }
 
-    override fun getRequestURL(): String = source.requestURL
+    override fun getRequestURL(): String {
+        return source.requestURL
+    }
 
-    override fun getRequestHeaderMap(): Map<String, String> = source.requestHeaderMap
+    override fun getRequestHeaderMap(): Map<String, String> {
+        return source.requestHeaderMap
+    }
 
-    override fun getRequestHeaderNames(): Enumeration<String> = enumeration(source.requestHeaderMap.keys)
+    override fun getRequestHeaderNames(): Enumeration<String> {
+        return enumeration(source.requestHeaderMap.keys)
+    }
 
-    override fun getRequestHeader(key: String): String = source.requestHeaderMap[key] ?: NA
+    override fun getRequestHeader(key: String): String {
+        return source.requestHeaderMap[key] ?: NA
+    }
 
-    override fun getCookie(key: String): String = source.cookieMap[key] ?: NA
+    override fun getCookie(key: String): String {
+        return source.cookieMap[key] ?: NA
+    }
 
-    override fun getRequestParameterMap(): Map<String, Array<String>> = source.requestParameterMap
+    override fun getRequestParameterMap(): Map<String, Array<String>> {
+        return source.requestParameterMap.mapValues { it.value.toTypedArray() }
+    }
 
-    override fun getRequestParameter(key: String): Array<String> = source.requestParameterMap[key] ?: arrayOf(NA)
+    override fun getRequestParameter(key: String): Array<String> {
+        val value = source.requestParameterMap[key] ?: return arrayOf(NA)
+        return value.toTypedArray()
+    }
 
-    override fun getAttribute(key: String): String = source.attributeMap[key] ?: NA
+    override fun getAttribute(key: String): String {
+        return source.attributeMap[key] ?: NA
+    }
 
-    override fun getSessionID(): String = source.sessionID ?: NA
+    override fun getSessionID(): String {
+        return source.sessionID ?: NA
+    }
 
-    override fun getRequestContent(): String = source.requestContent ?: ""
+    override fun getRequestContent(): String {
+        return source.requestContent ?: ""
+    }
 
-    override fun getStatusCode(): Int = source.statusCode
+    override fun getStatusCode(): Int {
+        return source.statusCode
+    }
 
-    override fun getResponseHeaderMap(): Map<String, String> = source.responseHeaderMap
+    override fun getResponseHeaderMap(): Map<String, String> {
+        return source.responseHeaderMap
+    }
 
-    override fun getResponseHeaderNameList(): List<String> = source.responseHeaderMap.keys.toList()
+    override fun getResponseHeaderNameList(): List<String> {
+        return source.responseHeaderMap.keys.toList()
+    }
 
-    override fun getResponseHeader(key: String): String = source.responseHeaderMap[key] ?: NA
+    override fun getResponseHeader(key: String): String {
+        return source.responseHeaderMap[key] ?: NA
+    }
 
-    override fun getContentLength(): Long = source.contentLength
+    override fun getContentLength(): Long {
+        return source.contentLength
+    }
 
-    override fun getResponseContent(): String = source.responseContent ?: ""
+    override fun getResponseContent(): String {
+        return source.responseContent ?: ""
+    }
 
     override fun prepareForDeferredProcessing() {
         source = source.fix()
