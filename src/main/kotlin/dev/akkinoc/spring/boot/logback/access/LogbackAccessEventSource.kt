@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse
 
 /**
  * The Logback-access event source.
+ *
+ * @see LogbackAccessEvent
  */
 abstract class LogbackAccessEventSource {
 
