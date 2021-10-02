@@ -34,8 +34,8 @@ class LogbackAccessTomcatValve(private val logbackAccessContext: LogbackAccessCo
     }
 
     override fun log(request: Request, response: Response, time: Long) {
-        val event = LogbackAccessTomcatEvent(request, response)
-        logbackAccessContext.emit(event)
+        val source = LogbackAccessTomcatEventSource(request, response)
+        logbackAccessContext.emit(source)
     }
 
 }

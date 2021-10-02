@@ -34,7 +34,9 @@ import javax.servlet.http.HttpServletResponse
  * @see io.undertow.server.handlers.accesslog.AccessLogHandler
  * @see io.undertow.attribute.ExchangeAttribute
  */
-class LogbackAccessUndertowEventSource(private val exchange: HttpServerExchange) : LogbackAccessEventSource() {
+class LogbackAccessUndertowEventSource(
+        private val exchange: HttpServerExchange,
+) : LogbackAccessEventSource() {
 
     override val request: HttpServletRequest? = null
 
