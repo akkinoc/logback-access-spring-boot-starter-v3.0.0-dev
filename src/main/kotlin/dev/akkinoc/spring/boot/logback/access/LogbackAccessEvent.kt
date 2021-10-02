@@ -40,8 +40,8 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     }
 
     override fun getElapsedSeconds(): Long {
-        val elapsedTime = source.elapsedTime ?: return SENTINEL.toLong()
-        return MILLISECONDS.toSeconds(elapsedTime)
+        val value = source.elapsedTime ?: return SENTINEL.toLong()
+        return MILLISECONDS.toSeconds(value)
     }
 
     override fun getThreadName(): String {
