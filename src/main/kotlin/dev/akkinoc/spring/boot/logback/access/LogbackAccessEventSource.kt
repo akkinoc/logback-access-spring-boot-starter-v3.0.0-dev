@@ -155,67 +155,65 @@ abstract class LogbackAccessEventSource {
 
     /**
      * The serializable Logback-access event source with fixed evaluated values.
+     *
+     * @param source The Logback-access event source.
      */
-    private class Fixed(
-            @Transient
-            override val request: HttpServletRequest?,
-            @Transient
-            override val response: HttpServletResponse?,
-            @Transient
-            override val serverAdapter: ServerAdapter?,
-            override val timeStamp: Long,
-            override val elapsedTime: Long?,
-            override val threadName: String,
-            override val serverName: String,
-            override val localPort: Int,
-            override val remoteAddr: String,
-            override val remoteHost: String,
-            override val remoteUser: String?,
-            override val protocol: String,
-            override val method: String,
-            override val requestURI: String,
-            override val queryString: String,
-            override val requestURL: String,
-            override val requestHeaderMap: Map<String, String>,
-            override val cookieMap: Map<String, String>,
-            override val requestParameterMap: Map<String, List<String>>,
-            override val attributeMap: Map<String, String>,
-            override val sessionID: String?,
-            override val requestContent: String?,
-            override val statusCode: Int,
-            override val responseHeaderMap: Map<String, String>,
-            override val contentLength: Long,
-            override val responseContent: String?,
-    ) : LogbackAccessEventSource(), Serializable {
+    private class Fixed(source: LogbackAccessEventSource) : LogbackAccessEventSource(), Serializable {
 
-        constructor(source: LogbackAccessEventSource) : this(
-                request = source.request,
-                response = source.response,
-                serverAdapter = source.serverAdapter,
-                timeStamp = source.timeStamp,
-                elapsedTime = source.elapsedTime,
-                threadName = source.threadName,
-                serverName = source.serverName,
-                localPort = source.localPort,
-                remoteAddr = source.remoteAddr,
-                remoteHost = source.remoteHost,
-                remoteUser = source.remoteUser,
-                protocol = source.protocol,
-                method = source.method,
-                requestURI = source.requestURI,
-                queryString = source.queryString,
-                requestURL = source.requestURL,
-                requestHeaderMap = source.requestHeaderMap,
-                cookieMap = source.cookieMap,
-                requestParameterMap = source.requestParameterMap,
-                attributeMap = source.attributeMap,
-                sessionID = source.sessionID,
-                requestContent = source.requestContent,
-                statusCode = source.statusCode,
-                responseHeaderMap = source.responseHeaderMap,
-                contentLength = source.contentLength,
-                responseContent = source.responseContent,
-        )
+        @Transient
+        override val request: HttpServletRequest? = source.request
+
+        @Transient
+        override val response: HttpServletResponse? = source.response
+
+        @Transient
+        override val serverAdapter: ServerAdapter? = source.serverAdapter
+
+        override val timeStamp: Long = source.timeStamp
+
+        override val elapsedTime: Long? = source.elapsedTime
+
+        override val threadName: String = source.threadName
+
+        override val serverName: String = source.serverName
+
+        override val localPort: Int = source.localPort
+
+        override val remoteAddr: String = source.remoteAddr
+
+        override val remoteHost: String = source.remoteHost
+
+        override val remoteUser: String? = source.remoteUser
+
+        override val protocol: String = source.protocol
+
+        override val method: String = source.method
+
+        override val requestURI: String = source.requestURI
+
+        override val queryString: String = source.queryString
+
+        override val requestURL: String = source.requestURL
+
+        override val requestHeaderMap: Map<String, String> = source.requestHeaderMap
+
+        override val cookieMap: Map<String, String> = source.cookieMap
+
+        override val requestParameterMap: Map<String, List<String>> = source.requestParameterMap
+
+        override val attributeMap: Map<String, String> = source.attributeMap
+
+        override val sessionID: String? = source.sessionID
+
+        override val requestContent: String? = source.requestContent
+
+        override val statusCode: Int = source.statusCode
+
+        override val responseHeaderMap: Map<String, String> = source.responseHeaderMap
+
+        override val contentLength: Long = source.contentLength
+
+        override val responseContent: String? = source.responseContent
 
         override fun fix(): LogbackAccessEventSource = this
 
