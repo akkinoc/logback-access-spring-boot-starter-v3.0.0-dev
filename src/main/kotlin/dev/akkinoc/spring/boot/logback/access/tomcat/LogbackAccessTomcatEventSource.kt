@@ -89,7 +89,7 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val sessionID: String? by lazy {
-        delegate.sessionID
+        null
     }
 
     override val requestContent: String? by lazy {
