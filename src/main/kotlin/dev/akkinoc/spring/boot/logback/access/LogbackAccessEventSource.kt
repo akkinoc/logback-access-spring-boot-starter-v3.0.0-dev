@@ -1,11 +1,29 @@
 package dev.akkinoc.spring.boot.logback.access
 
+import ch.qos.logback.access.spi.ServerAdapter
 import java.io.Serializable
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 /**
  * The Logback-access event source.
  */
 abstract class LogbackAccessEventSource {
+
+    /**
+     * The value of [LogbackAccessEvent.getRequest].
+     */
+    abstract val request: HttpServletRequest?
+
+    /**
+     * The value of [LogbackAccessEvent.getResponse].
+     */
+    abstract val response: HttpServletResponse?
+
+    /**
+     * The value of [LogbackAccessEvent.getServerAdapter].
+     */
+    abstract val serverAdapter: ServerAdapter?
 
     /**
      * The value of [LogbackAccessEvent.getTimeStamp].
@@ -70,8 +88,7 @@ abstract class LogbackAccessEventSource {
     /**
      * The value of [LogbackAccessEvent.getRequestURL].
      */
-    open val requestURL: String
-        get() = "$method $requestURI$queryString $protocol"
+    abstract val requestURL: String
 
     /**
      * The value of [LogbackAccessEvent.getRequestHeaderMap],
@@ -131,39 +148,19 @@ abstract class LogbackAccessEventSource {
      * @return A serializable Logback-access event source with fixed evaluated values.
      */
     open fun fix(): LogbackAccessEventSource {
-        return Fixed(
-                timeStamp = timeStamp,
-                elapsedTime = elapsedTime,
-                threadName = threadName,
-                serverName = serverName,
-                localPort = localPort,
-                remoteAddr = remoteAddr,
-                remoteHost = remoteHost,
-                remoteUser = remoteUser,
-                protocol = protocol,
-                method = method,
-                requestURI = requestURI,
-                queryString = queryString,
-                requestURL = requestURL,
-                requestHeaderMap = requestHeaderMap,
-                cookieMap = cookieMap,
-                requestParameterMap = requestParameterMap,
-                attributeMap = attributeMap,
-                sessionID = sessionID,
-                requestContent = requestContent,
-                statusCode = statusCode,
-                responseHeaderMap = responseHeaderMap,
-                contentLength = contentLength,
-                responseContent = responseContent,
-        )
+        return Fixed(this)
     }
-
-    override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"
 
     /**
      * The serializable Logback-access event source with fixed evaluated values.
      */
-    private data class Fixed(
+    private class Fixed(
+            @Transient
+            override val request: HttpServletRequest?,
+            @Transient
+            override val response: HttpServletResponse?,
+            @Transient
+            override val serverAdapter: ServerAdapter?,
             override val timeStamp: Long,
             override val elapsedTime: Long?,
             override val threadName: String,
@@ -188,6 +185,35 @@ abstract class LogbackAccessEventSource {
             override val contentLength: Long?,
             override val responseContent: String?,
     ) : LogbackAccessEventSource(), Serializable {
+
+        constructor(source: LogbackAccessEventSource) : this(
+                request = source.request,
+                response = source.response,
+                serverAdapter = source.serverAdapter,
+                timeStamp = source.timeStamp,
+                elapsedTime = source.elapsedTime,
+                threadName = source.threadName,
+                serverName = source.serverName,
+                localPort = source.localPort,
+                remoteAddr = source.remoteAddr,
+                remoteHost = source.remoteHost,
+                remoteUser = source.remoteUser,
+                protocol = source.protocol,
+                method = source.method,
+                requestURI = source.requestURI,
+                queryString = source.queryString,
+                requestURL = source.requestURL,
+                requestHeaderMap = source.requestHeaderMap,
+                cookieMap = source.cookieMap,
+                requestParameterMap = source.requestParameterMap,
+                attributeMap = source.attributeMap,
+                sessionID = source.sessionID,
+                requestContent = source.requestContent,
+                statusCode = source.statusCode,
+                responseHeaderMap = source.responseHeaderMap,
+                contentLength = source.contentLength,
+                responseContent = source.responseContent,
+        )
 
         override fun fix(): LogbackAccessEventSource = this
 
