@@ -13,7 +13,7 @@ abstract class LogbackAccessEventSource {
     abstract val timeStamp: Long
 
     /**
-     * The value of [LogbackAccessEvent.getElapsedTime].
+     * The value of [LogbackAccessEvent.getElapsedTime] and [LogbackAccessEvent.getElapsedSeconds].
      */
     abstract val elapsedTime: Long?
 
@@ -66,6 +66,12 @@ abstract class LogbackAccessEventSource {
      * The value of [LogbackAccessEvent.getQueryString].
      */
     abstract val queryString: String
+
+    /**
+     * The value of [LogbackAccessEvent.getRequestURL].
+     */
+    open val requestURL: String
+        get() = "$method $requestURI$queryString $protocol"
 
     /**
      * The value of [LogbackAccessEvent.getRequestHeaderMap].
