@@ -13,7 +13,9 @@ import org.eclipse.jetty.server.Response
  * @see org.eclipse.jetty.server.CustomRequestLog
  * @see ch.qos.logback.access.jetty.RequestLogImpl
  */
-class LogbackAccessJettyRequestLog(private val logbackAccessContext: LogbackAccessContext) : RequestLog {
+class LogbackAccessJettyRequestLog(
+        private val logbackAccessContext: LogbackAccessContext,
+) : RequestLog {
 
     override fun log(request: Request, response: Response) {
         val source = LogbackAccessJettyEventSource(request, response)

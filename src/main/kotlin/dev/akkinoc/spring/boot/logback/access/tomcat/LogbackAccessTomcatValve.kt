@@ -15,7 +15,9 @@ import org.apache.catalina.valves.ValveBase
  * @see org.apache.catalina.valves.AccessLogValve
  * @see ch.qos.logback.access.tomcat.LogbackValve
  */
-class LogbackAccessTomcatValve(private val logbackAccessContext: LogbackAccessContext) : ValveBase(true), AccessLog {
+class LogbackAccessTomcatValve(
+        private val logbackAccessContext: LogbackAccessContext,
+) : ValveBase(true), AccessLog {
 
     /**
      * Whether to enable request attributes.
