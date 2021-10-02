@@ -1,8 +1,8 @@
 package dev.akkinoc.spring.boot.logback.access
 
 import ch.qos.logback.access.spi.AccessContext
-import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.core.spi.FilterReply.DENY
+import ch.qos.logback.core.status.Status
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties.Companion.DEFAULT_CONFIGS
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties.Companion.FALLBACK_CONFIG
 import dev.akkinoc.spring.boot.logback.access.joran.LogbackAccessJoranConfigurator
@@ -35,12 +35,22 @@ class LogbackAccessContext(
                         .map { it to resourceLoader.getResource(it) }
                         .firstOrNull { (_, resource) -> resource.exists() }
                 ?: FALLBACK_CONFIG.let { it to resourceLoader.getResource(it) }
+        raw.name = name
+        raw.statusManager.add(::log)
         val configurator = LogbackAccessJoranConfigurator(environment)
         configurator.context = raw
         configurator.doConfigure(resource.url)
-        raw.name = name
         raw.start()
         log.debug("Initialized the {}: {}", LogbackAccessContext::class.simpleName, this)
+    }
+
+    /**
+     * Logs that the Logback-access context status has been added.
+     *
+     * @param status The Logback-access context status.
+     */
+    private fun log(status: Status) {
+        log.debug("Added the {}: {} @{}", Status::class.simpleName, status, this)
     }
 
     /**
@@ -50,7 +60,7 @@ class LogbackAccessContext(
      */
     fun emit(event: LogbackAccessEvent) {
         val filterReply = raw.getFilterChainDecision(event)
-        log.debug("Emitting the {}: {} {} @{}", IAccessEvent::class.simpleName, filterReply, event, this)
+        log.debug("Emitting the {}: {} {} @{}", LogbackAccessEvent::class.simpleName, filterReply, event, this)
         if (filterReply != DENY) raw.callAppenders(event)
     }
 
