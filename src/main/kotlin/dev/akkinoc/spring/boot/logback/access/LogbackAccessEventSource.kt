@@ -157,6 +157,8 @@ abstract class LogbackAccessEventSource {
         )
     }
 
+    override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"
+
     /**
      * The serializable Logback-access event source with fixed evaluated values.
      */
