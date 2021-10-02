@@ -108,6 +108,11 @@ abstract class LogbackAccessEventSource {
     abstract val responseHeaderMap: Map<String, String>
 
     /**
+     * The value of [LogbackAccessEvent.getContentLength].
+     */
+    abstract val contentLength: Long?
+
+    /**
      * Returns a serializable Logback-access event source with fixed evaluated values.
      *
      * @return A serializable Logback-access event source with fixed evaluated values.
@@ -134,6 +139,7 @@ abstract class LogbackAccessEventSource {
                 requestContent = requestContent,
                 statusCode = statusCode,
                 responseHeaderMap = responseHeaderMap,
+                contentLength = contentLength,
         )
     }
 
@@ -161,6 +167,7 @@ abstract class LogbackAccessEventSource {
             override val requestContent: String?,
             override val statusCode: Int,
             override val responseHeaderMap: Map<String, String>,
+            override val contentLength: Long?,
     ) : LogbackAccessEventSource(), Serializable {
 
         override fun fix(): LogbackAccessEventSource = this
