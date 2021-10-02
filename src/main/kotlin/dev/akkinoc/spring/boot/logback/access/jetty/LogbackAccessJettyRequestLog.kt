@@ -8,12 +8,9 @@ import org.eclipse.jetty.server.Response
 /**
  * The Jetty [RequestLog] to emit Logback-access events.
  *
- * This class was implemented with reference to:
- *
- * * [org.eclipse.jetty.server.CustomRequestLog]
- * * [ch.qos.logback.access.jetty.RequestLogImpl]
- *
  * @property logbackAccessContext The Logback-access context.
+ * @see org.eclipse.jetty.server.CustomRequestLog
+ * @see ch.qos.logback.access.jetty.RequestLogImpl
  */
 class LogbackAccessJettyRequestLog(private val logbackAccessContext: LogbackAccessContext) : RequestLog {
 

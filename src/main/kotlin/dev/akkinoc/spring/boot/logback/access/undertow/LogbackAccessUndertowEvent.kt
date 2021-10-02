@@ -33,14 +33,11 @@ import javax.servlet.http.HttpServletResponse
 /**
  * The Logback-access event for the Undertow web server.
  *
- * This class was implemented with reference to:
- *
- * * [ch.qos.logback.access.spi.AccessEvent]
- * * [io.undertow.servlet.spec.HttpServletRequestImpl]
- * * [io.undertow.server.handlers.accesslog.AccessLogHandler]
- * * [io.undertow.attribute.ExchangeAttribute] subclasses
- *
  * @property exchange The request/response exchange.
+ * @see ch.qos.logback.access.spi.AccessEvent
+ * @see io.undertow.servlet.spec.HttpServletRequestImpl
+ * @see io.undertow.server.handlers.accesslog.AccessLogHandler
+ * @see io.undertow.attribute.ExchangeAttribute
  */
 class LogbackAccessUndertowEvent(private val exchange: HttpServerExchange) : IAccessEvent {
 

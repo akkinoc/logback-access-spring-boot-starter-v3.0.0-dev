@@ -6,10 +6,7 @@ import org.springframework.core.env.Environment
 /**
  * The [JoranConfigurator] that supports additional rules.
  *
- * This class was implemented with reference to:
- *
- * * [org.springframework.boot.logging.logback.SpringBootJoranConfigurator]
- *
  * @property environment The environment.
+ * @see org.springframework.boot.logging.logback.SpringBootJoranConfigurator
  */
 class LogbackAccessJoranConfigurator(private val environment: Environment) : JoranConfigurator()

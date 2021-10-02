@@ -8,12 +8,9 @@ import io.undertow.server.HttpServerExchange
 /**
  * The Undertow [HttpHandler] to emit Logback-access events.
  *
- * This class was implemented with reference to:
- *
- * * [io.undertow.server.handlers.accesslog.AccessLogHandler]
- *
  * @property logbackAccessContext The Logback-access context.
  * @property next The next [HttpHandler].
+ * @see io.undertow.server.handlers.accesslog.AccessLogHandler
  */
 class LogbackAccessUndertowHttpHandler(
         private val logbackAccessContext: LogbackAccessContext,

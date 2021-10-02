@@ -10,12 +10,9 @@ import org.apache.catalina.valves.ValveBase
 /**
  * The Tomcat [Valve] to emit Logback-access events.
  *
- * This class was implemented with reference to:
- *
- * * [org.apache.catalina.valves.AccessLogValve]
- * * [ch.qos.logback.access.tomcat.LogbackValve]
- *
  * @property logbackAccessContext The Logback-access context.
+ * @see org.apache.catalina.valves.AccessLogValve
+ * @see ch.qos.logback.access.tomcat.LogbackValve
  */
 class LogbackAccessTomcatValve(private val logbackAccessContext: LogbackAccessContext) : ValveBase(true), AccessLog {
 

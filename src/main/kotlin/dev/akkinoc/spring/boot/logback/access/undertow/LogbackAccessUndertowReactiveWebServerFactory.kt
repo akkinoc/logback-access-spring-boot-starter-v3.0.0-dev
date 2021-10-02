@@ -17,14 +17,11 @@ import org.springframework.util.ReflectionUtils.makeAccessible
 /**
  * The [ReactiveWebServerFactory] for the Undertow reactive web server.
  *
- * This class was implemented with reference to:
- *
- * * [org.springframework.boot.autoconfigure.web.embedded.UndertowWebServerFactoryCustomizer]
- * * [org.springframework.boot.web.embedded.undertow.UndertowReactiveWebServerFactory]
- * * [org.springframework.boot.web.embedded.undertow.UndertowWebServerFactoryDelegate]
- * * [org.springframework.boot.web.embedded.undertow.AccessLogHttpHandlerFactory]
- *
  * @property logbackAccessContext The Logback-access context.
+ * @see org.springframework.boot.autoconfigure.web.embedded.UndertowWebServerFactoryCustomizer
+ * @see org.springframework.boot.web.embedded.undertow.UndertowReactiveWebServerFactory
+ * @see org.springframework.boot.web.embedded.undertow.UndertowWebServerFactoryDelegate
+ * @see org.springframework.boot.web.embedded.undertow.AccessLogHttpHandlerFactory
  */
 class LogbackAccessUndertowReactiveWebServerFactory(
         private val logbackAccessContext: LogbackAccessContext,

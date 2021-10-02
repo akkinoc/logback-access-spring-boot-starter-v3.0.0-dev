@@ -11,11 +11,8 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer
 /**
  * The [WebServerFactoryCustomizer] for the Jetty web server.
  *
- * This class was implemented with reference to:
- *
- * * [org.springframework.boot.autoconfigure.web.embedded.JettyWebServerFactoryCustomizer]
- *
  * @property logbackAccessContext The Logback-access context.
+ * @see org.springframework.boot.autoconfigure.web.embedded.JettyWebServerFactoryCustomizer
  */
 class LogbackAccessJettyWebServerFactoryCustomizer(
         private val logbackAccessContext: LogbackAccessContext,
