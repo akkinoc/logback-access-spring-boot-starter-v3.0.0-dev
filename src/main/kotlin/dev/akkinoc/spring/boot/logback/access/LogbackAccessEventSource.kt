@@ -74,7 +74,8 @@ abstract class LogbackAccessEventSource {
         get() = "$method $requestURI$queryString $protocol"
 
     /**
-     * The value of [LogbackAccessEvent.getRequestHeaderMap].
+     * The value of [LogbackAccessEvent.getRequestHeaderMap],
+     * [LogbackAccessEvent.getRequestHeaderNames] and [LogbackAccessEvent.getRequestHeader].
      */
     abstract val requestHeaderMap: Map<String, String>
 
@@ -84,7 +85,7 @@ abstract class LogbackAccessEventSource {
     abstract val cookieMap: Map<String, String>
 
     /**
-     * The value of [LogbackAccessEvent.getRequestParameterMap].
+     * The value of [LogbackAccessEvent.getRequestParameterMap] and [LogbackAccessEvent.getRequestParameter].
      */
     abstract val requestParameterMap: Map<String, Array<String>>
 
@@ -109,7 +110,8 @@ abstract class LogbackAccessEventSource {
     abstract val statusCode: Int
 
     /**
-     * The value of [LogbackAccessEvent.getResponseHeaderMap].
+     * The value of [LogbackAccessEvent.getResponseHeaderMap],
+     * [LogbackAccessEvent.getResponseHeaderNameList] and [LogbackAccessEvent.getResponseHeader].
      */
     abstract val responseHeaderMap: Map<String, String>
 
