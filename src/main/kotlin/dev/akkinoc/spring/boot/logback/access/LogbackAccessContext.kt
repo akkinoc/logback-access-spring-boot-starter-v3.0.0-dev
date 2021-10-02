@@ -45,9 +45,9 @@ class LogbackAccessContext(
     }
 
     /**
-     * Logs that the Logback-access context status has been added.
+     * Logs that the Logback-access status has been added.
      *
-     * @param status The Logback-access context status.
+     * @param status The Logback-access status.
      */
     private fun log(status: Status) {
         log.debug("Added the {}: {} @{}", Status::class.simpleName, status, this)
