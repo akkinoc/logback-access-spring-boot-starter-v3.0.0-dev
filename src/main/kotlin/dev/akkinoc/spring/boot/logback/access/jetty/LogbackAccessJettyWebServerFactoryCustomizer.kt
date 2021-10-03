@@ -38,7 +38,12 @@ class LogbackAccessJettyWebServerFactoryCustomizer(
             requestLog = LogbackAccessJettyRequestLog(logbackAccessContext)
         }
         server.insertHandler(handler)
-        log.debug("Customized the {}: {} @{}", Server::class.simpleName, server, logbackAccessContext)
+        log.debug(
+                "Customized the {}: {} @{}",
+                Server::class.simpleName,
+                server,
+                logbackAccessContext,
+        )
     }
 
     companion object {
