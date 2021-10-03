@@ -10,6 +10,7 @@ import dev.akkinoc.spring.boot.logback.access.test.type.TomcatServletWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
@@ -19,6 +20,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.TestPropertySource
+import java.lang.System.currentTimeMillis
 
 /**
  * Tests the appended Logback-access events in the case where the configuration is the default.
@@ -29,12 +31,15 @@ sealed class BasicEventsTest {
     @Test
     @ExtendWith(EventsCaptureExtension::class)
     fun `Appends a Logback-access event`(@Autowired rest: TestRestTemplate, capture: EventsCapture) {
+        val started = currentTimeMillis()
         val response = rest.getForEntity<String>("/mock/text")
         response.statusCode.shouldBe(HttpStatus.OK)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        val finished = currentTimeMillis()
         event.request.shouldBeNull()
         event.response.shouldBeNull()
         event.serverAdapter.shouldBeNull()
+        event.timeStamp.shouldBeBetween(started, finished)
         event.requestURI.shouldBe("/mock/text")
     }
 
