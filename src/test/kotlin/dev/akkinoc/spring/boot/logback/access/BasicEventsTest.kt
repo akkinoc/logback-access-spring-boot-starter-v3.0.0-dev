@@ -61,6 +61,7 @@ sealed class BasicEventsTest {
         event.method.shouldBe("GET")
         event.requestURI.shouldBe("/mock/text")
         event.queryString.shouldBeEmpty()
+        event.requestURL.shouldBe("GET /mock/text HTTP/1.1")
     }
 
 }

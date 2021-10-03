@@ -5,7 +5,6 @@ import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import io.undertow.attribute.BytesSentAttribute
 import io.undertow.attribute.ResponseCodeAttribute
 import io.undertow.server.HttpServerExchange
-import io.undertow.servlet.attribute.ServletRequestLineAttribute
 import io.undertow.servlet.attribute.ServletSessionIdAttribute
 import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.String.CASE_INSENSITIVE_ORDER
@@ -95,7 +94,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestURL: String by lazy {
-        ServletRequestLineAttribute.INSTANCE.readAttribute(exchange)
+        "$method $requestURI$queryString $protocol"
     }
 
     override val requestHeaderMap: Map<String, String> by lazy {
