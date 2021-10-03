@@ -40,6 +40,7 @@ sealed class BasicEventsTest {
         event.response.shouldBeNull()
         event.serverAdapter.shouldBeNull()
         event.timeStamp.shouldBeBetween(started, finished)
+        event.elapsedTime.shouldBeBetween(0, finished - started)
         event.requestURI.shouldBe("/mock/text")
     }
 
