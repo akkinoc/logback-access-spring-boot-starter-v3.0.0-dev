@@ -98,19 +98,19 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestHeaderMap: Map<String, String> by lazy {
-        val map = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
-        exchange.requestHeaders.associateTo(map) { it.headerName.toString() to it.first }
-        unmodifiableMap(map)
+        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        exchange.requestHeaders.associateTo(headers) { it.headerName.toString() to it.first }
+        unmodifiableMap(headers)
     }
 
     override val cookieMap: Map<String, String> by lazy {
-        val map = exchange.requestCookies().associate { it.name to it.value }
-        unmodifiableMap(map)
+        val cookies = exchange.requestCookies().associate { it.name to it.value }
+        unmodifiableMap(cookies)
     }
 
     override val requestParameterMap: Map<String, List<String>> by lazy {
-        val map = exchange.queryParameters.mapValues { it.value.toList() }
-        unmodifiableMap(map)
+        val parameters = exchange.queryParameters.mapValues { it.value.toList() }
+        unmodifiableMap(parameters)
     }
 
     override val attributeMap: Map<String, String> by lazy {
@@ -130,9 +130,9 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val responseHeaderMap: Map<String, String> by lazy {
-        val map = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
-        exchange.responseHeaders.associateTo(map) { it.headerName.toString() to it.first }
-        unmodifiableMap(map)
+        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        exchange.responseHeaders.associateTo(headers) { it.headerName.toString() to it.first }
+        unmodifiableMap(headers)
     }
 
     override val contentLength: Long by lazy {
