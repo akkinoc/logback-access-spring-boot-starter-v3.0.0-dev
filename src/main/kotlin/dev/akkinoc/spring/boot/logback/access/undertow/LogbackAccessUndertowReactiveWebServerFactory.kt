@@ -41,7 +41,12 @@ class LogbackAccessUndertowReactiveWebServerFactory(
             val autoStart = server.extractField<Boolean>("autoStart")
             UndertowWebServer(builder, httpHandlerFactories, autoStart)
         }
-        log.debug("Customized the {}: {} @{}", WebServer::class.simpleName, server, logbackAccessContext)
+        log.debug(
+                "Customized the {}: {} @{}",
+                WebServer::class.simpleName,
+                server,
+                logbackAccessContext,
+        )
         return server
     }
 
