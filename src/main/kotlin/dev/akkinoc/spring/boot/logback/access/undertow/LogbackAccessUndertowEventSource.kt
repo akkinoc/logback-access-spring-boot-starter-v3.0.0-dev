@@ -4,7 +4,6 @@ import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import io.undertow.attribute.BytesSentAttribute
 import io.undertow.attribute.LocalPortAttribute
-import io.undertow.attribute.LocalServerNameAttribute
 import io.undertow.attribute.QueryStringAttribute
 import io.undertow.attribute.RemoteHostAttribute
 import io.undertow.attribute.RemoteIPAttribute
@@ -58,7 +57,7 @@ class LogbackAccessUndertowEventSource(
     override val threadName: String = currentThread().name
 
     override val serverName: String by lazy {
-        LocalServerNameAttribute.INSTANCE.readAttribute(exchange)
+        exchange.hostName
     }
 
     override val localPort: Int by lazy {

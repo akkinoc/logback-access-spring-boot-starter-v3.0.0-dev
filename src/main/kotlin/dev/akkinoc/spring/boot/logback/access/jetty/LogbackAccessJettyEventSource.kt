@@ -29,14 +29,14 @@ class LogbackAccessJettyEventSource(
 
     override val threadName: String = currentThread().name
 
+    override val serverName: String by lazy {
+        request.serverName
+    }
+
     /**
      * TODO: 後で使わなくする
      */
     private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
-
-    override val serverName: String by lazy {
-        delegate.serverName
-    }
 
     override val localPort: Int by lazy {
         delegate.localPort
