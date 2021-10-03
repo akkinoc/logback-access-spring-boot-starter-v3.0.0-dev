@@ -74,7 +74,8 @@ class TestContextClassLoaderCustomizerFactory : ContextCustomizerFactory {
      * @return The additional class path.
      */
     private fun getAdditionalClassPath(testClass: Class<*>): URL? {
-        val resource = ClassPathResource(convertClassNameToResourcePath(testClass.name) + "/")
+        val path = convertClassNameToResourcePath(testClass.name) + "/"
+        val resource = ClassPathResource(path)
         return resource.takeIf { it.exists() }?.url
     }
 
