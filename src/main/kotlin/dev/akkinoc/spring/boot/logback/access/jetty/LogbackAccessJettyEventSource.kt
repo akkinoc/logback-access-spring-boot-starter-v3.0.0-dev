@@ -49,14 +49,14 @@ class LogbackAccessJettyEventSource(
         request.remoteUser
     }
 
+    override val protocol: String by lazy {
+        request.protocol
+    }
+
     /**
      * TODO: 後で使わなくする
      */
     private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
-
-    override val protocol: String by lazy {
-        delegate.protocol
-    }
 
     override val method: String by lazy {
         delegate.method

@@ -5,7 +5,6 @@ import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import io.undertow.attribute.BytesSentAttribute
 import io.undertow.attribute.QueryStringAttribute
 import io.undertow.attribute.RequestMethodAttribute
-import io.undertow.attribute.RequestProtocolAttribute
 import io.undertow.attribute.ResponseCodeAttribute
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.attribute.ServletRequestLineAttribute
@@ -82,7 +81,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val protocol: String by lazy {
-        RequestProtocolAttribute.INSTANCE.readAttribute(exchange)
+        exchange.protocol.toString()
     }
 
     override val method: String by lazy {
@@ -103,7 +102,7 @@ class LogbackAccessUndertowEventSource(
 
     override val requestHeaderMap: Map<String, String> by lazy {
         val map = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
-        exchange.requestHeaders.associateTo(map) { "${it.headerName}" to it.first }
+        exchange.requestHeaders.associateTo(map) { it.headerName.toString() to it.first }
         unmodifiableMap(map)
     }
 
@@ -135,7 +134,7 @@ class LogbackAccessUndertowEventSource(
 
     override val responseHeaderMap: Map<String, String> by lazy {
         val map = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
-        exchange.responseHeaders.associateTo(map) { "${it.headerName}" to it.first }
+        exchange.responseHeaders.associateTo(map) { it.headerName.toString() to it.first }
         unmodifiableMap(map)
     }
 
