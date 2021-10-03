@@ -13,6 +13,7 @@ import java.lang.System.currentTimeMillis
  *
  * @property request The request.
  * @property response The response.
+ * @see ch.qos.logback.access.spi.AccessEvent
  */
 class LogbackAccessJettyEventSource(
         override val request: Request,
