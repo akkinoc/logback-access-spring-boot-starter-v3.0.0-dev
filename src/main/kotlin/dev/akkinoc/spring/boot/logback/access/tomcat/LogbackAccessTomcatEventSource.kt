@@ -59,14 +59,14 @@ class LogbackAccessTomcatEventSource(
         request.method
     }
 
+    override val requestURI: String by lazy {
+        request.requestURI
+    }
+
     /**
      * TODO: 後で使わなくする
      */
     private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
-
-    override val requestURI: String by lazy {
-        delegate.requestURI
-    }
 
     override val queryString: String by lazy {
         delegate.queryString

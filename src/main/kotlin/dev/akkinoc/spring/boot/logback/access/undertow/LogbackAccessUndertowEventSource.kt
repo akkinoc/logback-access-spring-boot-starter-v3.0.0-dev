@@ -7,7 +7,6 @@ import io.undertow.attribute.QueryStringAttribute
 import io.undertow.attribute.ResponseCodeAttribute
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.attribute.ServletRequestLineAttribute
-import io.undertow.servlet.attribute.ServletRequestURLAttribute
 import io.undertow.servlet.attribute.ServletSessionIdAttribute
 import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.String.CASE_INSENSITIVE_ORDER
@@ -88,7 +87,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestURI: String by lazy {
-        ServletRequestURLAttribute.INSTANCE.readAttribute(exchange)
+        exchange.requestURI
     }
 
     override val queryString: String by lazy {
