@@ -2,6 +2,7 @@ package dev.akkinoc.spring.boot.logback.access
 
 import dev.akkinoc.spring.boot.logback.access.jetty.LogbackAccessJettyConfiguration
 import dev.akkinoc.spring.boot.logback.access.tomcat.LogbackAccessTomcatConfiguration
+import dev.akkinoc.spring.boot.logback.access.undertow.LogbackAccessUndertowConfiguration
 import dev.akkinoc.spring.boot.logback.access.undertow.LogbackAccessUndertowReactiveConfiguration
 import dev.akkinoc.spring.boot.logback.access.undertow.LogbackAccessUndertowServletConfiguration
 import org.slf4j.Logger
@@ -30,6 +31,7 @@ import org.springframework.core.io.ResourceLoader
 @Import(
         LogbackAccessTomcatConfiguration::class,
         LogbackAccessJettyConfiguration::class,
+        LogbackAccessUndertowConfiguration::class,
         LogbackAccessUndertowServletConfiguration::class,
         LogbackAccessUndertowReactiveConfiguration::class,
 )
