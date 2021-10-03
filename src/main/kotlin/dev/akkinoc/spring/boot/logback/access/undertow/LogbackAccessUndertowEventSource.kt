@@ -6,7 +6,6 @@ import io.undertow.attribute.BytesSentAttribute
 import io.undertow.attribute.QueryStringAttribute
 import io.undertow.attribute.RemoteHostAttribute
 import io.undertow.attribute.RemoteIPAttribute
-import io.undertow.attribute.RemoteUserAttribute
 import io.undertow.attribute.RequestMethodAttribute
 import io.undertow.attribute.RequestProtocolAttribute
 import io.undertow.attribute.ResponseCodeAttribute
@@ -73,7 +72,9 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val remoteUser: String? by lazy {
-        RemoteUserAttribute.INSTANCE.readAttribute(exchange)
+        val securityContext = exchange.securityContext ?: return@lazy null
+        val account = securityContext.authenticatedAccount ?: return@lazy null
+        account.principal.name
     }
 
     override val protocol: String by lazy {

@@ -39,11 +39,6 @@ class LogbackAccessTomcatEventSource(
         request.localPort
     }
 
-    /**
-     * TODO: 後で使わなくする
-     */
-    private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
-
     override val remoteAddr: String by lazy {
         delegate.remoteAddr
     }
@@ -53,8 +48,13 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val remoteUser: String? by lazy {
-        delegate.remoteUser
+        request.remoteUser
     }
+
+    /**
+     * TODO: 後で使わなくする
+     */
+    private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
 
     override val protocol: String by lazy {
         delegate.protocol
