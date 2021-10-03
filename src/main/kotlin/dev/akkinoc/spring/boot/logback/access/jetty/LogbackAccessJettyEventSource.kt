@@ -11,9 +11,9 @@ import java.lang.System.currentTimeMillis
 /**
  * The Logback-access event source for the Jetty web server.
  *
- * @property request The request.
- * @property response The response.
  * @see ch.qos.logback.access.spi.AccessEvent
+ * @see ch.qos.logback.access.PatternLayout
+ * @see org.eclipse.jetty.server.CustomRequestLog
  */
 class LogbackAccessJettyEventSource(
         override val request: Request,
@@ -22,14 +22,14 @@ class LogbackAccessJettyEventSource(
 
     override val serverAdapter: ServerAdapter = JettyServerAdapter(request, response)
 
+    override val timeStamp: Long = currentTimeMillis()
+
+    override val elapsedTime: Long? = delegate.elapsedTime
+
     /**
      * TODO: 後で使わなくする
      */
     private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
-
-    override val timeStamp: Long = currentTimeMillis()
-
-    override val elapsedTime: Long? = delegate.elapsedTime
 
     override val threadName: String = delegate.threadName
 

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse
  *
  * @property exchange The request/response exchange.
  * @see ch.qos.logback.access.spi.AccessEvent
- * @see io.undertow.servlet.spec.HttpServletRequestImpl
+ * @see ch.qos.logback.access.PatternLayout
  * @see io.undertow.server.handlers.accesslog.AccessLogHandler
  * @see io.undertow.attribute.ExchangeAttribute
  */
