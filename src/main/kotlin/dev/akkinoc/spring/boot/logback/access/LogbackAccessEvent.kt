@@ -2,7 +2,6 @@ package dev.akkinoc.spring.boot.logback.access
 
 import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.access.spi.IAccessEvent.NA
-import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
 import ch.qos.logback.access.spi.ServerAdapter
 import java.io.IOException
 import java.io.ObjectOutputStream
@@ -38,12 +37,11 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     }
 
     override fun getElapsedTime(): Long {
-        return source.elapsedTime ?: SENTINEL.toLong()
+        return source.elapsedTime
     }
 
     override fun getElapsedSeconds(): Long {
-        val value = source.elapsedTime ?: return SENTINEL.toLong()
-        return MILLISECONDS.toSeconds(value)
+        return MILLISECONDS.toSeconds(source.elapsedTime)
     }
 
     override fun getThreadName(): String {
