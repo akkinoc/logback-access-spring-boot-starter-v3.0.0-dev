@@ -19,7 +19,6 @@ import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import java.lang.Thread.currentThread
-import java.net.InetSocketAddress
 import java.util.Collections.unmodifiableMap
 import java.util.concurrent.TimeUnit.NANOSECONDS
 import javax.servlet.http.HttpServletRequest
@@ -31,6 +30,7 @@ import javax.servlet.http.HttpServletResponse
  * @property exchange The request/response exchange.
  * @see ch.qos.logback.access.spi.AccessEvent
  * @see ch.qos.logback.access.PatternLayout
+ * @see io.undertow.servlet.spec.HttpServletRequestImpl
  * @see io.undertow.server.handlers.accesslog.AccessLogHandler
  * @see io.undertow.attribute.ExchangeAttribute
  */
@@ -61,8 +61,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val localPort: Int by lazy {
-        val addr = exchange.connection.localAddress as InetSocketAddress
-        addr.port
+        exchange.destinationAddress.port
     }
 
     override val remoteAddr: String by lazy {
