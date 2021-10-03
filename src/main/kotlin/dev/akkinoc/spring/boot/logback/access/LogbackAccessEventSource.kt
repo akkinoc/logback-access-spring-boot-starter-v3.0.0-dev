@@ -35,7 +35,7 @@ abstract class LogbackAccessEventSource {
     /**
      * The value of [LogbackAccessEvent.getElapsedTime] and [LogbackAccessEvent.getElapsedSeconds].
      */
-    abstract val elapsedTime: Long?
+    abstract val elapsedTime: Long
 
     /**
      * The value of [LogbackAccessEvent.getThreadName].
@@ -171,7 +171,7 @@ abstract class LogbackAccessEventSource {
 
         override val timeStamp: Long = source.timeStamp
 
-        override val elapsedTime: Long? = source.elapsedTime
+        override val elapsedTime: Long = source.elapsedTime
 
         override val threadName: String = source.threadName
 
