@@ -28,7 +28,7 @@ class EventsCaptureExtension :
 
     override fun afterAll(context: ExtensionContext) {
         val id = context.uniqueId
-        log.debug("Ending the {}: {} @{}", EventsCapture::class.simpleName, id, context)
+        log.debug("Finishing the {}: {} @{}", EventsCapture::class.simpleName, id, context)
         captures -= id
     }
 
@@ -40,7 +40,7 @@ class EventsCaptureExtension :
 
     override fun afterEach(context: ExtensionContext) {
         val id = context.uniqueId
-        log.debug("Ending the {}: {} @{}", EventsCapture::class.simpleName, id, context)
+        log.debug("Finishing the {}: {} @{}", EventsCapture::class.simpleName, id, context)
         captures -= id
     }
 
