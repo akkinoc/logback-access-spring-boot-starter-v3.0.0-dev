@@ -53,14 +53,14 @@ class LogbackAccessJettyEventSource(
         request.protocol
     }
 
+    override val method: String by lazy {
+        request.method
+    }
+
     /**
      * TODO: 後で使わなくする
      */
     private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
-
-    override val method: String by lazy {
-        delegate.method
-    }
 
     override val requestURI: String by lazy {
         delegate.requestURI
