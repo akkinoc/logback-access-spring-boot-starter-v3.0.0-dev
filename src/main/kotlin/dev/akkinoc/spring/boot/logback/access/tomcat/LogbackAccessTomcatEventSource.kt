@@ -21,12 +21,13 @@ import java.lang.Thread.currentThread
 class LogbackAccessTomcatEventSource(
         override val request: Request,
         override val response: Response,
-        override val elapsedTime: Long,
 ) : LogbackAccessEventSource() {
 
     override val serverAdapter: ServerAdapter = TomcatServerAdapter(request, response)
 
     override val timeStamp: Long = currentTimeMillis()
+
+    override val elapsedTime: Long = timeStamp - request.coyoteRequest.startTime
 
     override val threadName: String = currentThread().name
 
