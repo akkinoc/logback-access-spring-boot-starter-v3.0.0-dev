@@ -6,6 +6,7 @@ import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
+import java.lang.System.currentTimeMillis
 
 /**
  * The Logback-access event source for the Tomcat web server.
@@ -24,9 +25,7 @@ class LogbackAccessTomcatEventSource(
 
     override val serverAdapter: ServerAdapter = TomcatServerAdapter(request, response)
 
-    override val timeStamp: Long by lazy {
-        request.coyoteRequest.startTime + elapsedTime
-    }
+    override val timeStamp: Long = currentTimeMillis()
 
     /**
      * TODO: 後で使わなくする

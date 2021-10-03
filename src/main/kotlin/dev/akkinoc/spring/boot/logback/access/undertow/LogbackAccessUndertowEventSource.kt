@@ -46,7 +46,7 @@ class LogbackAccessUndertowEventSource(
 
     override val timeStamp: Long = currentTimeMillis()
 
-    override val elapsedTime: Long? = ResponseTimeAttribute(MILLISECONDS).readAttribute(exchange)?.toLong()
+    override val elapsedTime: Long = ResponseTimeAttribute(MILLISECONDS).readAttribute(exchange).toLong()
 
     override val threadName: String = ThreadNameAttribute.INSTANCE.readAttribute(exchange)
 

@@ -24,7 +24,7 @@ class LogbackAccessJettyEventSource(
 
     override val timeStamp: Long = currentTimeMillis()
 
-    override val elapsedTime: Long? = delegate.elapsedTime
+    override val elapsedTime: Long = timeStamp - request.timeStamp
 
     /**
      * TODO: 後で使わなくする
