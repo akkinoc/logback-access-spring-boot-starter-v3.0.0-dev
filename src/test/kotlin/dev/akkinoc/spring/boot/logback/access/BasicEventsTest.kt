@@ -1,5 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access
 
+import ch.qos.logback.access.spi.IAccessEvent.NA
 import dev.akkinoc.spring.boot.logback.access.test.assertion.Assertions.assertLogbackAccessEvents
 import dev.akkinoc.spring.boot.logback.access.test.extension.EventsCapture
 import dev.akkinoc.spring.boot.logback.access.test.extension.EventsCaptureExtension
@@ -52,6 +53,9 @@ sealed class BasicEventsTest {
         shouldThrowUnit<UnsupportedOperationException> { event.threadName = "CHANGED" }
         event.serverName.shouldBe("localhost")
         event.localPort.shouldBe(port)
+        event.remoteAddr.shouldBe("127.0.0.1")
+        event.remoteHost.shouldBe("127.0.0.1")
+        event.remoteUser.shouldBe(NA)
         event.requestURI.shouldBe("/mock/text")
     }
 
