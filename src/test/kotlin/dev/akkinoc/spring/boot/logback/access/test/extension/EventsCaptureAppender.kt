@@ -4,6 +4,8 @@ import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.core.AppenderBase
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.util.SerializationUtils.deserialize
+import org.springframework.util.SerializationUtils.serialize
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -13,8 +15,10 @@ class EventsCaptureAppender : AppenderBase<IAccessEvent>() {
 
     override fun append(event: IAccessEvent) {
         event.prepareForDeferredProcessing()
+        val serialized = serialize(event)
+        val deserialized = deserialize(serialized) as IAccessEvent
         captures.forEach { (id, capture) ->
-            capture += event
+            capture += deserialized
             log.debug("Captured the {}: {} @{}", IAccessEvent::class.simpleName, event, id)
         }
     }

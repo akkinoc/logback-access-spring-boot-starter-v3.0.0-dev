@@ -4,6 +4,8 @@ import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.access.spi.IAccessEvent.NA
 import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
 import ch.qos.logback.access.spi.ServerAdapter
+import java.io.IOException
+import java.io.ObjectOutputStream
 import java.io.Serializable
 import java.util.Collections.enumeration
 import java.util.Enumeration
@@ -158,5 +160,14 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     }
 
     override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"
+
+    /**
+     * @see Serializable
+     */
+    @Throws(IOException::class)
+    private fun writeObject(out: ObjectOutputStream) {
+        prepareForDeferredProcessing()
+        out.defaultWriteObject()
+    }
 
 }
