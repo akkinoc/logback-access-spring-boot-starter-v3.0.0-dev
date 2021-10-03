@@ -7,6 +7,7 @@ import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.Response
 import java.lang.System.currentTimeMillis
+import java.lang.Thread.currentThread
 
 /**
  * The Logback-access event source for the Jetty web server.
@@ -26,12 +27,12 @@ class LogbackAccessJettyEventSource(
 
     override val elapsedTime: Long = timeStamp - request.timeStamp
 
+    override val threadName: String = currentThread().name
+
     /**
      * TODO: 後で使わなくする
      */
     private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
-
-    override val threadName: String = delegate.threadName
 
     override val serverName: String by lazy {
         delegate.serverName

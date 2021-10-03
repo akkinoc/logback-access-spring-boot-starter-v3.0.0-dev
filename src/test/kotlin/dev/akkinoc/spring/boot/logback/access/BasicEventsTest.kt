@@ -13,6 +13,7 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldNotBeEmpty
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,6 +42,7 @@ sealed class BasicEventsTest {
         event.serverAdapter.shouldBeNull()
         event.timeStamp.shouldBeBetween(started, finished)
         event.elapsedTime.shouldBeBetween(0, finished - started)
+        event.threadName.shouldNotBeEmpty().shouldBe(response.headers.getFirst("TEST-THREAD-NAME"))
         event.requestURI.shouldBe("/mock/text")
     }
 
