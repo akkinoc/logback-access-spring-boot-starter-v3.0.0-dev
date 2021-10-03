@@ -42,7 +42,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val remoteHost: String by lazy {
-        delegate.remoteHost
+        request.remoteHost
     }
 
     override val remoteUser: String? by lazy {
