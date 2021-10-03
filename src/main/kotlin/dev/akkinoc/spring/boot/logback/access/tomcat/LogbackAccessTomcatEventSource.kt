@@ -40,7 +40,7 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val remoteAddr: String by lazy {
-        delegate.remoteAddr
+        request.remoteAddr
     }
 
     override val remoteHost: String by lazy {

@@ -4,7 +4,6 @@ import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import io.undertow.attribute.BytesSentAttribute
 import io.undertow.attribute.QueryStringAttribute
-import io.undertow.attribute.RemoteIPAttribute
 import io.undertow.attribute.RequestMethodAttribute
 import io.undertow.attribute.RequestProtocolAttribute
 import io.undertow.attribute.ResponseCodeAttribute
@@ -63,7 +62,9 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val remoteAddr: String by lazy {
-        RemoteIPAttribute.INSTANCE.readAttribute(exchange)
+        val sourceAddr = exchange.sourceAddress
+        val addr = sourceAddr.address ?: return@lazy sourceAddr.hostString
+        addr.hostAddress
     }
 
     override val remoteHost: String by lazy {
