@@ -54,6 +54,7 @@ class LogbackAccessUndertowReactiveWebServerFactory(
      * Extracts the field value from the [UndertowWebServer].
      *
      * @receiver The [UndertowWebServer].
+     * @param T The field type.
      * @param name The field name.
      * @return The field value.
      */
