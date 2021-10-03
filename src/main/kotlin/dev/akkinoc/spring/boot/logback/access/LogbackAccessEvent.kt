@@ -4,6 +4,7 @@ import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.access.spi.IAccessEvent.NA
 import ch.qos.logback.access.spi.IAccessEvent.SENTINEL
 import ch.qos.logback.access.spi.ServerAdapter
+import java.io.IOException
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import java.util.Collections.enumeration
@@ -163,6 +164,7 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     /**
      * @see Serializable
      */
+    @Throws(IOException::class)
     private fun writeObject(out: ObjectOutputStream) {
         prepareForDeferredProcessing()
         out.defaultWriteObject()
