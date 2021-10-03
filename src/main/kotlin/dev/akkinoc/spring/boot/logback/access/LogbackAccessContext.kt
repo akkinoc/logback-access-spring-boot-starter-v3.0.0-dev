@@ -50,7 +50,7 @@ class LogbackAccessContext(
      * @param status The Logback-access status.
      */
     private fun log(status: Status) {
-        log.debug("Added the {}: {} @{}", Status::class.simpleName, status, this)
+        log.debug("Added the {}: {} @{}", Status::class.simpleName, status, this, status.throwable)
     }
 
     /**
