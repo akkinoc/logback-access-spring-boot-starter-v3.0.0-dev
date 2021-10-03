@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.getForEntity
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.TestPropertySource
 import java.lang.System.currentTimeMillis
@@ -31,7 +32,11 @@ sealed class BasicEventsTest {
 
     @Test
     @ExtendWith(EventsCaptureExtension::class)
-    fun `Appends a Logback-access event`(@Autowired rest: TestRestTemplate, capture: EventsCapture) {
+    fun `Appends a Logback-access event`(
+            @Autowired rest: TestRestTemplate,
+            @LocalServerPort port: Int,
+            capture: EventsCapture,
+    ) {
         val started = currentTimeMillis()
         val response = rest.getForEntity<String>("/mock/text")
         response.statusCode.shouldBe(HttpStatus.OK)
@@ -44,6 +49,7 @@ sealed class BasicEventsTest {
         event.elapsedTime.shouldBeBetween(0, finished - started)
         event.threadName.shouldNotBeEmpty()
         event.serverName.shouldBe("localhost")
+        event.localPort.shouldBe(port)
         event.requestURI.shouldBe("/mock/text")
     }
 

@@ -41,7 +41,10 @@ sealed class BasicTest {
 
     @Test
     @ExtendWith(OutputCaptureExtension::class)
-    fun `Appends a Logback-access event`(@Autowired rest: TestRestTemplate, capture: CapturedOutput) {
+    fun `Appends a Logback-access event`(
+            @Autowired rest: TestRestTemplate,
+            capture: CapturedOutput,
+    ) {
         val response = rest.getForEntity<String>("/mock/text")
         response.statusCode.shouldBe(HttpStatus.OK)
         assertLogbackAccessEvents {
