@@ -18,6 +18,7 @@ import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.attribute.ServletRequestLineAttribute
 import io.undertow.servlet.attribute.ServletRequestURLAttribute
 import io.undertow.servlet.attribute.ServletSessionIdAttribute
+import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.util.Collections.unmodifiableMap
@@ -38,9 +39,15 @@ class LogbackAccessUndertowEventSource(
         private val exchange: HttpServerExchange,
 ) : LogbackAccessEventSource() {
 
-    override val request: HttpServletRequest? = null
+    override val request: HttpServletRequest? = run {
+        val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return@run null
+        context.servletRequest as HttpServletRequest
+    }
 
-    override val response: HttpServletResponse? = null
+    override val response: HttpServletResponse? = run {
+        val context = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY) ?: return@run null
+        context.servletResponse as HttpServletResponse
+    }
 
     override val serverAdapter: ServerAdapter? = null
 
