@@ -41,7 +41,7 @@ sealed class BasicEventsTest {
             capture: EventsCapture,
     ) {
         val started = currentTimeMillis()
-        val response = rest.getForEntity<String>("/mock/text")
+        val response = rest.getForEntity<String>("/mock-controller/text")
         response.statusCode.shouldBe(HttpStatus.OK)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         val finished = currentTimeMillis()
@@ -59,9 +59,9 @@ sealed class BasicEventsTest {
         event.remoteUser.shouldBe(NA)
         event.protocol.shouldBe("HTTP/1.1")
         event.method.shouldBe("GET")
-        event.requestURI.shouldBe("/mock/text")
+        event.requestURI.shouldBe("/mock-controller/text")
         event.queryString.shouldBeEmpty()
-        event.requestURL.shouldBe("GET /mock/text HTTP/1.1")
+        event.requestURL.shouldBe("GET /mock-controller/text HTTP/1.1")
     }
 
 }

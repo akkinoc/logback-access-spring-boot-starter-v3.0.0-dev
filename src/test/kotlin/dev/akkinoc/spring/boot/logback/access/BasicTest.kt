@@ -45,10 +45,10 @@ sealed class BasicTest {
             @Autowired rest: TestRestTemplate,
             capture: CapturedOutput,
     ) {
-        val response = rest.getForEntity<String>("/mock/text")
+        val response = rest.getForEntity<String>("/mock-controller/text")
         response.statusCode.shouldBe(HttpStatus.OK)
         assertLogbackAccessEvents {
-            val regex = Regex("""^127\.0\.0\.1 - - \[.+] "GET /mock/text HTTP/1.1" 200 9$""")
+            val regex = Regex("""^127\.0\.0\.1 - - \[.+] "GET /mock-controller/text HTTP/1.1" 200 9$""")
             capture.out.lines().shouldHaveSingleElement { it matches regex }
         }
     }

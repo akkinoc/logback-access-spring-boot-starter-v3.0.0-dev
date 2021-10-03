@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
  * The mock controller.
  */
 @RestController
-@RequestMapping("/mock")
+@RequestMapping("/mock-controller")
 class MockController {
 
     /**
