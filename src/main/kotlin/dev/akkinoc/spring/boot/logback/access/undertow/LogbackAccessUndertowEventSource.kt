@@ -49,7 +49,11 @@ class LogbackAccessUndertowEventSource(
 
     override val timeStamp: Long = currentTimeMillis()
 
-    override val elapsedTime: Long = NANOSECONDS.toMillis(nanoTime() - exchange.requestStartTime)
+    override val elapsedTime: Long? = run {
+        val started = exchange.requestStartTime.takeIf { it != -1L } ?: return@run null
+        val nanos = nanoTime() - started
+        NANOSECONDS.toMillis(nanos)
+    }
 
     override val threadName: String = currentThread().name
 
