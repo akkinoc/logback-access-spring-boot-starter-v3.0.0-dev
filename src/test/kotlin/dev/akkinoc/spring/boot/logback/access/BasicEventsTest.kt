@@ -9,6 +9,7 @@ import dev.akkinoc.spring.boot.logback.access.test.type.TomcatReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.TomcatServletWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
+import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.nulls.shouldBeNull
@@ -48,6 +49,7 @@ sealed class BasicEventsTest {
         event.timeStamp.shouldBeBetween(started, finished)
         event.elapsedTime.shouldBeBetween(0, finished - started)
         event.threadName.shouldNotBeEmpty()
+        shouldThrowUnit<UnsupportedOperationException> { event.threadName = "CHANGED" }
         event.serverName.shouldBe("localhost")
         event.localPort.shouldBe(port)
         event.requestURI.shouldBe("/mock/text")
