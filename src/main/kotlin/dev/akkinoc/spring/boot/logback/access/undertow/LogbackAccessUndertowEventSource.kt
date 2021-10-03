@@ -3,7 +3,6 @@ package dev.akkinoc.spring.boot.logback.access.undertow
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import io.undertow.attribute.BytesSentAttribute
-import io.undertow.attribute.QueryStringAttribute
 import io.undertow.attribute.ResponseCodeAttribute
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.attribute.ServletRequestLineAttribute
@@ -91,7 +90,8 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val queryString: String by lazy {
-        QueryStringAttribute.INSTANCE.readAttribute(exchange)
+        val query = exchange.queryString.ifEmpty { return@lazy "" }
+        "?$query"
     }
 
     override val requestURL: String by lazy {

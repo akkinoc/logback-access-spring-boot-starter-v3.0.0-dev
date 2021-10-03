@@ -15,6 +15,7 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.string.shouldNotBeEmpty
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -59,6 +60,7 @@ sealed class BasicEventsTest {
         event.protocol.shouldBe("HTTP/1.1")
         event.method.shouldBe("GET")
         event.requestURI.shouldBe("/mock/text")
+        event.queryString.shouldBeEmpty()
     }
 
 }
