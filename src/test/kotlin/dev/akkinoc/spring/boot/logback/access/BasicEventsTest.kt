@@ -42,7 +42,7 @@ sealed class BasicEventsTest {
         event.serverAdapter.shouldBeNull()
         event.timeStamp.shouldBeBetween(started, finished)
         event.elapsedTime.shouldBeBetween(0, finished - started)
-        event.threadName.shouldNotBeEmpty().shouldBe(response.headers.getFirst("TEST-THREAD-NAME"))
+        event.threadName.shouldNotBeEmpty()
         event.requestURI.shouldBe("/mock/text")
     }
 

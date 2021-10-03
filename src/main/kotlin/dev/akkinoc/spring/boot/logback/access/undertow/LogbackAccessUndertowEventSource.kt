@@ -13,7 +13,6 @@ import io.undertow.attribute.RequestMethodAttribute
 import io.undertow.attribute.RequestProtocolAttribute
 import io.undertow.attribute.ResponseCodeAttribute
 import io.undertow.attribute.ResponseTimeAttribute
-import io.undertow.attribute.ThreadNameAttribute
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.attribute.ServletRequestLineAttribute
 import io.undertow.servlet.attribute.ServletRequestURLAttribute
@@ -21,6 +20,7 @@ import io.undertow.servlet.attribute.ServletSessionIdAttribute
 import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
+import java.lang.Thread.currentThread
 import java.util.Collections.unmodifiableMap
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.servlet.http.HttpServletRequest
@@ -55,7 +55,7 @@ class LogbackAccessUndertowEventSource(
 
     override val elapsedTime: Long = ResponseTimeAttribute(MILLISECONDS).readAttribute(exchange).toLong()
 
-    override val threadName: String = ThreadNameAttribute.INSTANCE.readAttribute(exchange)
+    override val threadName: String = currentThread().name
 
     override val serverName: String by lazy {
         LocalServerNameAttribute.INSTANCE.readAttribute(exchange)
