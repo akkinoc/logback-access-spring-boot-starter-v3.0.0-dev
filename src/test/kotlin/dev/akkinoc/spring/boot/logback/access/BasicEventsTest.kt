@@ -26,6 +26,7 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.TestPropertySource
 import java.lang.System.currentTimeMillis
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
 /**
  * Tests the appended Logback-access events in the case where the configuration is the default.
@@ -50,6 +51,7 @@ sealed class BasicEventsTest {
         event.serverAdapter.shouldBeNull()
         event.timeStamp.shouldBeBetween(started, finished)
         event.elapsedTime.shouldBeBetween(0L, finished - started)
+        event.elapsedSeconds.shouldBeBetween(0L, MILLISECONDS.toSeconds(finished - started))
         event.threadName.shouldNotBeEmpty()
         shouldThrowUnit<UnsupportedOperationException> { event.threadName = "CHANGED" }
         event.serverName.shouldBe("localhost")
