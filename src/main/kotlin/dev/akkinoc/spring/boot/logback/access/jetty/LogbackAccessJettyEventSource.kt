@@ -100,7 +100,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val statusCode: Int by lazy {
-        0
+        response.status
     }
 
     override val responseHeaderMap: Map<String, String> by lazy {
