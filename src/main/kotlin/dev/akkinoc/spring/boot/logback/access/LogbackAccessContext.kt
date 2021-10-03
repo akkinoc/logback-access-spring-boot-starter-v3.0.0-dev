@@ -14,12 +14,12 @@ import org.springframework.core.io.ResourceLoader
 /**
  * The Logback-access context.
  *
- * @property logbackAccessProperties The configuration properties for Logback-access.
+ * @property properties The configuration properties for Logback-access.
  * @param resourceLoader The resource loader.
  * @param environment The environment.
  */
 class LogbackAccessContext(
-        private val logbackAccessProperties: LogbackAccessProperties,
+        val properties: LogbackAccessProperties,
         resourceLoader: ResourceLoader,
         environment: Environment,
 ) : AutoCloseable {
@@ -30,7 +30,7 @@ class LogbackAccessContext(
     private val raw: AccessContext = AccessContext()
 
     init {
-        val (name, resource) = logbackAccessProperties.config?.let { it to resourceLoader.getResource(it) }
+        val (name, resource) = properties.config?.let { it to resourceLoader.getResource(it) }
                 ?: DEFAULT_CONFIGS.asSequence()
                         .map { it to resourceLoader.getResource(it) }
                         .firstOrNull { (_, resource) -> resource.exists() }
