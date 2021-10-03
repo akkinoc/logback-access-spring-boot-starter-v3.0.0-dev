@@ -3,7 +3,6 @@ package dev.akkinoc.spring.boot.logback.access.undertow
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import io.undertow.attribute.BytesSentAttribute
-import io.undertow.attribute.LocalPortAttribute
 import io.undertow.attribute.QueryStringAttribute
 import io.undertow.attribute.RemoteHostAttribute
 import io.undertow.attribute.RemoteIPAttribute
@@ -20,6 +19,7 @@ import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import java.lang.Thread.currentThread
+import java.net.InetSocketAddress
 import java.util.Collections.unmodifiableMap
 import java.util.concurrent.TimeUnit.NANOSECONDS
 import javax.servlet.http.HttpServletRequest
@@ -61,7 +61,8 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val localPort: Int by lazy {
-        LocalPortAttribute.INSTANCE.readAttribute(exchange).toInt()
+        val addr = exchange.connection.localAddress as InetSocketAddress
+        addr.port
     }
 
     override val remoteAddr: String by lazy {

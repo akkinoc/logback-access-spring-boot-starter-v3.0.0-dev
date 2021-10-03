@@ -33,14 +33,14 @@ class LogbackAccessJettyEventSource(
         request.serverName
     }
 
+    override val localPort: Int by lazy {
+        request.localPort
+    }
+
     /**
      * TODO: 後で使わなくする
      */
     private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
-
-    override val localPort: Int by lazy {
-        delegate.localPort
-    }
 
     override val remoteAddr: String by lazy {
         delegate.remoteAddr
