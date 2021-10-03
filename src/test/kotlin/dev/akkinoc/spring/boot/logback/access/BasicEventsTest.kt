@@ -10,6 +10,7 @@ import dev.akkinoc.spring.boot.logback.access.test.type.TomcatServletWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -31,6 +32,9 @@ sealed class BasicEventsTest {
         val response = rest.getForEntity<String>("/mock/text")
         response.statusCode.shouldBe(HttpStatus.OK)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.request.shouldBeNull()
+        event.response.shouldBeNull()
+        event.serverAdapter.shouldBeNull()
         event.requestURI.shouldBe("/mock/text")
     }
 
