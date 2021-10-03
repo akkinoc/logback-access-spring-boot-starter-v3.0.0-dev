@@ -1,5 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access.test.assertion
 
+import io.kotest.assertions.timing.EventuallyConfig
 import io.kotest.assertions.timing.eventually
 import io.kotest.assertions.until.fixed
 import kotlinx.coroutines.runBlocking
@@ -15,11 +16,14 @@ object Assertions {
      * Asserts that the assertion block will pass within a short time.
      * It is used to assert Logback-access events that may be appended late.
      *
+     * @param T The return value type of the assertion function.
      * @param assert The assertion function that is called repeatedly.
+     * @return The return value of the assertion function.
      */
-    fun assertLogbackAccessEvents(assert: () -> Unit) {
-        runBlocking {
-            eventually(duration = seconds(1), interval = milliseconds(100).fixed()) { assert() }
+    fun <T> assertLogbackAccessEvents(assert: () -> T): T {
+        return runBlocking {
+            val config = EventuallyConfig(duration = seconds(1), interval = milliseconds(100).fixed())
+            eventually(config) { assert() }
         }
     }
 

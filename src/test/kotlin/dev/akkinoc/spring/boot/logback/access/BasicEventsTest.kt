@@ -30,11 +30,8 @@ sealed class BasicEventsTest {
     fun `Appends a Logback-access event`(@Autowired rest: TestRestTemplate, capture: EventsCapture) {
         val response = rest.getForEntity<String>("/mock/text")
         response.statusCode.shouldBe(HttpStatus.OK)
-        assertLogbackAccessEvents {
-            capture.shouldBeSingleton { event ->
-                event.requestURI.shouldBe("/mock/text")
-            }
-        }
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.requestURI.shouldBe("/mock/text")
     }
 
 }
