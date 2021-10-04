@@ -33,7 +33,7 @@ TODO
 
 Depends on:
 
-* Java 8, 11 or 15
+* Java 8, 11 or 17
 * Kotlin 1.5
 * Spring Boot 2.5
 * Logback-access 1.2
