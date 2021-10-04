@@ -12,6 +12,7 @@ import java.lang.Thread.currentThread
  * The Logback-access event source for the Tomcat web server.
  *
  * @see ch.qos.logback.access.spi.AccessEvent
+ * @see ch.qos.logback.access.tomcat.TomcatServerAdapter
  * @see ch.qos.logback.access.PatternLayout
  * @see org.apache.catalina.valves.AccessLogValve
  * @see org.apache.catalina.valves.AbstractAccessLogValve
@@ -111,8 +112,7 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val contentLength: Long by lazy {
-        // TODO
-        0
+        response.coyoteResponse.contentLengthLong
     }
 
     override val responseContent: String? by lazy {

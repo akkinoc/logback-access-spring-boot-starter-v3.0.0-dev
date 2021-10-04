@@ -12,6 +12,7 @@ import java.lang.Thread.currentThread
  * The Logback-access event source for the Jetty web server.
  *
  * @see ch.qos.logback.access.spi.AccessEvent
+ * @see ch.qos.logback.access.jetty.JettyServerAdapter
  * @see ch.qos.logback.access.PatternLayout
  * @see org.eclipse.jetty.server.CustomRequestLog
  */
@@ -109,8 +110,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val contentLength: Long by lazy {
-        // TODO
-        0
+        response.contentCount
     }
 
     override val responseContent: String? by lazy {
