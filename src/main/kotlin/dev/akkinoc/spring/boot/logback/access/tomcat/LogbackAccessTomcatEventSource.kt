@@ -1,6 +1,5 @@
 package dev.akkinoc.spring.boot.logback.access.tomcat
 
-import ch.qos.logback.access.spi.AccessEvent
 import ch.qos.logback.access.spi.ServerAdapter
 import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
@@ -71,11 +70,6 @@ class LogbackAccessTomcatEventSource(
     override val requestURL: String by lazy {
         "$method $requestURI$queryString $protocol"
     }
-
-    /**
-     * TODO: 後で使わなくする
-     */
-    private val delegate: AccessEvent = AccessEvent(request, response, serverAdapter)
 
     override val requestHeaderMap: Map<String, String> by lazy {
         // TODO
