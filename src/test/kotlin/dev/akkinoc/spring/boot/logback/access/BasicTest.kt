@@ -28,8 +28,7 @@ sealed class BasicTest {
     fun `Provides the configuration properties for Logback-access`(
             @Autowired logbackAccessProperties: LogbackAccessProperties?,
     ) {
-        logbackAccessProperties.shouldNotBeNull()
-        logbackAccessProperties.enabled.shouldBe(true)
+        logbackAccessProperties.shouldBe(LogbackAccessProperties())
     }
 
     @Test
