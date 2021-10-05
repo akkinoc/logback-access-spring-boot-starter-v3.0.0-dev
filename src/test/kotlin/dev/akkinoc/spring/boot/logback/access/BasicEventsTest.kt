@@ -25,9 +25,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.web.client.exchange
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus.OK
+import org.springframework.http.RequestEntity
 import org.springframework.test.context.TestPropertySource
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -48,7 +50,6 @@ sealed class BasicEventsTest {
         val started = currentTimeMillis()
         val response = rest.getForEntity<String>("/mock-controller/text")
         response.statusCode.shouldBe(OK)
-        response.body.shouldBe("mock-body")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         val finished = currentTimeMillis()
         event.request.shouldBeNull()
@@ -87,13 +88,57 @@ sealed class BasicEventsTest {
     }
 
     @Test
+    fun `Appends a Logback-access event with request headers`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/text")
+                .header("mock-request-header", "mock-request-header-value")
+                .header("mock-empty-request-header", "")
+                .header(
+                        "mock-multi-request-header",
+                        "mock-multi-request-header-value1",
+                        "mock-multi-request-header-value2",
+                )
+                .build()
+        val response = rest.exchange<String>(request)
+        response.statusCode.shouldBe(OK)
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.requestHeaderMap.shouldContain("mock-request-header" to "mock-request-header-value")
+        event.requestHeaderMap.shouldContain("mock-empty-request-header" to "")
+        event.requestHeaderMap.shouldContain("mock-multi-request-header" to "mock-multi-request-header-value1")
+        event.requestHeaderNames.toList().shouldContainAll(
+                "mock-request-header",
+                "mock-empty-request-header",
+                "mock-multi-request-header",
+        )
+        event.requestHeaderNames.toList().shouldNotContainAll(
+                "Mock-Request-Header",
+                "MOCK-REQUEST-HEADER",
+                "Mock-Empty-Request-Header",
+                "MOCK-EMPTY-REQUEST-HEADER",
+                "Mock-Multi-Request-Header",
+                "MOCK-MULTI-REQUEST-HEADER",
+        )
+        event.getRequestHeader("mock-request-header").shouldBe("mock-request-header-value")
+        event.getRequestHeader("Mock-Request-Header").shouldBe("mock-request-header-value")
+        event.getRequestHeader("MOCK-REQUEST-HEADER").shouldBe("mock-request-header-value")
+        event.getRequestHeader("mock-empty-request-header").shouldBeEmpty()
+        event.getRequestHeader("Mock-Empty-Request-Header").shouldBeEmpty()
+        event.getRequestHeader("MOCK-EMPTY-REQUEST-HEADER").shouldBeEmpty()
+        event.getRequestHeader("mock-multi-request-header").shouldBe("mock-multi-request-header-value1")
+        event.getRequestHeader("Mock-Multi-Request-Header").shouldBe("mock-multi-request-header-value1")
+        event.getRequestHeader("MOCK-MULTI-REQUEST-HEADER").shouldBe("mock-multi-request-header-value1")
+        event.getRequestHeader("mock-unknown-request-header").shouldBe("-")
+    }
+
+    @Test
     fun `Appends a Logback-access event with response headers`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
         val response = rest.getForEntity<String>("/mock-controller/text-with-response-headers")
         response.statusCode.shouldBe(OK)
-        response.body.shouldBe("mock-body")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.responseHeaderMap.shouldContain("mock-response-header" to "mock-response-header-value")
         event.responseHeaderMap.shouldContain("mock-empty-response-header" to "")
