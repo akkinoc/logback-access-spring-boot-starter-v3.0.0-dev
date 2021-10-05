@@ -12,6 +12,7 @@ import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
@@ -67,19 +68,19 @@ sealed class BasicEventsTest {
         event.requestURI.shouldBe("/mock-controller/text")
         event.queryString.shouldBeEmpty()
         event.requestURL.shouldBe("GET /mock-controller/text HTTP/1.1")
-        // TODO: getRequestHeaderMap
-        // TODO: getRequestHeaderNames
-        // TODO: getRequestHeader
-        // TODO: getCookie
-        // TODO: getRequestParameterMap
-        // TODO: getRequestParameter
-        // TODO: getAttribute
+        event.requestHeaderMap.shouldNotBeNull()
+        event.requestHeaderNames.shouldNotBeNull()
+        event.getRequestHeader("MOCK-UNKNOWN-REQUEST-HEADER").shouldBe("-")
+        event.getCookie("MOCK-UNKNOWN-COOKIE").shouldBe("-")
+        event.requestParameterMap.shouldNotBeNull()
+        event.getRequestParameter("MOCK-UNKNOWN-REQUEST-PARAMETER").shouldContainExactly("-")
+        event.getAttribute("MOCK-UNKNOWN-ATTRIBUTE").shouldBe("-")
         event.sessionID.shouldBe("-")
         event.requestContent.shouldBeEmpty()
         event.statusCode.shouldBe(200)
         event.responseHeaderMap.shouldNotBeNull()
         event.responseHeaderNameList.shouldNotBeNull()
-        event.getResponseHeader("MOCK-UNKNOWN-HEADER").shouldBe("-")
+        event.getResponseHeader("MOCK-UNKNOWN-RESPONSE-HEADER").shouldBe("-")
         event.contentLength.shouldBe(9L)
         event.responseContent.shouldBeEmpty()
     }
@@ -100,7 +101,7 @@ sealed class BasicEventsTest {
         event.getResponseHeader("mock-response-header1").shouldBe("MOCK-RESPONSE-HEADER1-VALUE")
         event.getResponseHeader("MOCK-RESPONSE-HEADER2").shouldBe("MOCK-RESPONSE-HEADER2-VALUE1")
         event.getResponseHeader("mock-response-header2").shouldBe("MOCK-RESPONSE-HEADER2-VALUE1")
-        event.getResponseHeader("MOCK-UNKNOWN-HEADER").shouldBe("-")
+        event.getResponseHeader("MOCK-UNKNOWN-RESPONSE-HEADER").shouldBe("-")
     }
 
 }
