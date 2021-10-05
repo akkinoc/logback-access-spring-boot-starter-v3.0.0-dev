@@ -17,7 +17,7 @@ import org.springframework.boot.test.system.CapturedOutput
 import org.springframework.boot.test.system.OutputCaptureExtension
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.getForEntity
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.OK
 
 /**
  * Tests the case where the configuration is the default.
@@ -46,7 +46,7 @@ sealed class BasicTest {
             capture: CapturedOutput,
     ) {
         val response = rest.getForEntity<String>("/mock-controller/text")
-        response.statusCode.shouldBe(HttpStatus.OK)
+        response.statusCode.shouldBe(OK)
         response.body.shouldBe("MOCK-TEXT")
         assertLogbackAccessEvents {
             val regex = Regex("""^127\.0\.0\.1 - - \[.+] "GET /mock-controller/text HTTP/1\.1" 200 9$""")

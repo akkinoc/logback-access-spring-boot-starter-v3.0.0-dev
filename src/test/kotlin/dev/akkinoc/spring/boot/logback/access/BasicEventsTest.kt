@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.OK
 import org.springframework.test.context.TestPropertySource
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -42,7 +42,7 @@ sealed class BasicEventsTest {
     ) {
         val started = currentTimeMillis()
         val response = rest.getForEntity<String>("/mock-controller/text")
-        response.statusCode.shouldBe(HttpStatus.OK)
+        response.statusCode.shouldBe(OK)
         response.body.shouldBe("MOCK-TEXT")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         val finished = currentTimeMillis()
@@ -64,8 +64,21 @@ sealed class BasicEventsTest {
         event.requestURI.shouldBe("/mock-controller/text")
         event.queryString.shouldBeEmpty()
         event.requestURL.shouldBe("GET /mock-controller/text HTTP/1.1")
-        event.statusCode.shouldBe(HttpStatus.OK.value())
+        // TODO: getRequestHeaderMap
+        // TODO: getRequestHeaderNames
+        // TODO: getRequestHeader
+        // TODO: getCookie
+        // TODO: getRequestParameterMap
+        // TODO: getRequestParameter
+        // TODO: getAttribute
+        event.sessionID.shouldBe("-")
+        event.requestContent.shouldBeEmpty()
+        event.statusCode.shouldBe(200)
+        // TODO: getResponseHeaderMap
+        // TODO: getResponseHeaderNameList
+        // TODO: getResponseHeader
         event.contentLength.shouldBe(9L)
+        event.responseContent.shouldBeEmpty()
     }
 
 }
