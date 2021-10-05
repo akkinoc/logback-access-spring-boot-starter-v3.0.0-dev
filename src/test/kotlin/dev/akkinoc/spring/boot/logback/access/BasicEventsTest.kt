@@ -26,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.exchange
-import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.RequestEntity
@@ -47,8 +46,9 @@ sealed class BasicEventsTest {
             @LocalServerPort port: Int,
             capture: EventsCapture,
     ) {
+        val request = RequestEntity.get("/mock-controller/text").build()
         val started = currentTimeMillis()
-        val response = rest.getForEntity<String>("/mock-controller/text")
+        val response = rest.exchange<String>(request)
         response.statusCode.shouldBe(OK)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         val finished = currentTimeMillis()
@@ -92,7 +92,8 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val response = rest.getForEntity<String>("/mock-controller/text?mock-query-string")
+        val request = RequestEntity.get("/mock-controller/text?mock-query-string").build()
+        val response = rest.exchange<String>(request)
         response.statusCode.shouldBe(OK)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.requestURI.shouldBe("/mock-controller/text")
@@ -150,7 +151,8 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val response = rest.getForEntity<String>("/mock-controller/text-with-response-headers")
+        val request = RequestEntity.get("/mock-controller/text-with-response-headers").build()
+        val response = rest.exchange<String>(request)
         response.statusCode.shouldBe(OK)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.responseHeaderMap.shouldContain("mock-response-header" to "mock-response-header-value")
