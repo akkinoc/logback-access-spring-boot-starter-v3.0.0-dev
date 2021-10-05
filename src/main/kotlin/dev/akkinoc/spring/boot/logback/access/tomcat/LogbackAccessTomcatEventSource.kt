@@ -75,8 +75,9 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val requestHeaderMap: Map<String, String> by lazy {
-        // TODO
-        emptyMap()
+        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        request.headerNames.asSequence().associateWithTo(headers) { request.getHeader(it) }
+        unmodifiableMap(headers)
     }
 
     override val cookieMap: Map<String, String> by lazy {
