@@ -19,7 +19,7 @@ class MockController {
      */
     @GetMapping("/text")
     fun getText(): String {
-        return "MOCK-TEXT"
+        return "mock-text"
     }
 
     /**
@@ -30,9 +30,16 @@ class MockController {
     @GetMapping("/text-with-response-headers")
     fun getTextWithResponseHeaders(): ResponseEntity<String> {
         return ResponseEntity.ok()
-                .header("MOCK-RESPONSE-HEADER1", "MOCK-RESPONSE-HEADER1-VALUE")
-                .header("MOCK-RESPONSE-HEADER2", "MOCK-RESPONSE-HEADER2-VALUE1", "MOCK-RESPONSE-HEADER2-VALUE2")
-                .body("MOCK-TEXT-WITH-RESPONSE-HEADERS")
+                .header(
+                        "mock-response-header",
+                        "mock-response-header-value",
+                )
+                .header(
+                        "mock-multi-response-header",
+                        "mock-multi-response-header-value1",
+                        "mock-multi-response-header-value2",
+                )
+                .body("mock-text-with-response-headers")
     }
 
 }
