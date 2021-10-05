@@ -19,7 +19,7 @@ class MockController {
      */
     @GetMapping("/text")
     fun getText(): String {
-        return "mock-text"
+        return "mock-body"
     }
 
     /**
@@ -39,7 +39,7 @@ class MockController {
                         "mock-multi-response-header-value1",
                         "mock-multi-response-header-value2",
                 )
-                .body("mock-text-with-response-headers")
+                .body("mock-body")
     }
 
 }

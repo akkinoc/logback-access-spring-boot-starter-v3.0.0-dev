@@ -47,7 +47,7 @@ sealed class BasicEventsTest {
         val started = currentTimeMillis()
         val response = rest.getForEntity<String>("/mock-controller/text")
         response.statusCode.shouldBe(OK)
-        response.body.shouldBe("mock-text")
+        response.body.shouldBe("mock-body")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         val finished = currentTimeMillis()
         event.request.shouldBeNull()
@@ -92,7 +92,7 @@ sealed class BasicEventsTest {
     ) {
         val response = rest.getForEntity<String>("/mock-controller/text-with-response-headers")
         response.statusCode.shouldBe(OK)
-        response.body.shouldBe("mock-text-with-response-headers")
+        response.body.shouldBe("mock-body")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.responseHeaderMap.shouldContain("mock-response-header" to "mock-response-header-value")
         event.responseHeaderMap.shouldContain("mock-multi-response-header" to "mock-multi-response-header-value1")
