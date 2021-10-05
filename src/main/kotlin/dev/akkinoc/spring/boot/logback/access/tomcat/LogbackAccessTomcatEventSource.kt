@@ -5,8 +5,10 @@ import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
+import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.Thread.currentThread
+import java.util.Collections.unmodifiableMap
 
 /**
  * The Logback-access event source for the Tomcat web server.
@@ -107,8 +109,9 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val responseHeaderMap: Map<String, String> by lazy {
-        // TODO
-        emptyMap()
+        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        response.headerNames.associateWithTo(headers) { response.getHeader(it) }
+        unmodifiableMap(headers)
     }
 
     override val contentLength: Long by lazy {

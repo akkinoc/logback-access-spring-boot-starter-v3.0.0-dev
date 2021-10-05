@@ -11,8 +11,11 @@ import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.longs.shouldBeBetween
+import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.string.shouldNotBeEmpty
@@ -74,11 +77,30 @@ sealed class BasicEventsTest {
         event.sessionID.shouldBe("-")
         event.requestContent.shouldBeEmpty()
         event.statusCode.shouldBe(200)
-        // TODO: getResponseHeaderMap
-        // TODO: getResponseHeaderNameList
-        // TODO: getResponseHeader
+        event.responseHeaderMap.shouldNotBeNull()
+        event.responseHeaderNameList.shouldNotBeNull()
+        event.getResponseHeader("MOCK-UNKNOWN-HEADER").shouldBe("-")
         event.contentLength.shouldBe(9L)
         event.responseContent.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Appends a Logback-access event with response headers`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val response = rest.getForEntity<String>("/mock-controller/text-with-response-headers")
+        response.statusCode.shouldBe(OK)
+        response.body.shouldBe("MOCK-TEXT-WITH-RESPONSE-HEADERS")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.responseHeaderMap.shouldContain("MOCK-RESPONSE-HEADER1", "MOCK-RESPONSE-HEADER1-VALUE")
+        event.responseHeaderMap.shouldContain("MOCK-RESPONSE-HEADER2", "MOCK-RESPONSE-HEADER2-VALUE1")
+        event.responseHeaderNameList.shouldContainAll("MOCK-RESPONSE-HEADER1", "MOCK-RESPONSE-HEADER2")
+        event.getResponseHeader("MOCK-RESPONSE-HEADER1").shouldBe("MOCK-RESPONSE-HEADER1-VALUE")
+        event.getResponseHeader("mock-response-header1").shouldBe("MOCK-RESPONSE-HEADER1-VALUE")
+        event.getResponseHeader("MOCK-RESPONSE-HEADER2").shouldBe("MOCK-RESPONSE-HEADER2-VALUE1")
+        event.getResponseHeader("mock-response-header2").shouldBe("MOCK-RESPONSE-HEADER2-VALUE1")
+        event.getResponseHeader("MOCK-UNKNOWN-HEADER").shouldBe("-")
     }
 
 }

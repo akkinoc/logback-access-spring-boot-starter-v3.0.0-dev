@@ -134,7 +134,6 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val responseHeaderMap: Map<String, String> by lazy {
-        // TODO
         val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
         exchange.responseHeaders.associateTo(headers) { it.headerName.toString() to it.first }
         unmodifiableMap(headers)
