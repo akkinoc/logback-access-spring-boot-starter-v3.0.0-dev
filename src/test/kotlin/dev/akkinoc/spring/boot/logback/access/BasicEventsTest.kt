@@ -31,11 +31,11 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 /**
  * Tests the appended Logback-access events in the case where the configuration is the default.
  */
+@ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(properties = ["logback.access.config=classpath:logback-access.capture.xml"])
 sealed class BasicEventsTest {
 
     @Test
-    @ExtendWith(EventsCaptureExtension::class)
     fun `Appends a Logback-access event`(
             @Autowired rest: TestRestTemplate,
             @LocalServerPort port: Int,
@@ -44,6 +44,7 @@ sealed class BasicEventsTest {
         val started = currentTimeMillis()
         val response = rest.getForEntity<String>("/mock-controller/text")
         response.statusCode.shouldBe(HttpStatus.OK)
+        response.body.shouldBe("MOCK-TEXT")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         val finished = currentTimeMillis()
         event.request.shouldBeNull()
@@ -65,6 +66,7 @@ sealed class BasicEventsTest {
         event.queryString.shouldBeEmpty()
         event.requestURL.shouldBe("GET /mock-controller/text HTTP/1.1")
         event.statusCode.shouldBe(HttpStatus.OK.value())
+        event.contentLength.shouldBe(9L)
     }
 
 }
