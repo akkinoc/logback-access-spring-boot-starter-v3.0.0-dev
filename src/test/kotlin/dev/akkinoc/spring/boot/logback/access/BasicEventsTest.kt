@@ -15,6 +15,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.longs.shouldBeBetween
+import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -74,7 +75,7 @@ sealed class BasicEventsTest {
         event.requestHeaderNames.shouldNotBeNull()
         event.getRequestHeader("mock-unknown-request-header").shouldBe("-")
         event.getCookie("mock-unknown-cookie").shouldBe("-")
-        event.requestParameterMap.shouldNotBeNull()
+        event.requestParameterMap.shouldBeEmpty()
         event.getRequestParameter("mock-unknown-request-parameter").shouldContainExactly("-")
         event.getAttribute("mock-unknown-attribute").shouldBe("-")
         event.sessionID.shouldBe("-")
