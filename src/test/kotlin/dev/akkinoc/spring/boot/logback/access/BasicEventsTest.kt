@@ -13,6 +13,7 @@ import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
@@ -95,11 +96,29 @@ sealed class BasicEventsTest {
         response.body.shouldBe("mock-body")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.responseHeaderMap.shouldContain("mock-response-header" to "mock-response-header-value")
+        event.responseHeaderMap.shouldContain("mock-empty-response-header" to "")
         event.responseHeaderMap.shouldContain("mock-multi-response-header" to "mock-multi-response-header-value1")
-        event.responseHeaderNameList.shouldContainAll("mock-response-header", "mock-multi-response-header")
+        event.responseHeaderNameList.shouldContainAll(
+                "mock-response-header",
+                "mock-empty-response-header",
+                "mock-multi-response-header",
+        )
+        event.responseHeaderNameList.shouldNotContainAll(
+                "Mock-Response-Header",
+                "MOCK-RESPONSE-HEADER",
+                "Mock-Empty-Response-Header",
+                "MOCK-EMPTY-RESPONSE-HEADER",
+                "Mock-Multi-Response-Header",
+                "MOCK-MULTI-RESPONSE-HEADER",
+        )
         event.getResponseHeader("mock-response-header").shouldBe("mock-response-header-value")
+        event.getResponseHeader("Mock-Response-Header").shouldBe("mock-response-header-value")
         event.getResponseHeader("MOCK-RESPONSE-HEADER").shouldBe("mock-response-header-value")
+        event.getResponseHeader("mock-empty-response-header").shouldBeEmpty()
+        event.getResponseHeader("Mock-Empty-Response-Header").shouldBeEmpty()
+        event.getResponseHeader("MOCK-EMPTY-RESPONSE-HEADER").shouldBeEmpty()
         event.getResponseHeader("mock-multi-response-header").shouldBe("mock-multi-response-header-value1")
+        event.getResponseHeader("Mock-Multi-Response-Header").shouldBe("mock-multi-response-header-value1")
         event.getResponseHeader("MOCK-MULTI-RESPONSE-HEADER").shouldBe("mock-multi-response-header-value1")
         event.getResponseHeader("mock-unknown-response-header").shouldBe("-")
     }

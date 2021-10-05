@@ -35,6 +35,10 @@ class MockController {
                         "mock-response-header-value",
                 )
                 .header(
+                        "mock-empty-response-header",
+                        "",
+                )
+                .header(
                         "mock-multi-response-header",
                         "mock-multi-response-header-value1",
                         "mock-multi-response-header-value2",
