@@ -88,6 +88,19 @@ sealed class BasicEventsTest {
     }
 
     @Test
+    fun `Appends a Logback-access event with a query string`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val response = rest.getForEntity<String>("/mock-controller/text?mock-query-string")
+        response.statusCode.shouldBe(OK)
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.requestURI.shouldBe("/mock-controller/text")
+        event.queryString.shouldBe("?mock-query-string")
+        event.requestURL.shouldBe("GET /mock-controller/text?mock-query-string HTTP/1.1")
+    }
+
+    @Test
     fun `Appends a Logback-access event with request headers`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
