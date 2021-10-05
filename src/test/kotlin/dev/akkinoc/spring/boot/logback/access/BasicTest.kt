@@ -34,8 +34,10 @@ sealed class BasicTest {
     @Test
     fun `Provides the Logback-access context`(
             @Autowired logbackAccessContext: LogbackAccessContext?,
+            @Autowired logbackAccessProperties: LogbackAccessProperties?,
     ) {
         logbackAccessContext.shouldNotBeNull()
+        logbackAccessContext.properties.shouldBe(logbackAccessProperties)
     }
 
     @Test
