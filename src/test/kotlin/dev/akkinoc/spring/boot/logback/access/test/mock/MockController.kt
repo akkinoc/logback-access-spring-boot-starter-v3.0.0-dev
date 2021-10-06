@@ -56,12 +56,12 @@ class MockController {
     }
 
     /**
-     * Gets a mock text without a content length response header.
+     * Gets a mock text with chunked transfer encoding.
      *
-     * @return A [Flux] to return a mock text without a content length response header.
+     * @return A [Flux] to return a mock text with chunked transfer encoding.
      */
-    @GetMapping("/text-without-content-length-response-header")
-    fun getTextWithoutContentLengthResponseHeader(): Flux<String> {
+    @GetMapping("/text-with-chunked-transfer-encoding")
+    fun getTextWithChunkedTransferEncoding(): Flux<String> {
         return Flux.just("mock-text")
     }
 

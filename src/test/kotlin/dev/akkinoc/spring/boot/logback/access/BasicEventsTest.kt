@@ -16,6 +16,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.longs.shouldBeBetween
+import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.longs.shouldBeZero
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContainAll
@@ -212,17 +213,18 @@ sealed class BasicEventsTest {
     }
 
     @Test
-    fun `Appends a Logback-access event without a content length response header`(
+    fun `Appends a Logback-access event with chunked transfer encoding`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val request = RequestEntity.get("/mock-controller/text-without-content-length-response-header").build()
+        val request = RequestEntity.get("/mock-controller/text-with-chunked-transfer-encoding").build()
         val response = rest.exchange<String>(request)
         response.statusCode.shouldBe(OK)
-        response.headers.contentLength.shouldBe(-1L)
+        response.headers.getFirst("transfer-encoding").shouldBe("chunked")
+        response.headers.getFirst("content-length").shouldBeNull()
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.contentLength.shouldBe(9L)
+        event.contentLength.shouldBeGreaterThanOrEqual(9L)
     }
 
     @Test
