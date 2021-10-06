@@ -116,7 +116,7 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val contentLength: Long by lazy {
-        response.coyoteResponse.contentLengthLong
+        response.getBytesWritten(false)
     }
 
     override val responseContent: String? by lazy {
