@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CompletableFuture.supplyAsync
 
 /**
  * The mock controller.
@@ -38,6 +40,18 @@ class MockController {
                         "mock-multi-response-header-value2",
                 )
                 .body("mock-text")
+    }
+
+    /**
+     * Gets a mock text asynchronously.
+     *
+     * @return A [CompletableFuture] to return a mock text.
+     */
+    @GetMapping("/text-asynchronously")
+    fun getTextAsynchronously(): CompletableFuture<String> {
+        return supplyAsync {
+            getText()
+        }
     }
 
 }

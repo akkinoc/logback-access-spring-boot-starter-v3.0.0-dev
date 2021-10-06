@@ -196,6 +196,19 @@ sealed class BasicEventsTest {
         event.getResponseHeader("mock-unknown-response-header").shouldBe("-")
     }
 
+    @Test
+    fun `Appends a Logback-access event with an asynchronous request`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/text-asynchronously").build()
+        val response = rest.exchange<String>(request)
+        response.statusCode.shouldBe(OK)
+        response.body.shouldBe("mock-text")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.threadName.shouldNotBeEmpty()
+    }
+
 }
 
 /**
