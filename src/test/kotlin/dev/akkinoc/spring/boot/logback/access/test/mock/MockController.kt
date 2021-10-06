@@ -43,6 +43,16 @@ class MockController {
     }
 
     /**
+     * Gets an empty text.
+     *
+     * @return An empty text.
+     */
+    @GetMapping("/empty-text")
+    fun getEmptyText(): String {
+        return ""
+    }
+
+    /**
      * Gets a text asynchronously.
      *
      * @return A [CompletableFuture] to return a text asynchronously.
@@ -62,16 +72,6 @@ class MockController {
     @GetMapping("/text-with-chunked-transfer-encoding")
     fun getTextWithChunkedTransferEncoding(): Flux<String> {
         return Flux.just("mock-text")
-    }
-
-    /**
-     * Gets an empty text.
-     *
-     * @return An empty text.
-     */
-    @GetMapping("/empty-text")
-    fun getEmptyText(): String {
-        return ""
     }
 
 }

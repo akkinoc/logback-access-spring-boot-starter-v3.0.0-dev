@@ -200,6 +200,19 @@ sealed class BasicEventsTest {
     }
 
     @Test
+    fun `Appends a Logback-access event with an empty response body`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/empty-text").build()
+        val response = rest.exchange<String>(request)
+        response.statusCode.shouldBe(OK)
+        response.hasBody().shouldBeFalse()
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.contentLength.shouldBeZero()
+    }
+
+    @Test
     fun `Appends a Logback-access event with an asynchronous request`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
@@ -225,19 +238,6 @@ sealed class BasicEventsTest {
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.contentLength.shouldBeGreaterThanOrEqual(9L)
-    }
-
-    @Test
-    fun `Appends a Logback-access event with an empty response body`(
-            @Autowired rest: TestRestTemplate,
-            capture: EventsCapture,
-    ) {
-        val request = RequestEntity.get("/mock-controller/empty-text").build()
-        val response = rest.exchange<String>(request)
-        response.statusCode.shouldBe(OK)
-        response.hasBody().shouldBeFalse()
-        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.contentLength.shouldBeZero()
     }
 
 }
