@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.exchange
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.HttpStatus.OK
 import org.springframework.http.RequestEntity
 import org.springframework.test.context.TestPropertySource
 import java.lang.System.currentTimeMillis
@@ -53,7 +52,7 @@ sealed class BasicEventsTest {
         val request = RequestEntity.get("/mock-controller/text").build()
         val started = currentTimeMillis()
         val response = rest.exchange<String>(request)
-        response.statusCode.shouldBe(OK)
+        response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         val finished = currentTimeMillis()
@@ -99,7 +98,7 @@ sealed class BasicEventsTest {
     ) {
         val request = RequestEntity.get("/mock-controller/text?mock-query1&mock-query2").build()
         val response = rest.exchange<String>(request)
-        response.statusCode.shouldBe(OK)
+        response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.requestURI.shouldBe("/mock-controller/text")
@@ -122,7 +121,7 @@ sealed class BasicEventsTest {
                 )
                 .build()
         val response = rest.exchange<String>(request)
-        response.statusCode.shouldBe(OK)
+        response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.requestHeaderMap.shouldContainAll(
@@ -164,7 +163,7 @@ sealed class BasicEventsTest {
     ) {
         val request = RequestEntity.get("/mock-controller/text-with-response-headers").build()
         val response = rest.exchange<String>(request)
-        response.statusCode.shouldBe(OK)
+        response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.responseHeaderMap.shouldContainAll(
@@ -206,7 +205,7 @@ sealed class BasicEventsTest {
     ) {
         val request = RequestEntity.get("/mock-controller/empty-text").build()
         val response = rest.exchange<String>(request)
-        response.statusCode.shouldBe(OK)
+        response.statusCodeValue.shouldBe(200)
         response.hasBody().shouldBeFalse()
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.contentLength.shouldBeZero()
@@ -219,7 +218,7 @@ sealed class BasicEventsTest {
     ) {
         val request = RequestEntity.get("/mock-controller/text-asynchronously").build()
         val response = rest.exchange<String>(request)
-        response.statusCode.shouldBe(OK)
+        response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.threadName.shouldNotBeEmpty()
@@ -232,7 +231,7 @@ sealed class BasicEventsTest {
     ) {
         val request = RequestEntity.get("/mock-controller/text-with-chunked-transfer-encoding").build()
         val response = rest.exchange<String>(request)
-        response.statusCode.shouldBe(OK)
+        response.statusCodeValue.shouldBe(200)
         response.headers.getFirst("transfer-encoding").shouldBe("chunked")
         response.headers.getFirst("content-length").shouldBeNull()
         response.body.shouldBe("mock-text")
