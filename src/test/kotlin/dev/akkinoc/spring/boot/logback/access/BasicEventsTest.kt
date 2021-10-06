@@ -94,14 +94,14 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val request = RequestEntity.get("/mock-controller/text?mock-query-string").build()
+        val request = RequestEntity.get("/mock-controller/text?mock-query1&mock-query2").build()
         val response = rest.exchange<String>(request)
         response.statusCode.shouldBe(OK)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.requestURI.shouldBe("/mock-controller/text")
-        event.queryString.shouldBe("?mock-query-string")
-        event.requestURL.shouldBe("GET /mock-controller/text?mock-query-string HTTP/1.1")
+        event.queryString.shouldBe("?mock-query1&mock-query2")
+        event.requestURL.shouldBe("GET /mock-controller/text?mock-query1&mock-query2 HTTP/1.1")
     }
 
     @Test
