@@ -45,7 +45,7 @@ class MockController {
     /**
      * Gets a mock text asynchronously.
      *
-     * @return A [CompletableFuture] to return a mock text.
+     * @return A [CompletableFuture] to return a mock text asynchronously.
      */
     @GetMapping("/text-asynchronously")
     fun getTextAsynchronously(): CompletableFuture<String> {
