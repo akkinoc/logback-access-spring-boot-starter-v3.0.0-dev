@@ -54,4 +54,14 @@ class MockController {
         }
     }
 
+    /**
+     * Gets an empty text.
+     *
+     * @return An empty text.
+     */
+    @GetMapping("/empty-text")
+    fun getEmptyText(): String {
+        return ""
+    }
+
 }

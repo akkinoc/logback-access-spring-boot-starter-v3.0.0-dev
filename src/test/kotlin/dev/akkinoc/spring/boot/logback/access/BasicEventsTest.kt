@@ -10,11 +10,13 @@ import dev.akkinoc.spring.boot.logback.access.test.type.TomcatServletWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.assertions.throwables.shouldThrowUnit
+import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.longs.shouldBeBetween
+import io.kotest.matchers.longs.shouldBeZero
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContainAll
 import io.kotest.matchers.nulls.shouldBeNull
@@ -207,6 +209,19 @@ sealed class BasicEventsTest {
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.threadName.shouldNotBeEmpty()
+    }
+
+    @Test
+    fun `Appends a Logback-access event with an empty response body`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/empty-text").build()
+        val response = rest.exchange<String>(request)
+        response.statusCode.shouldBe(OK)
+        response.hasBody().shouldBeFalse()
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.contentLength.shouldBeZero()
     }
 
 }
