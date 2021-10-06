@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletableFuture.supplyAsync
+
 
 /**
  * The mock controller.
@@ -49,7 +49,7 @@ class MockController {
      */
     @GetMapping("/text-asynchronously")
     fun getTextAsynchronously(): CompletableFuture<String> {
-        return supplyAsync {
+        return CompletableFuture.supplyAsync {
             getText()
         }
     }
