@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import java.util.concurrent.CompletableFuture
 
-
 /**
  * The mock controller.
  */
@@ -16,9 +15,9 @@ import java.util.concurrent.CompletableFuture
 class MockController {
 
     /**
-     * Gets a mock text.
+     * Gets a text.
      *
-     * @return A mock text.
+     * @return A text.
      */
     @GetMapping("/text")
     fun getText(): String {
@@ -26,9 +25,9 @@ class MockController {
     }
 
     /**
-     * Gets a mock text with response headers.
+     * Gets a text with response headers.
      *
-     * @return A [ResponseEntity] to return a mock text with response headers.
+     * @return A [ResponseEntity] to return a text with response headers.
      */
     @GetMapping("/text-with-response-headers")
     fun getTextWithResponseHeaders(): ResponseEntity<String> {
@@ -44,9 +43,9 @@ class MockController {
     }
 
     /**
-     * Gets a mock text asynchronously.
+     * Gets a text asynchronously.
      *
-     * @return A [CompletableFuture] to return a mock text asynchronously.
+     * @return A [CompletableFuture] to return a text asynchronously.
      */
     @GetMapping("/text-asynchronously")
     fun getTextAsynchronously(): CompletableFuture<String> {
@@ -56,9 +55,9 @@ class MockController {
     }
 
     /**
-     * Gets a mock text with chunked transfer encoding.
+     * Gets a text with chunked transfer encoding.
      *
-     * @return A [Flux] to return a mock text with chunked transfer encoding.
+     * @return A [Flux] to return a text with chunked transfer encoding.
      */
     @GetMapping("/text-with-chunked-transfer-encoding")
     fun getTextWithChunkedTransferEncoding(): Flux<String> {
