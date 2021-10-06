@@ -212,6 +212,20 @@ sealed class BasicEventsTest {
     }
 
     @Test
+    fun `Appends a Logback-access event without a content length response header`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/text-without-content-length-response-header").build()
+        val response = rest.exchange<String>(request)
+        response.statusCode.shouldBe(OK)
+        response.headers.contentLength.shouldBe(-1L)
+        response.body.shouldBe("mock-text")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.contentLength.shouldBe(9L)
+    }
+
+    @Test
     fun `Appends a Logback-access event with an empty response body`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,

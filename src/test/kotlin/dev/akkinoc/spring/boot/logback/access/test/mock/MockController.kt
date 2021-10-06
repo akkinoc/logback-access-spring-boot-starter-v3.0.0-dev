@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Flux
 import java.util.concurrent.CompletableFuture
 
 
@@ -52,6 +53,16 @@ class MockController {
         return CompletableFuture.supplyAsync {
             getText()
         }
+    }
+
+    /**
+     * Gets a mock text without a content length response header.
+     *
+     * @return A [Flux] to return a mock text without a content length response header.
+     */
+    @GetMapping("/text-without-content-length-response-header")
+    fun getTextWithoutContentLengthResponseHeader(): Flux<String> {
+        return Flux.just("mock-text")
     }
 
     /**
