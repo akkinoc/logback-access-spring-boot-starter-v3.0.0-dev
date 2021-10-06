@@ -16,7 +16,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.maps.shouldBeEmpty
-import io.kotest.matchers.maps.shouldContain
+import io.kotest.matchers.maps.shouldContainAll
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -119,9 +119,13 @@ sealed class BasicEventsTest {
         val response = rest.exchange<String>(request)
         response.statusCode.shouldBe(OK)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.requestHeaderMap.shouldContain("mock-request-header" to "mock-request-header-value")
-        event.requestHeaderMap.shouldContain("mock-empty-request-header" to "")
-        event.requestHeaderMap.shouldContain("mock-multi-request-header" to "mock-multi-request-header-value1")
+        event.requestHeaderMap.shouldContainAll(
+                mapOf(
+                        "mock-request-header" to "mock-request-header-value",
+                        "mock-empty-request-header" to "",
+                        "mock-multi-request-header" to "mock-multi-request-header-value1",
+                )
+        )
         event.requestHeaderNames.toList().shouldContainAll(
                 "mock-request-header",
                 "mock-empty-request-header",
@@ -156,9 +160,13 @@ sealed class BasicEventsTest {
         val response = rest.exchange<String>(request)
         response.statusCode.shouldBe(OK)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.responseHeaderMap.shouldContain("mock-response-header" to "mock-response-header-value")
-        event.responseHeaderMap.shouldContain("mock-empty-response-header" to "")
-        event.responseHeaderMap.shouldContain("mock-multi-response-header" to "mock-multi-response-header-value1")
+        event.responseHeaderMap.shouldContainAll(
+                mapOf(
+                        "mock-response-header" to "mock-response-header-value",
+                        "mock-empty-response-header" to "",
+                        "mock-multi-response-header" to "mock-multi-response-header-value1",
+                )
+        )
         event.responseHeaderNameList.shouldContainAll(
                 "mock-response-header",
                 "mock-empty-response-header",
