@@ -25,7 +25,7 @@ class MockController {
     /**
      * Gets a mock text with response headers.
      *
-     * @return A mock text with response headers.
+     * @return A [ResponseEntity] to return a mock text with response headers.
      */
     @GetMapping("/text-with-response-headers")
     fun getTextWithResponseHeaders(): ResponseEntity<String> {
