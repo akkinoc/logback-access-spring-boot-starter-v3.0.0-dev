@@ -93,7 +93,7 @@ sealed class BasicEventsTest {
     }
 
     @Test
-    fun `Appends a Logback-access event with a query string`(
+    fun `Appends a Logback-access event with a request query string`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -152,7 +152,7 @@ sealed class BasicEventsTest {
     }
 
     @Test
-    fun `Appends a Logback-access event with cookies`(
+    fun `Appends a Logback-access event with request cookies`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -207,7 +207,7 @@ sealed class BasicEventsTest {
     }
 
     @Test
-    fun `Appends a Logback-access event with an empty response body`(
+    fun `Appends a Logback-access event with an empty response`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -221,7 +221,7 @@ sealed class BasicEventsTest {
     }
 
     @Test
-    fun `Appends a Logback-access event with an asynchronous request`(
+    fun `Appends a Logback-access event with an asynchronous response`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -235,7 +235,7 @@ sealed class BasicEventsTest {
     }
 
     @Test
-    fun `Appends a Logback-access event with chunked transfer encoding`(
+    fun `Appends a Logback-access event with a chunked response`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
