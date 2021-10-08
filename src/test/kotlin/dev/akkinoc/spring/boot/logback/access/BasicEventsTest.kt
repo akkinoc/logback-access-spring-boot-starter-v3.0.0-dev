@@ -14,6 +14,7 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
@@ -92,22 +93,6 @@ sealed class BasicEventsTest {
     }
 
     @Test
-    fun `Appends a Logback-access event with a request query string`(
-            @Autowired rest: TestRestTemplate,
-            capture: EventsCapture,
-    ) {
-        val url = "/mock-controller/text?mock-query1&mock-query2"
-        val request = RequestEntity.get(url).build()
-        val response = rest.exchange<String>(request)
-        response.statusCodeValue.shouldBe(200)
-        response.body.shouldBe("mock-text")
-        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.requestURI.shouldBe("/mock-controller/text")
-        event.queryString.shouldBe("?mock-query1&mock-query2")
-        event.requestURL.shouldBe("GET /mock-controller/text?mock-query1&mock-query2 HTTP/1.1")
-    }
-
-    @Test
     fun `Appends a Logback-access event with request headers`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
@@ -150,6 +135,29 @@ sealed class BasicEventsTest {
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.getCookie("a").shouldBe("value%20%40a")
         event.getCookie("b").shouldBeEmpty()
+    }
+
+    @Test
+    fun `Appends a Logback-access event with request parameters by query string`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val url = "/mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c="
+        val request = RequestEntity.get(url).build()
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(200)
+        response.body.shouldBe("mock-text")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.requestURI.shouldBe("/mock-controller/text")
+        event.queryString.shouldBe("?a=value+@a&b=value1+@b&b=value2+@b&c=")
+        event.requestURL.shouldBe("GET /mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c= HTTP/1.1")
+        event.requestParameterMap.keys.shouldContainExactlyInAnyOrder("a", "b", "c")
+        event.requestParameterMap["a"].shouldContainExactly("value @a")
+        event.requestParameterMap["b"].shouldContainExactly("value1 @b", "value2 @b")
+        event.requestParameterMap["c"].shouldContainExactly("")
+        event.getRequestParameter("a").shouldContainExactly("value @a")
+        event.getRequestParameter("b").shouldContainExactly("value1 @b", "value2 @b")
+        event.getRequestParameter("c").shouldContainExactly("")
     }
 
     @Test
