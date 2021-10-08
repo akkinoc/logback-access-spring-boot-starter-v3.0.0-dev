@@ -8,6 +8,7 @@ import org.eclipse.jetty.server.Response
 import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.Thread.currentThread
+import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
 
 /**
@@ -84,8 +85,8 @@ class LogbackAccessJettyEventSource(
     }
 
     override val requestParameterMap: Map<String, List<String>> by lazy {
-        // TODO
-        emptyMap()
+        val params = request.parameterMap.mapValues { unmodifiableList(it.value.asList()) }
+        unmodifiableMap(params)
     }
 
     override val attributeMap: Map<String, String> by lazy {

@@ -9,6 +9,7 @@ import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import java.lang.Thread.currentThread
+import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
 import java.util.concurrent.TimeUnit.NANOSECONDS
 import javax.servlet.RequestDispatcher.ERROR_REQUEST_URI
@@ -113,8 +114,8 @@ class LogbackAccessUndertowEventSource(
 
     override val requestParameterMap: Map<String, List<String>> by lazy {
         // TODO
-        val parameters = exchange.queryParameters.mapValues { it.value.toList() }
-        unmodifiableMap(parameters)
+        val params = exchange.queryParameters.mapValues { unmodifiableList(it.value.toList()) }
+        unmodifiableMap(params)
     }
 
     override val attributeMap: Map<String, String> by lazy {
