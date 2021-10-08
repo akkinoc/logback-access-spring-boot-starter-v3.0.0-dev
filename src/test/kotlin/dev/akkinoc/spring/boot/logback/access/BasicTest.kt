@@ -46,8 +46,7 @@ sealed class BasicTest {
             @Autowired rest: TestRestTemplate,
             capture: CapturedOutput,
     ) {
-        val url = "/mock-controller/text"
-        val request = RequestEntity.get(url).build()
+        val request = RequestEntity.get("/mock-controller/text").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")

@@ -49,8 +49,7 @@ sealed class BasicEventsTest {
             @LocalServerPort port: Int,
             capture: EventsCapture,
     ) {
-        val url = "/mock-controller/text"
-        val request = RequestEntity.get(url).build()
+        val request = RequestEntity.get("/mock-controller/text").build()
         val started = currentTimeMillis()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
@@ -97,8 +96,7 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val url = "/mock-controller/text"
-        val request = RequestEntity.get(url)
+        val request = RequestEntity.get("/mock-controller/text")
                 .header("a", "value @a")
                 .header("b", "value1 @b", "value2 @b")
                 .header("c", "")
@@ -125,8 +123,7 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val url = "/mock-controller/text"
-        val request = RequestEntity.get(url)
+        val request = RequestEntity.get("/mock-controller/text")
                 .header("cookie", "a=value%20%40a; b=")
                 .build()
         val response = rest.exchange<String>(request)
@@ -142,8 +139,7 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val url = "/mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c="
-        val request = RequestEntity.get(url).build()
+        val request = RequestEntity.get("/mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c=").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
@@ -165,8 +161,7 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val url = "/mock-controller/text-with-response-headers"
-        val request = RequestEntity.get(url).build()
+        val request = RequestEntity.get("/mock-controller/text-with-response-headers").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
@@ -189,8 +184,7 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val url = "/mock-controller/empty-text"
-        val request = RequestEntity.get(url).build()
+        val request = RequestEntity.get("/mock-controller/empty-text").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.hasBody().shouldBeFalse()
@@ -203,8 +197,7 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val url = "/mock-controller/text-asynchronously"
-        val request = RequestEntity.get(url).build()
+        val request = RequestEntity.get("/mock-controller/text-asynchronously").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
@@ -218,8 +211,7 @@ sealed class BasicEventsTest {
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val url = "/mock-controller/text-with-chunked-transfer-encoding"
-        val request = RequestEntity.get(url).build()
+        val request = RequestEntity.get("/mock-controller/text-with-chunked-transfer-encoding").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.headers["transfer-encoding"].shouldBe(listOf("chunked"))
