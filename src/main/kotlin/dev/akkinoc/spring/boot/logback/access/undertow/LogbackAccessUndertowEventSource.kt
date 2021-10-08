@@ -11,6 +11,9 @@ import java.lang.System.nanoTime
 import java.lang.Thread.currentThread
 import java.util.Collections.unmodifiableMap
 import java.util.concurrent.TimeUnit.NANOSECONDS
+import javax.servlet.RequestDispatcher.ERROR_REQUEST_URI
+import javax.servlet.RequestDispatcher.FORWARD_QUERY_STRING
+import javax.servlet.RequestDispatcher.FORWARD_REQUEST_URI
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -75,20 +78,22 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val protocol: String by lazy {
-        exchange.protocol.toString()
+        "${exchange.protocol}"
     }
 
     override val method: String by lazy {
-        exchange.requestMethod.toString()
+        "${exchange.requestMethod}"
     }
 
     override val requestURI: String by lazy {
-        exchange.requestURI
+        request?.getAttribute(FORWARD_REQUEST_URI) as String?
+                ?: request?.getAttribute(ERROR_REQUEST_URI) as String?
+                ?: exchange.requestURI
     }
 
     override val queryString: String by lazy {
-        val query = exchange.queryString.ifEmpty { return@lazy "" }
-        "?$query"
+        val query = request?.getAttribute(FORWARD_QUERY_STRING) as String? ?: exchange.queryString
+        if (query.isEmpty()) "" else "?$query"
     }
 
     override val requestURL: String by lazy {
@@ -97,7 +102,7 @@ class LogbackAccessUndertowEventSource(
 
     override val requestHeaderMap: Map<String, String> by lazy {
         val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
-        exchange.requestHeaders.associateTo(headers) { it.headerName.toString() to it.first }
+        exchange.requestHeaders.associateTo(headers) { "${it.headerName}" to it.first }
         unmodifiableMap(headers)
     }
 
@@ -134,7 +139,7 @@ class LogbackAccessUndertowEventSource(
 
     override val responseHeaderMap: Map<String, String> by lazy {
         val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
-        exchange.responseHeaders.associateTo(headers) { it.headerName.toString() to it.first }
+        exchange.responseHeaders.associateTo(headers) { "${it.headerName}" to it.first }
         unmodifiableMap(headers)
     }
 
