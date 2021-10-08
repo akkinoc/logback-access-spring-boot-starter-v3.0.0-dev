@@ -107,7 +107,6 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val cookieMap: Map<String, String> by lazy {
-        // TODO
         val cookies = exchange.requestCookies().associate { it.name to it.value }
         unmodifiableMap(cookies)
     }

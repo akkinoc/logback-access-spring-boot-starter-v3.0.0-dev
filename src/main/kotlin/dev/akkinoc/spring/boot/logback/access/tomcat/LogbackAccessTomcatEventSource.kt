@@ -81,8 +81,8 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val cookieMap: Map<String, String> by lazy {
-        // TODO
-        emptyMap()
+        val cookies = request.cookies.orEmpty().associate { it.name to it.value }
+        unmodifiableMap(cookies)
     }
 
     override val requestParameterMap: Map<String, List<String>> by lazy {

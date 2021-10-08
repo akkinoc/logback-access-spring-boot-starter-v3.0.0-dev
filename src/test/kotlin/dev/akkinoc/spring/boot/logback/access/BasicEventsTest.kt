@@ -152,6 +152,23 @@ sealed class BasicEventsTest {
     }
 
     @Test
+    fun `Appends a Logback-access event with cookies`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val url = "/mock-controller/text"
+        val request = RequestEntity.get(url)
+                .header("cookie", "mock-cookie=mock-cookie-value; mock-empty-cookie=")
+                .build()
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(200)
+        response.body.shouldBe("mock-text")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.getCookie("mock-cookie").shouldBe("mock-cookie-value")
+        event.getCookie("mock-empty-cookie").shouldBe("")
+    }
+
+    @Test
     fun `Appends a Logback-access event with response headers`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
