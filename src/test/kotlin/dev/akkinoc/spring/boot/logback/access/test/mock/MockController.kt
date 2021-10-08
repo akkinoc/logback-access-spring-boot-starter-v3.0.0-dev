@@ -34,11 +34,8 @@ class MockController {
         return ResponseEntity.ok()
                 .header("mock-response-header", "mock-response-header-value")
                 .header("mock-empty-response-header", "")
-                .header(
-                        "mock-multi-response-header",
-                        "mock-multi-response-header-value1",
-                        "mock-multi-response-header-value2",
-                )
+                .header("mock-multi-response-header", "mock-multi-response-header-value1")
+                .header("mock-multi-response-header", "mock-multi-response-header-value2")
                 .body("mock-text")
     }
 

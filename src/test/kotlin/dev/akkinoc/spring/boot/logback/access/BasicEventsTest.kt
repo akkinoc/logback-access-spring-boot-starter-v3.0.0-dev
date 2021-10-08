@@ -12,14 +12,14 @@ import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldNotContainAll
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.longs.shouldBeZero
 import io.kotest.matchers.maps.shouldBeEmpty
-import io.kotest.matchers.maps.shouldContainAll
+import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -117,36 +117,29 @@ sealed class BasicEventsTest {
         val request = RequestEntity.get(url)
                 .header("mock-request-header", "mock-request-header-value")
                 .header("mock-empty-request-header", "")
-                .header(
-                        "mock-multi-request-header",
-                        "mock-multi-request-header-value1",
-                        "mock-multi-request-header-value2",
-                )
+                .header("mock-multi-request-header", "mock-multi-request-header-value1")
+                .header("mock-multi-request-header", "mock-multi-request-header-value2")
                 .build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.requestHeaderMap.shouldContainAll(
-                mapOf(
-                        "mock-request-header" to "mock-request-header-value",
-                        "mock-empty-request-header" to "",
-                        "mock-multi-request-header" to "mock-multi-request-header-value1",
-                )
-        )
-        event.requestHeaderNames.toList().shouldContainAll(
-                "mock-request-header",
-                "mock-empty-request-header",
-                "mock-multi-request-header",
-        )
-        event.requestHeaderNames.toList().shouldNotContainAll(
-                "Mock-Request-Header",
-                "MOCK-REQUEST-HEADER",
-                "Mock-Empty-Request-Header",
-                "MOCK-EMPTY-REQUEST-HEADER",
-                "Mock-Multi-Request-Header",
-                "MOCK-MULTI-REQUEST-HEADER",
-        )
+        event.requestHeaderMap.also {
+            it.shouldContain("mock-request-header" to "mock-request-header-value")
+            it.shouldContain("mock-empty-request-header" to "")
+            it.shouldContain("mock-multi-request-header" to "mock-multi-request-header-value1")
+        }
+        event.requestHeaderNames.toList().also {
+            it.shouldContain("mock-request-header")
+            it.shouldNotContain("Mock-Request-Header")
+            it.shouldNotContain("MOCK-REQUEST-HEADER")
+            it.shouldContain("mock-empty-request-header")
+            it.shouldNotContain("Mock-Empty-Request-Header")
+            it.shouldNotContain("MOCK-EMPTY-REQUEST-HEADER")
+            it.shouldContain("mock-multi-request-header")
+            it.shouldNotContain("Mock-Multi-Request-Header")
+            it.shouldNotContain("MOCK-MULTI-REQUEST-HEADER")
+        }
         event.getRequestHeader("mock-request-header").shouldBe("mock-request-header-value")
         event.getRequestHeader("Mock-Request-Header").shouldBe("mock-request-header-value")
         event.getRequestHeader("MOCK-REQUEST-HEADER").shouldBe("mock-request-header-value")
@@ -156,7 +149,6 @@ sealed class BasicEventsTest {
         event.getRequestHeader("mock-multi-request-header").shouldBe("mock-multi-request-header-value1")
         event.getRequestHeader("Mock-Multi-Request-Header").shouldBe("mock-multi-request-header-value1")
         event.getRequestHeader("MOCK-MULTI-REQUEST-HEADER").shouldBe("mock-multi-request-header-value1")
-        event.getRequestHeader("mock-unknown-request-header").shouldBe("-")
     }
 
     @Test
@@ -170,26 +162,22 @@ sealed class BasicEventsTest {
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.responseHeaderMap.shouldContainAll(
-                mapOf(
-                        "mock-response-header" to "mock-response-header-value",
-                        "mock-empty-response-header" to "",
-                        "mock-multi-response-header" to "mock-multi-response-header-value1",
-                )
-        )
-        event.responseHeaderNameList.shouldContainAll(
-                "mock-response-header",
-                "mock-empty-response-header",
-                "mock-multi-response-header",
-        )
-        event.responseHeaderNameList.shouldNotContainAll(
-                "Mock-Response-Header",
-                "MOCK-RESPONSE-HEADER",
-                "Mock-Empty-Response-Header",
-                "MOCK-EMPTY-RESPONSE-HEADER",
-                "Mock-Multi-Response-Header",
-                "MOCK-MULTI-RESPONSE-HEADER",
-        )
+        event.responseHeaderMap.also {
+            it.shouldContain("mock-response-header" to "mock-response-header-value")
+            it.shouldContain("mock-empty-response-header" to "")
+            it.shouldContain("mock-multi-response-header" to "mock-multi-response-header-value1")
+        }
+        event.responseHeaderNameList.also {
+            it.shouldContain("mock-response-header")
+            it.shouldNotContain("Mock-Response-Header")
+            it.shouldNotContain("MOCK-RESPONSE-HEADER")
+            it.shouldContain("mock-empty-response-header")
+            it.shouldNotContain("Mock-Empty-Response-Header")
+            it.shouldNotContain("MOCK-EMPTY-RESPONSE-HEADER")
+            it.shouldContain("mock-multi-response-header")
+            it.shouldNotContain("Mock-Multi-Response-Header")
+            it.shouldNotContain("MOCK-MULTI-RESPONSE-HEADER")
+        }
         event.getResponseHeader("mock-response-header").shouldBe("mock-response-header-value")
         event.getResponseHeader("Mock-Response-Header").shouldBe("mock-response-header-value")
         event.getResponseHeader("MOCK-RESPONSE-HEADER").shouldBe("mock-response-header-value")
@@ -199,7 +187,6 @@ sealed class BasicEventsTest {
         event.getResponseHeader("mock-multi-response-header").shouldBe("mock-multi-response-header-value1")
         event.getResponseHeader("Mock-Multi-Response-Header").shouldBe("mock-multi-response-header-value1")
         event.getResponseHeader("MOCK-MULTI-RESPONSE-HEADER").shouldBe("mock-multi-response-header-value1")
-        event.getResponseHeader("mock-unknown-response-header").shouldBe("-")
     }
 
     @Test
@@ -240,7 +227,6 @@ sealed class BasicEventsTest {
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.headers.getFirst("transfer-encoding").shouldBe("chunked")
-        response.headers.getFirst("content-length").shouldBeNull()
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.contentLength.shouldBeGreaterThanOrEqual(9L)
