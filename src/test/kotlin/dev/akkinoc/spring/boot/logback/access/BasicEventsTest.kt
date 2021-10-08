@@ -144,6 +144,7 @@ sealed class BasicEventsTest {
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.method.shouldBe("GET")
         event.requestURI.shouldBe("/mock-controller/text")
         event.queryString.shouldBe("?a=value+@a&b=value1+@b&b=value2+@b&c=")
         event.requestURL.shouldBe("GET /mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c= HTTP/1.1")
