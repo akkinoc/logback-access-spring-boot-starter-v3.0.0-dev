@@ -19,7 +19,6 @@ import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.longs.shouldBeZero
 import io.kotest.matchers.maps.shouldBeEmpty
-import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -125,9 +124,9 @@ sealed class BasicEventsTest {
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.requestHeaderMap.also {
-            it.shouldContain("mock-request-header" to "mock-request-header-value")
-            it.shouldContain("mock-empty-request-header" to "")
-            it.shouldContain("mock-multi-request-header" to "mock-multi-request-header-value1")
+            it["mock-request-header"].shouldBe("mock-request-header-value")
+            it["mock-empty-request-header"].shouldBe("")
+            it["mock-multi-request-header"].shouldBe("mock-multi-request-header-value1")
         }
         event.requestHeaderNames.toList().also {
             it.shouldContain("mock-request-header")
@@ -180,9 +179,9 @@ sealed class BasicEventsTest {
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.responseHeaderMap.also {
-            it.shouldContain("mock-response-header" to "mock-response-header-value")
-            it.shouldContain("mock-empty-response-header" to "")
-            it.shouldContain("mock-multi-response-header" to "mock-multi-response-header-value1")
+            it["mock-response-header"].shouldBe("mock-response-header-value")
+            it["mock-empty-response-header"].shouldBe("")
+            it["mock-multi-response-header"].shouldBe("mock-multi-response-header-value1")
         }
         event.responseHeaderNameList.also {
             it.shouldContain("mock-response-header")
