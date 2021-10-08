@@ -32,10 +32,9 @@ class MockController {
     @GetMapping("/text-with-response-headers")
     fun getTextWithResponseHeaders(): ResponseEntity<String> {
         return ResponseEntity.ok()
-                .header("mock-response-header", "mock-response-header-value")
-                .header("mock-empty-response-header", "")
-                .header("mock-multi-response-header", "mock-multi-response-header-value1")
-                .header("mock-multi-response-header", "mock-multi-response-header-value2")
+                .header("a", "value @a")
+                .header("b", "value1 @b", "value2 @b")
+                .header("c", "")
                 .body("mock-text")
     }
 
@@ -56,9 +55,7 @@ class MockController {
      */
     @GetMapping("/text-asynchronously")
     fun getTextAsynchronously(): CompletableFuture<String> {
-        return CompletableFuture.supplyAsync {
-            getText()
-        }
+        return CompletableFuture.supplyAsync { "mock-text" }
     }
 
     /**
