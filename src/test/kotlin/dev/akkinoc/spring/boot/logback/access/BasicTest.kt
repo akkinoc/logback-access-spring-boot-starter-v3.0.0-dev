@@ -16,7 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.system.CapturedOutput
 import org.springframework.boot.test.system.OutputCaptureExtension
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.test.web.client.getForEntity
+import org.springframework.boot.test.web.client.exchange
+import org.springframework.http.RequestEntity
 
 /**
  * Tests the case where the configuration is the default.
@@ -45,13 +46,13 @@ sealed class BasicTest {
             @Autowired rest: TestRestTemplate,
             capture: CapturedOutput,
     ) {
-        val response = rest.getForEntity<String>("/mock-controller/text")
+        val url = "/mock-controller/text"
+        val request = RequestEntity.get(url).build()
+        val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
-        assertLogbackAccessEvents {
-            val regex = Regex("""^127\.0\.0\.1 - - \[.+] "GET /mock-controller/text HTTP/1\.1" 200 9$""")
-            capture.out.lines().shouldHaveSingleElement { it matches regex }
-        }
+        val regex = Regex("""^127\.0\.0\.1 - - \[.+] "GET /mock-controller/text HTTP/1\.1" 200 9$""")
+        assertLogbackAccessEvents { capture.out.lines().shouldHaveSingleElement { it matches regex } }
     }
 
 }
