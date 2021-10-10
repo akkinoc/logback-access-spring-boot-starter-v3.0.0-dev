@@ -1,5 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.test.mock
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,7 +23,9 @@ class MockController {
      */
     @GetMapping("/text")
     fun getText(): String {
-        return "mock-text"
+        val response = "mock-text"
+        log.debug("Getting a text: {}", response)
+        return response
     }
 
     /**
@@ -31,11 +35,13 @@ class MockController {
      */
     @GetMapping("/text-with-response-headers")
     fun getTextWithResponseHeaders(): ResponseEntity<String> {
-        return ResponseEntity.ok()
+        val response = ResponseEntity.ok()
                 .header("a", "value @a")
                 .header("b", "value1 @b", "value2 @b")
                 .header("c", "")
                 .body("mock-text")
+        log.debug("Getting a text with response headers: {}", response)
+        return response
     }
 
     /**
@@ -45,7 +51,9 @@ class MockController {
      */
     @GetMapping("/empty-text")
     fun getEmptyText(): String {
-        return ""
+        val response = ""
+        log.debug("Getting an empty text: {}", response)
+        return response
     }
 
     /**
@@ -55,7 +63,9 @@ class MockController {
      */
     @GetMapping("/text-asynchronously")
     fun getTextAsynchronously(): CompletableFuture<String> {
-        return CompletableFuture.supplyAsync { "mock-text" }
+        val response = CompletableFuture.supplyAsync { "mock-text" }
+        log.debug("Getting a text asynchronously: {}", response)
+        return response
     }
 
     /**
@@ -65,7 +75,18 @@ class MockController {
      */
     @GetMapping("/text-with-chunked-transfer-encoding")
     fun getTextWithChunkedTransferEncoding(): Flux<String> {
-        return Flux.just("mock-text")
+        val response = Flux.just("mock-text")
+        log.debug("Getting a text with chunked transfer encoding: {}", response)
+        return response
+    }
+
+    companion object {
+
+        /**
+         * The logger.
+         */
+        private val log: Logger = getLogger(MockController::class.java)
+
     }
 
 }
