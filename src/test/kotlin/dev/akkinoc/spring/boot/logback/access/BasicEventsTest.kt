@@ -216,7 +216,6 @@ sealed class BasicEventsTest {
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.headers["transfer-encoding"].shouldBe(listOf("chunked"))
-        response.headers["content-length"].shouldBeNull()
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.contentLength.shouldBeGreaterThanOrEqual(9L)
