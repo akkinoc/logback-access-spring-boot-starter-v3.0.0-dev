@@ -11,7 +11,6 @@ import java.lang.Thread.currentThread
 import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
 import java.util.concurrent.TimeUnit.NANOSECONDS
-import javax.servlet.RequestDispatcher.ERROR_REQUEST_URI
 import javax.servlet.RequestDispatcher.FORWARD_QUERY_STRING
 import javax.servlet.RequestDispatcher.FORWARD_REQUEST_URI
 import javax.servlet.http.HttpServletRequest
@@ -86,9 +85,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestURI: String by lazy {
-        request?.getAttribute(FORWARD_REQUEST_URI) as String?
-                ?: request?.getAttribute(ERROR_REQUEST_URI) as String?
-                ?: exchange.requestURI
+        request?.getAttribute(FORWARD_REQUEST_URI) as String? ?: exchange.requestURI
     }
 
     override val queryString: String by lazy {
