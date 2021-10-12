@@ -2,81 +2,29 @@ package dev.akkinoc.spring.boot.logback.access.test.mock
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Flux
-import java.util.concurrent.CompletableFuture
+import org.springframework.web.server.WebSession
 
 /**
- * The mock controller for the reactive web server.
+ * The mock controller for testing using the reactive web server.
  */
 @RestController
 @RequestMapping("/mock-controller")
 class MockReactiveController {
 
     /**
-     * Gets a text.
+     * Gets a text with a session.
      *
+     * @param session The session.
      * @return A text.
      */
-    @GetMapping("/text")
-    fun getText(): String {
+    @GetMapping("/text-with-session")
+    fun getTextWithSession(session: WebSession): String {
+        session.start()
         val response = "mock-text"
-        log.debug("Getting a text: {}", response)
-        return response
-    }
-
-    /**
-     * Gets a text with response headers.
-     *
-     * @return A [ResponseEntity] to return a text with response headers.
-     */
-    @GetMapping("/text-with-response-headers")
-    fun getTextWithResponseHeaders(): ResponseEntity<String> {
-        val response = ResponseEntity.ok()
-                .header("a", "value @a")
-                .header("b", "value1 @b", "value2 @b")
-                .header("c", "")
-                .body("mock-text")
-        log.debug("Getting a text with response headers: {}", response)
-        return response
-    }
-
-    /**
-     * Gets an empty text.
-     *
-     * @return An empty text.
-     */
-    @GetMapping("/empty-text")
-    fun getEmptyText(): String {
-        val response = ""
-        log.debug("Getting an empty text: {}", response)
-        return response
-    }
-
-    /**
-     * Gets a text asynchronously.
-     *
-     * @return A [CompletableFuture] to return a text asynchronously.
-     */
-    @GetMapping("/text-asynchronously")
-    fun getTextAsynchronously(): CompletableFuture<String> {
-        val response = CompletableFuture.supplyAsync { "mock-text" }
-        log.debug("Getting a text asynchronously: {}", response)
-        return response
-    }
-
-    /**
-     * Gets a text with chunked transfer encoding.
-     *
-     * @return A [Flux] to return a text with chunked transfer encoding.
-     */
-    @GetMapping("/text-with-chunked-transfer-encoding")
-    fun getTextWithChunkedTransferEncoding(): Flux<String> {
-        val response = Flux.just("mock-text")
-        log.debug("Getting a text with chunked transfer encoding: {}", response)
+        log.debug("Getting a text with a session: {}; {}", response, session)
         return response
     }
 

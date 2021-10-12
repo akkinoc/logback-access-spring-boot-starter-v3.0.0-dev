@@ -1,5 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access.test.configuration
 
+import dev.akkinoc.spring.boot.logback.access.test.mock.MockController
 import dev.akkinoc.spring.boot.logback.access.test.mock.MockReactiveController
 import dev.akkinoc.spring.boot.logback.access.test.mock.MockServletController
 import org.slf4j.Logger
@@ -17,9 +18,21 @@ import org.springframework.context.annotation.Bean
 class WebTestConfiguration {
 
     /**
-     * Provides the mock controller for the servlet web server.
+     * Provides the mock controller for testing using the web server.
      *
-     * @return The mock controller for the servlet web server.
+     * @return The mock controller for testing using the web server.
+     */
+    @Bean
+    fun mockController(): MockController {
+        val mockController = MockController()
+        log.debug("Providing the {}: {}", MockController::class.simpleName, mockController)
+        return mockController
+    }
+
+    /**
+     * Provides the mock controller for testing using the servlet web server.
+     *
+     * @return The mock controller for testing using the servlet web server.
      */
     @Bean
     @ConditionalOnWebApplication(type = SERVLET)
@@ -30,9 +43,9 @@ class WebTestConfiguration {
     }
 
     /**
-     * Provides the mock controller for the reactive web server.
+     * Provides the mock controller for testing using the reactive web server.
      *
-     * @return The mock controller for the reactive web server.
+     * @return The mock controller for testing using the reactive web server.
      */
     @Bean
     @ConditionalOnWebApplication(type = REACTIVE)
