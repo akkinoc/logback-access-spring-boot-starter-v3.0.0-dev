@@ -5,6 +5,8 @@ import dev.akkinoc.spring.boot.logback.access.LogbackAccessEvent
 import io.undertow.server.ExchangeCompletionListener.NextListener
 import io.undertow.server.HttpHandler
 import io.undertow.server.HttpServerExchange
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory.getLogger
 
 /**
  * The Undertow [HttpHandler] to emit Logback-access events.
@@ -19,21 +21,42 @@ class LogbackAccessUndertowHttpHandler(
 ) : HttpHandler {
 
     override fun handleRequest(exchange: HttpServerExchange) {
-        exchange.addExchangeCompleteListener(::emit)
+        log.debug(
+                "Handling the {}: {} @{}",
+                HttpServerExchange::class.simpleName,
+                exchange,
+                logbackAccessContext,
+        )
+        exchange.addExchangeCompleteListener(::log)
         next.handleRequest(exchange)
     }
 
     /**
-     * Emits the Logback-access event.
+     * Logs the request/response exchange.
      *
      * @param exchange The request/response exchange.
      * @param next The next listener.
      */
-    private fun emit(exchange: HttpServerExchange, next: NextListener) {
+    private fun log(exchange: HttpServerExchange, next: NextListener) {
+        log.debug(
+                "Logging the {}: {} @{}",
+                HttpServerExchange::class.simpleName,
+                exchange,
+                logbackAccessContext,
+        )
         val source = LogbackAccessUndertowEventSource(exchange)
         val event = LogbackAccessEvent(source)
         logbackAccessContext.emit(event)
         next.proceed()
+    }
+
+    companion object {
+
+        /**
+         * The logger.
+         */
+        private val log: Logger = getLogger(LogbackAccessUndertowHttpHandler::class.java)
+
     }
 
 }

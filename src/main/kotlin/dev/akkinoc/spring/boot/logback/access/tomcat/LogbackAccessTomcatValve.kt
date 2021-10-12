@@ -7,6 +7,8 @@ import org.apache.catalina.Valve
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
 import org.apache.catalina.valves.ValveBase
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory.getLogger
 
 /**
  * The Tomcat [Valve] to emit Logback-access events.
@@ -33,13 +35,39 @@ class LogbackAccessTomcatValve(
     }
 
     override fun invoke(request: Request, response: Response) {
+        log.debug(
+                "Handling the {}/{}: {} => {} @{}",
+                Request::class.simpleName,
+                Response::class.simpleName,
+                request,
+                response,
+                logbackAccessContext,
+        )
         getNext().invoke(request, response)
     }
 
     override fun log(request: Request, response: Response, time: Long) {
+        log.debug(
+                "Logging the {}/{}: {} => {} ({}ms) @{}",
+                Request::class.simpleName,
+                Response::class.simpleName,
+                request,
+                response,
+                time,
+                logbackAccessContext,
+        )
         val source = LogbackAccessTomcatEventSource(request, response)
         val event = LogbackAccessEvent(source)
         logbackAccessContext.emit(event)
+    }
+
+    companion object {
+
+        /**
+         * The logger.
+         */
+        private val log: Logger = getLogger(LogbackAccessTomcatValve::class.java)
+
     }
 
 }
