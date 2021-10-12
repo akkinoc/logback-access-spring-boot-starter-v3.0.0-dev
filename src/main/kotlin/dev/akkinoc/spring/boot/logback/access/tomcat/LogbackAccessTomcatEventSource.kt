@@ -1,5 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.tomcat
 
+import ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER
+import ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER
 import ch.qos.logback.access.spi.ServerAdapter
 import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
@@ -92,8 +94,10 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val attributeMap: Map<String, String> by lazy {
-        // TODO
-        emptyMap()
+        val attrs = request.attributeNames.asSequence()
+                .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
+                .associateWith { "${request.getAttribute(it)}" }
+        unmodifiableMap(attrs)
     }
 
     override val sessionID: String? by lazy {

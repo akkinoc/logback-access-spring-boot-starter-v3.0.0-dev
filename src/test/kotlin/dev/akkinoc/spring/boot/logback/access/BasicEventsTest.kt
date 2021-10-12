@@ -26,6 +26,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.string.shouldNotBeEmpty
+import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,6 +42,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
  * Tests the appended Logback-access events in the case where the configuration is the default.
  *
  * @property supportsRequestParametersByFormData Whether to support request parameters by form data.
+ * @property supportsRequestAttributes Whether to support request attributes.
  * @property supportsSessionID Whether to support session ID.
  * @property canForwardRequest Whether the web server can forward a request.
  */
@@ -48,6 +50,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 @TestPropertySource(properties = ["logback.access.config=classpath:logback-access.capture.xml"])
 sealed class BasicEventsTest(
         private val supportsRequestParametersByFormData: Boolean,
+        private val supportsRequestAttributes: Boolean,
         private val supportsSessionID: Boolean,
         private val canForwardRequest: Boolean,
 ) {
@@ -199,6 +202,29 @@ sealed class BasicEventsTest(
     }
 
     @Test
+    fun `Appends a Logback-access event with request attributes`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/text-with-request-attributes").build()
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(200)
+        response.body.shouldBe("mock-text")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        if (supportsRequestAttributes) {
+            event.getAttribute("a").shouldBe("value @a")
+            event.getAttribute("b").shouldBe("[value1 @b, value2 @b]")
+            event.getAttribute("c").shouldBe("")
+            event.getAttribute("d").shouldStartWith("java.lang.Object@")
+        } else {
+            event.getAttribute("a").shouldBe("-")
+            event.getAttribute("b").shouldBe("-")
+            event.getAttribute("c").shouldBe("-")
+            event.getAttribute("d").shouldBe("-")
+        }
+    }
+
+    @Test
     fun `Appends a Logback-access event with a session`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
@@ -324,6 +350,7 @@ sealed class BasicEventsTest(
 @TomcatServletWebTest
 class TomcatServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
+        supportsRequestAttributes = true,
         supportsSessionID = true,
         canForwardRequest = true,
 )
@@ -334,6 +361,7 @@ class TomcatServletWebBasicEventsTest : BasicEventsTest(
 @TomcatReactiveWebTest
 class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
+        supportsRequestAttributes = false,
         supportsSessionID = false,
         canForwardRequest = false,
 )
@@ -344,6 +372,7 @@ class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
 @JettyServletWebTest
 class JettyServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
+        supportsRequestAttributes = true,
         supportsSessionID = true,
         canForwardRequest = true,
 )
@@ -354,6 +383,7 @@ class JettyServletWebBasicEventsTest : BasicEventsTest(
 @JettyReactiveWebTest
 class JettyReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
+        supportsRequestAttributes = false,
         supportsSessionID = false,
         canForwardRequest = false,
 )
@@ -364,6 +394,7 @@ class JettyReactiveWebBasicEventsTest : BasicEventsTest(
 @UndertowServletWebTest
 class UndertowServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
+        supportsRequestAttributes = true,
         supportsSessionID = true,
         canForwardRequest = true,
 )
@@ -374,6 +405,7 @@ class UndertowServletWebBasicEventsTest : BasicEventsTest(
 @UndertowReactiveWebTest
 class UndertowReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
+        supportsRequestAttributes = false,
         supportsSessionID = false,
         canForwardRequest = false,
 )

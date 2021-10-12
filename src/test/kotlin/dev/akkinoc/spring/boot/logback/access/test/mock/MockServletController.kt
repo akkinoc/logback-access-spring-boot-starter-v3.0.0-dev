@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.ModelAndView
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
 
 /**
@@ -14,6 +15,23 @@ import javax.servlet.http.HttpSession
 @RestController
 @RequestMapping("/mock-controller")
 class MockServletController {
+
+    /**
+     * Gets a text with request attributes.
+     *
+     * @param request The request to set attributes.
+     * @return A text.
+     */
+    @GetMapping("/text-with-request-attributes")
+    fun getTextWithRequestAttributes(request: HttpServletRequest): String {
+        request.setAttribute("a", "value @a")
+        request.setAttribute("b", listOf("value1 @b", "value2 @b"))
+        request.setAttribute("c", "")
+        request.setAttribute("d", Any())
+        val response = "mock-text"
+        log.debug("Getting a text with request attributes: {}; {}", response, request)
+        return response
+    }
 
     /**
      * Gets a text with a session.

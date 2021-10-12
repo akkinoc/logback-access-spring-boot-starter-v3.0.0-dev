@@ -1,5 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.undertow
 
+import ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER
+import ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import io.undertow.server.HttpServerExchange
@@ -115,8 +117,11 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val attributeMap: Map<String, String> by lazy {
-        // TODO
-        emptyMap()
+        request ?: return@lazy emptyMap()
+        val attrs = request.attributeNames.asSequence()
+                .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
+                .associateWith { "${request.getAttribute(it)}" }
+        unmodifiableMap(attrs)
     }
 
     override val sessionID: String? by lazy {
