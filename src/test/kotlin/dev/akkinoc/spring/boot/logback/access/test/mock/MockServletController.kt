@@ -2,13 +2,16 @@ package dev.akkinoc.spring.boot.logback.access.test.mock
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.http.MediaType
+import org.springframework.http.MediaType.TEXT_PLAIN
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Flux
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import java.util.concurrent.CompletableFuture
 import javax.servlet.http.HttpSession
+import kotlin.text.Charsets.UTF_8
 
 /**
  * The mock controller for the servlet web server.
@@ -85,11 +88,13 @@ class MockServletController {
     /**
      * Gets a text with chunked transfer encoding.
      *
-     * @return A [Flux] to return a text with chunked transfer encoding.
+     * @return A [ResponseEntity] to return a text with chunked transfer encoding.
      */
     @GetMapping("/text-with-chunked-transfer-encoding")
-    fun getTextWithChunkedTransferEncoding(): Flux<String> {
-        val response = Flux.just("mock-text")
+    fun getTextWithChunkedTransferEncoding(): ResponseEntity<StreamingResponseBody> {
+        val response = ResponseEntity.ok()
+                .contentType(MediaType(TEXT_PLAIN, UTF_8))
+                .body(StreamingResponseBody { it.write("mock-text".toByteArray(UTF_8)) })
         log.debug("Getting a text with chunked transfer encoding: {}", response)
         return response
     }
