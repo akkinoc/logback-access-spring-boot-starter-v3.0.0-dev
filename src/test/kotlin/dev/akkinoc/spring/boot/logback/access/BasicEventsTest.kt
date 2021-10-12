@@ -23,6 +23,7 @@ import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.string.shouldNotBeEmpty
 import org.junit.jupiter.api.Test
@@ -38,10 +39,14 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 
 /**
  * Tests the appended Logback-access events in the case where the configuration is the default.
+ *
+ * @param supportsSessionID Whether to support session ID.
  */
 @ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(properties = ["logback.access.config=classpath:logback-access.capture.xml"])
-sealed class BasicEventsTest {
+sealed class BasicEventsTest(
+        private val supportsSessionID: Boolean,
+) {
 
     @Test
     fun `Appends a Logback-access event`(
@@ -158,6 +163,20 @@ sealed class BasicEventsTest {
     }
 
     @Test
+    fun `Appends a Logback-access event with a session`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        if (!supportsSessionID) return
+        val request = RequestEntity.get("/mock-controller/text-with-session").build()
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(200)
+        response.body.shouldBe("mock-text")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.sessionID.shouldNotBeEmpty().shouldNotBe("-")
+    }
+
+    @Test
     fun `Appends a Logback-access event with response headers`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
@@ -227,34 +246,46 @@ sealed class BasicEventsTest {
  * Tests the [BasicEventsTest] using the Tomcat servlet web server.
  */
 @TomcatServletWebTest
-class TomcatServletWebBasicEventsTest : BasicEventsTest()
+class TomcatServletWebBasicEventsTest : BasicEventsTest(
+        supportsSessionID = true,
+)
 
 /**
  * Tests the [BasicEventsTest] using the Tomcat reactive web server.
  */
 @TomcatReactiveWebTest
-class TomcatReactiveWebBasicEventsTest : BasicEventsTest()
+class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
+        supportsSessionID = false,
+)
 
 /**
  * Tests the [BasicEventsTest] using the Jetty servlet web server.
  */
 @JettyServletWebTest
-class JettyServletWebBasicEventsTest : BasicEventsTest()
+class JettyServletWebBasicEventsTest : BasicEventsTest(
+        supportsSessionID = true,
+)
 
 /**
  * Tests the [BasicEventsTest] using the Jetty reactive web server.
  */
 @JettyReactiveWebTest
-class JettyReactiveWebBasicEventsTest : BasicEventsTest()
+class JettyReactiveWebBasicEventsTest : BasicEventsTest(
+        supportsSessionID = false,
+)
 
 /**
  * Tests the [BasicEventsTest] using the Undertow servlet web server.
  */
 @UndertowServletWebTest
-class UndertowServletWebBasicEventsTest : BasicEventsTest()
+class UndertowServletWebBasicEventsTest : BasicEventsTest(
+        supportsSessionID = true,
+)
 
 /**
  * Tests the [BasicEventsTest] using the Undertow reactive web server.
  */
 @UndertowReactiveWebTest
-class UndertowReactiveWebBasicEventsTest : BasicEventsTest()
+class UndertowReactiveWebBasicEventsTest : BasicEventsTest(
+        supportsSessionID = false,
+)

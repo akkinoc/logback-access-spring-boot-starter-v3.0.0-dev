@@ -3,7 +3,6 @@ package dev.akkinoc.spring.boot.logback.access.undertow
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import io.undertow.server.HttpServerExchange
-import io.undertow.servlet.attribute.ServletSessionIdAttribute
 import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
@@ -124,8 +123,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val sessionID: String? by lazy {
-        // TODO
-        ServletSessionIdAttribute.INSTANCE.readAttribute(exchange)
+        request?.getSession(false)?.id
     }
 
     override val requestContent: String? by lazy {

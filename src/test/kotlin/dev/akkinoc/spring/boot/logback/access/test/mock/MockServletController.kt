@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import java.util.concurrent.CompletableFuture
+import javax.servlet.http.HttpSession
 
 /**
  * The mock controller for the servlet web server.
@@ -25,6 +26,19 @@ class MockServletController {
     fun getText(): String {
         val response = "mock-text"
         log.debug("Getting a text: {}", response)
+        return response
+    }
+
+    /**
+     * Gets a text with a session.
+     *
+     * @param session The session.
+     * @return A text.
+     */
+    @GetMapping("/text-with-session")
+    fun getTextWithSession(session: HttpSession): String {
+        val response = "mock-text"
+        log.debug("Getting a text with a session: {}; {}", response, session)
         return response
     }
 
