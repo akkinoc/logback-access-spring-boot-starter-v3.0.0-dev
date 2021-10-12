@@ -1,8 +1,12 @@
 package dev.akkinoc.spring.boot.logback.access.test.configuration
 
-import dev.akkinoc.spring.boot.logback.access.test.mock.MockController
+import dev.akkinoc.spring.boot.logback.access.test.mock.MockReactiveController
+import dev.akkinoc.spring.boot.logback.access.test.mock.MockServletController
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type.REACTIVE
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type.SERVLET
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 
@@ -13,15 +17,29 @@ import org.springframework.context.annotation.Bean
 class WebTestConfiguration {
 
     /**
-     * Provides the mock controller.
+     * Provides the mock controller for the servlet web server.
      *
-     * @return The mock controller.
+     * @return The mock controller for the servlet web server.
      */
     @Bean
-    fun mockController(): MockController {
-        val mockController = MockController()
-        log.debug("Providing the {}: {}", MockController::class.simpleName, mockController)
-        return mockController
+    @ConditionalOnWebApplication(type = SERVLET)
+    fun mockServletController(): MockServletController {
+        val mockServletController = MockServletController()
+        log.debug("Providing the {}: {}", MockServletController::class.simpleName, mockServletController)
+        return mockServletController
+    }
+
+    /**
+     * Provides the mock controller for the reactive web server.
+     *
+     * @return The mock controller for the reactive web server.
+     */
+    @Bean
+    @ConditionalOnWebApplication(type = REACTIVE)
+    fun mockReactiveController(): MockReactiveController {
+        val mockReactiveController = MockReactiveController()
+        log.debug("Providing the {}: {}", MockReactiveController::class.simpleName, mockReactiveController)
+        return mockReactiveController
     }
 
     companion object {

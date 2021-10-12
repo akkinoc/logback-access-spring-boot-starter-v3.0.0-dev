@@ -10,11 +10,11 @@ import reactor.core.publisher.Flux
 import java.util.concurrent.CompletableFuture
 
 /**
- * The mock controller.
+ * The mock controller for the servlet web server.
  */
 @RestController
 @RequestMapping("/mock-controller")
-class MockController {
+class MockServletController {
 
     /**
      * Gets a text.
@@ -85,7 +85,7 @@ class MockController {
         /**
          * The logger.
          */
-        private val log: Logger = getLogger(MockController::class.java)
+        private val log: Logger = getLogger(MockServletController::class.java)
 
     }
 
