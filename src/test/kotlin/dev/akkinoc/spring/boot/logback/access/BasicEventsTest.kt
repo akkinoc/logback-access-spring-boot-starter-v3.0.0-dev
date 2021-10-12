@@ -278,6 +278,23 @@ sealed class BasicEventsTest(
         event.contentLength.shouldBeGreaterThanOrEqual(9L)
     }
 
+    @Test
+    fun `Appends a Logback-access event with an error response`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/unknown?a=value+@a&b=value1+@b&b=value2+@b&c=").build()
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(404)
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.protocol.shouldBe("HTTP/1.1")
+        event.method.shouldBe("GET")
+        event.requestURI.shouldBe("/mock-controller/unknown")
+        event.queryString.shouldBe("?a=value+@a&b=value1+@b&b=value2+@b&c=")
+        event.requestURL.shouldBe("GET /mock-controller/unknown?a=value+@a&b=value1+@b&b=value2+@b&c= HTTP/1.1")
+        event.statusCode.shouldBe(404)
+    }
+
 }
 
 /**
