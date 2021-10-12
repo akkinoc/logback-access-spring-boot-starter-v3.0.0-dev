@@ -40,14 +40,16 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 /**
  * Tests the appended Logback-access events in the case where the configuration is the default.
  *
- * @param supportsRequestParametersByFormData Whether to support request parameters by form data.
- * @param supportsSessionID Whether to support session ID.
+ * @property supportsRequestParametersByFormData Whether to support request parameters by form data.
+ * @property supportsSessionID Whether to support session ID.
+ * @property canForwardRequest Whether the web server can forward a request.
  */
 @ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(properties = ["logback.access.config=classpath:logback-access.capture.xml"])
 sealed class BasicEventsTest(
         private val supportsRequestParametersByFormData: Boolean,
         private val supportsSessionID: Boolean,
+        private val canForwardRequest: Boolean,
 ) {
 
     @Test
@@ -279,19 +281,38 @@ sealed class BasicEventsTest(
     }
 
     @Test
+    fun `Appends a Logback-access event with a forward response`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        if (!canForwardRequest) return
+        val request = RequestEntity.get("/mock-controller/text-with-forward?a=value+@a").build()
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(200)
+        response.body.shouldBe("mock-text")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        event.protocol.shouldBe("HTTP/1.1")
+        event.method.shouldBe("GET")
+        event.requestURI.shouldBe("/mock-controller/text-with-forward")
+        event.queryString.shouldBe("?a=value+@a")
+        event.requestURL.shouldBe("GET /mock-controller/text-with-forward?a=value+@a HTTP/1.1")
+        event.statusCode.shouldBe(200)
+    }
+
+    @Test
     fun `Appends a Logback-access event with an error response`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val request = RequestEntity.get("/mock-controller/unknown?a=value+@a&b=value1+@b&b=value2+@b&c=").build()
+        val request = RequestEntity.get("/mock-controller/unknown?a=value+@a").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(404)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.protocol.shouldBe("HTTP/1.1")
         event.method.shouldBe("GET")
         event.requestURI.shouldBe("/mock-controller/unknown")
-        event.queryString.shouldBe("?a=value+@a&b=value1+@b&b=value2+@b&c=")
-        event.requestURL.shouldBe("GET /mock-controller/unknown?a=value+@a&b=value1+@b&b=value2+@b&c= HTTP/1.1")
+        event.queryString.shouldBe("?a=value+@a")
+        event.requestURL.shouldBe("GET /mock-controller/unknown?a=value+@a HTTP/1.1")
         event.statusCode.shouldBe(404)
     }
 
@@ -304,6 +325,7 @@ sealed class BasicEventsTest(
 class TomcatServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
         supportsSessionID = true,
+        canForwardRequest = true,
 )
 
 /**
@@ -313,6 +335,7 @@ class TomcatServletWebBasicEventsTest : BasicEventsTest(
 class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
         supportsSessionID = false,
+        canForwardRequest = false,
 )
 
 /**
@@ -322,6 +345,7 @@ class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
 class JettyServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
         supportsSessionID = true,
+        canForwardRequest = true,
 )
 
 /**
@@ -331,6 +355,7 @@ class JettyServletWebBasicEventsTest : BasicEventsTest(
 class JettyReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
         supportsSessionID = false,
+        canForwardRequest = false,
 )
 
 /**
@@ -340,6 +365,7 @@ class JettyReactiveWebBasicEventsTest : BasicEventsTest(
 class UndertowServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
         supportsSessionID = true,
+        canForwardRequest = true,
 )
 
 /**
@@ -349,4 +375,5 @@ class UndertowServletWebBasicEventsTest : BasicEventsTest(
 class UndertowReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
         supportsSessionID = false,
+        canForwardRequest = false,
 )
