@@ -40,11 +40,13 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 /**
  * Tests the appended Logback-access events in the case where the configuration is the default.
  *
+ * @param supportsRequestParametersByFormData Whether to support request parameters by form data.
  * @param supportsSessionID Whether to support session ID.
  */
 @ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(properties = ["logback.access.config=classpath:logback-access.capture.xml"])
 sealed class BasicEventsTest(
+        private val supportsRequestParametersByFormData: Boolean,
         private val supportsSessionID: Boolean,
 ) {
 
@@ -163,17 +165,52 @@ sealed class BasicEventsTest(
     }
 
     @Test
+    fun `Appends a Logback-access event with request parameters by form data`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.post("/mock-controller/form-data")
+                .header("content-type", "application/x-www-form-urlencoded")
+                .body("a=value+@a&b=value1+@b&b=value2+@b&c=")
+        val response = rest.exchange<String>(request)
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        response.statusCodeValue.shouldBe(200)
+        response.body.shouldBe("mock-text")
+        event.method.shouldBe("POST")
+        event.requestURI.shouldBe("/mock-controller/form-data")
+        event.queryString.shouldBeEmpty()
+        event.requestURL.shouldBe("POST /mock-controller/form-data HTTP/1.1")
+        if (supportsRequestParametersByFormData) {
+            event.requestParameterMap.keys.shouldContainExactlyInAnyOrder("a", "b", "c")
+            event.requestParameterMap["a"].shouldContainExactly("value @a")
+            event.requestParameterMap["b"].shouldContainExactly("value1 @b", "value2 @b")
+            event.requestParameterMap["c"].shouldContainExactly("")
+            event.getRequestParameter("a").shouldContainExactly("value @a")
+            event.getRequestParameter("b").shouldContainExactly("value1 @b", "value2 @b")
+            event.getRequestParameter("c").shouldContainExactly("")
+        } else {
+            event.requestParameterMap.shouldBeEmpty()
+            event.getRequestParameter("a").shouldContainExactly("-")
+            event.getRequestParameter("b").shouldContainExactly("-")
+            event.getRequestParameter("c").shouldContainExactly("-")
+        }
+    }
+
+    @Test
     fun `Appends a Logback-access event with a session`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        if (!supportsSessionID) return
         val request = RequestEntity.get("/mock-controller/text-with-session").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.sessionID.shouldNotBeEmpty().shouldNotBe("-")
+        if (supportsSessionID) {
+            event.sessionID.shouldNotBeEmpty().shouldNotBe("-")
+        } else {
+            event.sessionID.shouldBe("-")
+        }
     }
 
     @Test
@@ -247,6 +284,7 @@ sealed class BasicEventsTest(
  */
 @TomcatServletWebTest
 class TomcatServletWebBasicEventsTest : BasicEventsTest(
+        supportsRequestParametersByFormData = true,
         supportsSessionID = true,
 )
 
@@ -255,6 +293,7 @@ class TomcatServletWebBasicEventsTest : BasicEventsTest(
  */
 @TomcatReactiveWebTest
 class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
+        supportsRequestParametersByFormData = false,
         supportsSessionID = false,
 )
 
@@ -263,6 +302,7 @@ class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
  */
 @JettyServletWebTest
 class JettyServletWebBasicEventsTest : BasicEventsTest(
+        supportsRequestParametersByFormData = true,
         supportsSessionID = true,
 )
 
@@ -271,6 +311,7 @@ class JettyServletWebBasicEventsTest : BasicEventsTest(
  */
 @JettyReactiveWebTest
 class JettyReactiveWebBasicEventsTest : BasicEventsTest(
+        supportsRequestParametersByFormData = false,
         supportsSessionID = false,
 )
 
@@ -279,6 +320,7 @@ class JettyReactiveWebBasicEventsTest : BasicEventsTest(
  */
 @UndertowServletWebTest
 class UndertowServletWebBasicEventsTest : BasicEventsTest(
+        supportsRequestParametersByFormData = true,
         supportsSessionID = true,
 )
 
@@ -287,5 +329,6 @@ class UndertowServletWebBasicEventsTest : BasicEventsTest(
  */
 @UndertowReactiveWebTest
 class UndertowReactiveWebBasicEventsTest : BasicEventsTest(
+        supportsRequestParametersByFormData = false,
         supportsSessionID = false,
 )

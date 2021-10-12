@@ -4,6 +4,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
@@ -25,6 +27,19 @@ class MockController {
     fun getText(): String {
         val response = "mock-text"
         log.debug("Getting a text: {}", response)
+        return response
+    }
+
+    /**
+     * Posts the form data.
+     *
+     * @param data The form data.
+     * @return A text.
+     */
+    @PostMapping("/form-data")
+    fun postFormData(@ModelAttribute data: FormData): String {
+        val response = "mock-text"
+        log.debug("Posting the form data: {} => {}", data, response)
         return response
     }
 
@@ -88,5 +103,14 @@ class MockController {
         private val log: Logger = getLogger(MockController::class.java)
 
     }
+
+    /**
+     * The form data.
+     *
+     * @property a The string value.
+     * @property b The string values.
+     * @property c The string value.
+     */
+    data class FormData(val a: String?, val b: List<String>?, val c: String?)
 
 }
