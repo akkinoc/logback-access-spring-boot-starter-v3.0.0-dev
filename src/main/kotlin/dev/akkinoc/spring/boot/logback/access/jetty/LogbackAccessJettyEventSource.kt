@@ -3,6 +3,8 @@ package dev.akkinoc.spring.boot.logback.access.jetty
 import ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER
 import ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER
 import ch.qos.logback.access.jetty.JettyServerAdapter
+import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
+import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import org.eclipse.jetty.server.Request
@@ -103,8 +105,12 @@ class LogbackAccessJettyEventSource(
     }
 
     override val requestContent: String? by lazy {
-        // TODO
-        null
+        if (isFormUrlEncoded(request))
+            return@lazy requestParameterMap.asSequence()
+                    .flatMap { (key, values) -> values.asSequence().map { key to it } }
+                    .joinToString("&") { (key, value) -> "$key=$value" }
+        val bytes = attributeMap[LB_INPUT_BUFFER] as ByteArray? ?: return@lazy null
+        String(bytes)
     }
 
     override val statusCode: Int by lazy {
@@ -122,8 +128,9 @@ class LogbackAccessJettyEventSource(
     }
 
     override val responseContent: String? by lazy {
-        // TODO
-        null
+        if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
+        val bytes = attributeMap[LB_OUTPUT_BUFFER] as ByteArray? ?: return@lazy null
+        String(bytes)
     }
 
 }
