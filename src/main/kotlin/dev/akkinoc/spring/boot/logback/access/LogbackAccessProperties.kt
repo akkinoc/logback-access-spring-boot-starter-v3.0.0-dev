@@ -16,12 +16,15 @@ import org.springframework.boot.context.properties.ConstructorBinding
  *      3. "classpath:logback-access-test-spring.xml"
  *      4. "classpath:logback-access-spring.xml"
  *      5. "classpath:dev/akkinoc/spring/boot/logback/access/logback-access-spring.xml"
+ * @property teeFilter
+ *  The properties for the tee filter.
  */
 @ConfigurationProperties("logback.access")
 @ConstructorBinding
 data class LogbackAccessProperties(
         val enabled: Boolean = true,
         val config: String? = null,
+        val teeFilter: TeeFilter = TeeFilter(),
 ) {
 
     companion object {
@@ -44,5 +47,18 @@ data class LogbackAccessProperties(
         val FALLBACK_CONFIG: String = "classpath:dev/akkinoc/spring/boot/logback/access/logback-access-spring.xml"
 
     }
+
+    /**
+     * The properties for the tee filter.
+     *
+     * @property enabled Whether to enable the tee filter.
+     * @property includes The host names to activate.
+     * @property excludes The host names to deactivate.
+     */
+    data class TeeFilter(
+            val enabled: Boolean = false,
+            val includes: String? = null,
+            val excludes: String? = null,
+    )
 
 }
