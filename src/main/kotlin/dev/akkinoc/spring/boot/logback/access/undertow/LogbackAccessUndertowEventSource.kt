@@ -132,11 +132,12 @@ class LogbackAccessUndertowEventSource(
 
     override val requestContent: String? by lazy {
         request ?: return@lazy null
-        if (isFormUrlEncoded(request))
+        if (isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
                     .joinToString("&") { (key, value) -> "$key=$value" }
-        val bytes = attributeMap[LB_INPUT_BUFFER] as ByteArray? ?: return@lazy null
+        }
+        val bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray? ?: return@lazy null
         String(bytes)
     }
 
@@ -155,9 +156,10 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val responseContent: String? by lazy {
+        request ?: return@lazy null
         response ?: return@lazy null
         if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = attributeMap[LB_OUTPUT_BUFFER] as ByteArray? ?: return@lazy null
+        val bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray? ?: return@lazy null
         String(bytes)
     }
 
