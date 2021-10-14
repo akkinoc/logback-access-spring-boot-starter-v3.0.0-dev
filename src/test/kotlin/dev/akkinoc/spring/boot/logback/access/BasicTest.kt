@@ -8,8 +8,10 @@ import dev.akkinoc.spring.boot.logback.access.test.type.TomcatServletWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.matchers.collections.shouldHaveSingleElement
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +30,12 @@ sealed class BasicTest {
     fun `Provides the configuration properties for Logback-access`(
             @Autowired logbackAccessProperties: LogbackAccessProperties?,
     ) {
-        logbackAccessProperties.shouldBe(LogbackAccessProperties())
+        logbackAccessProperties.shouldNotBeNull()
+        logbackAccessProperties.enabled.shouldBe(true)
+        logbackAccessProperties.config.shouldBeNull()
+        logbackAccessProperties.teeFilter.enabled.shouldBe(false)
+        logbackAccessProperties.teeFilter.includes.shouldBeNull()
+        logbackAccessProperties.teeFilter.excludes.shouldBeNull()
     }
 
     @Test
@@ -37,7 +44,7 @@ sealed class BasicTest {
             @Autowired logbackAccessProperties: LogbackAccessProperties?,
     ) {
         logbackAccessContext.shouldNotBeNull()
-        logbackAccessContext.properties.shouldBe(logbackAccessProperties)
+        logbackAccessContext.properties.shouldBeSameInstanceAs(logbackAccessProperties)
     }
 
     @Test
