@@ -114,8 +114,7 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     }
 
     override fun getRequestParameter(key: String): Array<String> {
-        val value = source.requestParameterMap[key] ?: return arrayOf(NA)
-        return value.toTypedArray()
+        return source.requestParameterMap[key]?.toTypedArray() ?: arrayOf(NA)
     }
 
     override fun getAttribute(key: String): String {
