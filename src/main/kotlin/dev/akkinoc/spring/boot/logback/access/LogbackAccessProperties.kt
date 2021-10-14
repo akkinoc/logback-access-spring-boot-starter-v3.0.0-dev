@@ -21,7 +21,9 @@ import org.springframework.boot.context.properties.ConstructorBinding
  */
 @ConfigurationProperties("logback.access")
 @ConstructorBinding
-data class LogbackAccessProperties(
+data class LogbackAccessProperties
+@JvmOverloads
+constructor(
         val enabled: Boolean = true,
         val config: String? = null,
         val teeFilter: TeeFilter = TeeFilter(),
@@ -55,7 +57,9 @@ data class LogbackAccessProperties(
      * @property includes The host names to activate.
      * @property excludes The host names to deactivate.
      */
-    data class TeeFilter(
+    data class TeeFilter
+    @JvmOverloads
+    constructor(
             val enabled: Boolean = false,
             val includes: String? = null,
             val excludes: String? = null,
