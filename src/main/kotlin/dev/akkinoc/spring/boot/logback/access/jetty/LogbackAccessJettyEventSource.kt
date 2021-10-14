@@ -84,19 +84,22 @@ class LogbackAccessJettyEventSource(
     }
 
     override val cookieMap: Map<String, String> by lazy {
-        val cookies = request.cookies.orEmpty().associate { it.name to it.value }
+        val cookies = linkedMapOf<String, String>()
+        request.cookies.orEmpty().associateTo(cookies) { it.name to it.value }
         unmodifiableMap(cookies)
     }
 
     override val requestParameterMap: Map<String, List<String>> by lazy {
-        val params = request.parameterMap.mapValues { unmodifiableList(it.value.asList()) }
+        val params = linkedMapOf<String, List<String>>()
+        request.parameterMap.mapValuesTo(params) { unmodifiableList(it.value.asList()) }
         unmodifiableMap(params)
     }
 
     override val attributeMap: Map<String, String> by lazy {
-        val attrs = request.attributeNames.asSequence()
+        val attrs = linkedMapOf<String, String>()
+        request.attributeNames.asSequence()
                 .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
-                .associateWith { "${request.getAttribute(it)}" }
+                .associateWithTo(attrs) { "${request.getAttribute(it)}" }
         unmodifiableMap(attrs)
     }
 

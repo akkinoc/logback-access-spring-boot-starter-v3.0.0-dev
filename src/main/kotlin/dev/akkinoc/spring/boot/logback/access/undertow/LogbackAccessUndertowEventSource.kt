@@ -108,21 +108,25 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val cookieMap: Map<String, String> by lazy {
-        val cookies = exchange.requestCookies().associate { it.name to it.value }
+        val cookies = linkedMapOf<String, String>()
+        exchange.requestCookies().associateTo(cookies) { it.name to it.value }
         unmodifiableMap(cookies)
     }
 
     override val requestParameterMap: Map<String, List<String>> by lazy {
-        val params = request?.run { parameterMap.mapValues { unmodifiableList(it.value.asList()) } }
-                ?: exchange.queryParameters.mapValues { unmodifiableList(it.value.toList()) }
+        val params = linkedMapOf<String, List<String>>()
+        if (request != null) request.parameterMap.mapValuesTo(params) { unmodifiableList(it.value.asList()) }
+        else exchange.queryParameters.mapValuesTo(params) { unmodifiableList(it.value.toList()) }
         unmodifiableMap(params)
     }
 
     override val attributeMap: Map<String, String> by lazy {
-        request ?: return@lazy emptyMap()
-        val attrs = request.attributeNames.asSequence()
-                .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
-                .associateWith { "${request.getAttribute(it)}" }
+        val attrs = linkedMapOf<String, String>()
+        if (request != null) {
+            request.attributeNames.asSequence()
+                    .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
+                    .associateWithTo(attrs) { "${request.getAttribute(it)}" }
+        }
         unmodifiableMap(attrs)
     }
 
