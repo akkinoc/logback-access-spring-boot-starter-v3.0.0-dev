@@ -71,7 +71,7 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val queryString: String by lazy {
-        request.queryString?.let { "?$it" } ?: ""
+        request.queryString?.let { "?$it" }.orEmpty()
     }
 
     override val requestURL: String by lazy {
