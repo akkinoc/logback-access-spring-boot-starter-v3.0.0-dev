@@ -12,6 +12,7 @@ import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import java.lang.Thread.currentThread
+import java.net.URLEncoder.encode
 import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
 import java.util.concurrent.TimeUnit.NANOSECONDS
@@ -19,6 +20,7 @@ import javax.servlet.RequestDispatcher.FORWARD_QUERY_STRING
 import javax.servlet.RequestDispatcher.FORWARD_REQUEST_URI
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import kotlin.text.Charsets.UTF_8
 
 /**
  * The Logback-access event source for the Undertow web server.
@@ -135,14 +137,14 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestContent: String? by lazy {
-        request ?: return@lazy null
-        if (isFormUrlEncoded(request)) {
+        val bytes = request?.getAttribute(LB_INPUT_BUFFER) as ByteArray?
+        if (bytes == null && request != null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
+                    .map { (key, value) -> encode(key, UTF_8) to encode(value, UTF_8) }
                     .joinToString("&") { (key, value) -> "$key=$value" }
         }
-        val bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray? ?: return@lazy null
-        String(bytes)
+        bytes?.let { String(it, UTF_8) }
     }
 
     override val statusCode: Int by lazy {
@@ -160,11 +162,9 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val responseContent: String? by lazy {
-        request ?: return@lazy null
-        response ?: return@lazy null
-        if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray? ?: return@lazy null
-        String(bytes)
+        if (response != null && isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
+        val bytes = request?.getAttribute(LB_OUTPUT_BUFFER) as ByteArray?
+        bytes?.let { String(it, UTF_8) }
     }
 
 }

@@ -12,8 +12,10 @@ import org.apache.catalina.connector.Response
 import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.Thread.currentThread
+import java.net.URLEncoder.encode
 import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
+import kotlin.text.Charsets.UTF_8
 
 /**
  * The Logback-access event source for the Tomcat web server.
@@ -109,13 +111,14 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val requestContent: String? by lazy {
-        if (isFormUrlEncoded(request)) {
+        val bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray?
+        if (bytes == null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
+                    .map { (key, value) -> encode(key, UTF_8) to encode(value, UTF_8) }
                     .joinToString("&") { (key, value) -> "$key=$value" }
         }
-        val bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray? ?: return@lazy null
-        String(bytes)
+        bytes?.let { String(it, UTF_8) }
     }
 
     override val statusCode: Int by lazy {
@@ -134,8 +137,8 @@ class LogbackAccessTomcatEventSource(
 
     override val responseContent: String? by lazy {
         if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray? ?: return@lazy null
-        String(bytes)
+        val bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray?
+        bytes?.let { String(it, UTF_8) }
     }
 
 }
