@@ -126,7 +126,7 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     }
 
     override fun getRequestContent(): String {
-        return source.requestContent ?: ""
+        return source.requestContent.orEmpty()
     }
 
     override fun getStatusCode(): Int {
@@ -150,7 +150,7 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     }
 
     override fun getResponseContent(): String {
-        return source.responseContent ?: ""
+        return source.responseContent.orEmpty()
     }
 
     override fun prepareForDeferredProcessing() {
