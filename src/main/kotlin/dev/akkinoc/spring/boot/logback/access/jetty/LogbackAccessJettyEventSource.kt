@@ -69,8 +69,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val queryString: String by lazy {
-        val query = request.queryString ?: return@lazy ""
-        "?$query"
+        request.queryString?.let { "?$it" } ?: ""
     }
 
     override val requestURL: String by lazy {
