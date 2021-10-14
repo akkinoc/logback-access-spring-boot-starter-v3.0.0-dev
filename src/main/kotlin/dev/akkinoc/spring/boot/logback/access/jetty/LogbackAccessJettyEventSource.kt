@@ -3,10 +3,10 @@ package dev.akkinoc.spring.boot.logback.access.jetty
 import ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER
 import ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER
 import ch.qos.logback.access.jetty.JettyServerAdapter
-import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
-import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
+import dev.akkinoc.spring.boot.logback.access.util.LogbackAccessEventSourceSupport.formatRequestContent
+import dev.akkinoc.spring.boot.logback.access.util.LogbackAccessEventSourceSupport.formatResponseContent
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.Response
 import java.lang.String.CASE_INSENSITIVE_ORDER
@@ -108,13 +108,12 @@ class LogbackAccessJettyEventSource(
     }
 
     override val requestContent: String? by lazy {
-        if (isFormUrlEncoded(request)) {
-            return@lazy requestParameterMap.asSequence()
-                    .flatMap { (key, values) -> values.asSequence().map { key to it } }
-                    .joinToString("&") { (key, value) -> "$key=$value" }
-        }
-        val bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray? ?: return@lazy null
-        String(bytes)
+        formatRequestContent(
+                method = method,
+                contentType = request.contentType,
+                params = requestParameterMap,
+                bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray?,
+        )
     }
 
     override val statusCode: Int by lazy {
@@ -132,9 +131,10 @@ class LogbackAccessJettyEventSource(
     }
 
     override val responseContent: String? by lazy {
-        if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray? ?: return@lazy null
-        String(bytes)
+        formatResponseContent(
+                contentType = response.contentType,
+                bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray?,
+        )
     }
 
 }
