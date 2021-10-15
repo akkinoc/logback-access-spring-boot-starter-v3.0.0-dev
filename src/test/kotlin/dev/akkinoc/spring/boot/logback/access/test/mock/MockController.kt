@@ -110,8 +110,7 @@ class MockController {
      * @property a The string value.
      * @property b The string values.
      * @property c The string value.
-     * @property d The string value.
      */
-    data class FormData(val a: String?, val b: List<String>?, val c: String?, val d: String?)
+    data class FormData(val a: String?, val b: List<String>?, val c: String?)
 
 }
