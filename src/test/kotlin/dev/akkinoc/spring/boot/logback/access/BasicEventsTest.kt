@@ -178,9 +178,9 @@ sealed class BasicEventsTest(
                 .header("content-type", "application/x-www-form-urlencoded")
                 .body("a=value+%40a&b=value1+%40b&b=value2+%40b&c=")
         val response = rest.exchange<String>(request)
-        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.method.shouldBe("POST")
         event.requestURI.shouldBe("/mock-controller/form-data")
         event.queryString.shouldBeEmpty()
