@@ -151,22 +151,24 @@ sealed class BasicEventsTest(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        val request = RequestEntity.get("/mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c=").build()
+        val request = RequestEntity.get("/mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c=&d").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.method.shouldBe("GET")
         event.requestURI.shouldBe("/mock-controller/text")
-        event.queryString.shouldBe("?a=value+@a&b=value1+@b&b=value2+@b&c=")
-        event.requestURL.shouldBe("GET /mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c= HTTP/1.1")
-        event.requestParameterMap.keys.shouldContainExactlyInAnyOrder("a", "b", "c")
+        event.queryString.shouldBe("?a=value+@a&b=value1+@b&b=value2+@b&c=&d")
+        event.requestURL.shouldBe("GET /mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c=&d HTTP/1.1")
+        event.requestParameterMap.keys.shouldContainExactlyInAnyOrder("a", "b", "c", "d")
         event.requestParameterMap["a"].shouldContainExactly("value @a")
         event.requestParameterMap["b"].shouldContainExactly("value1 @b", "value2 @b")
         event.requestParameterMap["c"].shouldContainExactly("")
+        event.requestParameterMap["d"].shouldContainExactly("")
         event.getRequestParameter("a").shouldContainExactly("value @a")
         event.getRequestParameter("b").shouldContainExactly("value1 @b", "value2 @b")
         event.getRequestParameter("c").shouldContainExactly("")
+        event.getRequestParameter("d").shouldContainExactly("")
     }
 
     @Test
@@ -176,7 +178,7 @@ sealed class BasicEventsTest(
     ) {
         val request = RequestEntity.post("/mock-controller/form-data")
                 .header("content-type", "application/x-www-form-urlencoded")
-                .body("a=value+@a&b=value1+@b&b=value2+@b&c=")
+                .body("a=value+@a&b=value1+@b&b=value2+@b&c=&d")
         val response = rest.exchange<String>(request)
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         response.statusCodeValue.shouldBe(200)
@@ -186,18 +188,21 @@ sealed class BasicEventsTest(
         event.queryString.shouldBeEmpty()
         event.requestURL.shouldBe("POST /mock-controller/form-data HTTP/1.1")
         if (supportsRequestParametersByFormData) {
-            event.requestParameterMap.keys.shouldContainExactlyInAnyOrder("a", "b", "c")
+            event.requestParameterMap.keys.shouldContainExactlyInAnyOrder("a", "b", "c", "d")
             event.requestParameterMap["a"].shouldContainExactly("value @a")
             event.requestParameterMap["b"].shouldContainExactly("value1 @b", "value2 @b")
             event.requestParameterMap["c"].shouldContainExactly("")
+            event.requestParameterMap["d"].shouldContainExactly("")
             event.getRequestParameter("a").shouldContainExactly("value @a")
             event.getRequestParameter("b").shouldContainExactly("value1 @b", "value2 @b")
             event.getRequestParameter("c").shouldContainExactly("")
+            event.getRequestParameter("d").shouldContainExactly("")
         } else {
             event.requestParameterMap.shouldBeEmpty()
             event.getRequestParameter("a").shouldContainExactly("-")
             event.getRequestParameter("b").shouldContainExactly("-")
             event.getRequestParameter("c").shouldContainExactly("-")
+            event.getRequestParameter("d").shouldContainExactly("-")
         }
     }
 

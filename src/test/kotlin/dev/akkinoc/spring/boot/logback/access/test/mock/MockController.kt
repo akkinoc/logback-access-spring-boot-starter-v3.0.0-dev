@@ -31,19 +31,6 @@ class MockController {
     }
 
     /**
-     * Posts the form data.
-     *
-     * @param data The form data.
-     * @return A text.
-     */
-    @PostMapping("/form-data")
-    fun postFormData(@ModelAttribute data: FormData): String {
-        val response = "mock-text"
-        log.debug("Posting the form data: {} => {}", data, response)
-        return response
-    }
-
-    /**
      * Gets a text with response headers.
      *
      * @return A [ResponseEntity] to return a text with response headers.
@@ -95,6 +82,19 @@ class MockController {
         return response
     }
 
+    /**
+     * Posts the form data.
+     *
+     * @param data The form data.
+     * @return A text.
+     */
+    @PostMapping("/form-data")
+    fun postFormData(@ModelAttribute data: FormData): String {
+        val response = "mock-text"
+        log.debug("Posting the form data: {} => {}", data, response)
+        return response
+    }
+
     companion object {
 
         /**
@@ -110,7 +110,8 @@ class MockController {
      * @property a The string value.
      * @property b The string values.
      * @property c The string value.
+     * @property d The string value.
      */
-    data class FormData(val a: String?, val b: List<String>?, val c: String?)
+    data class FormData(val a: String?, val b: List<String>?, val c: String?, val d: String?)
 
 }
