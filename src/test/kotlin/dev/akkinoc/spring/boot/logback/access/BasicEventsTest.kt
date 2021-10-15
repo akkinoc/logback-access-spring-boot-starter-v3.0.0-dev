@@ -136,13 +136,13 @@ sealed class BasicEventsTest(
             capture: EventsCapture,
     ) {
         val request = RequestEntity.get("/mock-controller/text")
-                .header("cookie", "a=value%20%40a; b=")
+                .header("cookie", "a=value+%40a; b=")
                 .build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.getCookie("a").shouldBe("value%20%40a")
+        event.getCookie("a").shouldBe("value+%40a")
         event.getCookie("b").shouldBeEmpty()
     }
 
