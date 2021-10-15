@@ -234,11 +234,8 @@ sealed class BasicEventsTest(
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        if (supportsSessionID) {
-            event.sessionID.shouldNotBeEmpty().shouldNotBe("-")
-        } else {
-            event.sessionID.shouldBe("-")
-        }
+        if (supportsSessionID) event.sessionID.shouldNotBeEmpty().shouldNotBe("-")
+        else event.sessionID.shouldBe("-")
     }
 
     @Test
