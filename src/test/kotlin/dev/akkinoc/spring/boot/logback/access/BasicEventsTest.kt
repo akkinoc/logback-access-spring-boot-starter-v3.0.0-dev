@@ -43,16 +43,16 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
  *
  * @property supportsRequestParametersByFormData Whether to support request parameters by form data.
  * @property supportsRequestAttributes Whether to support request attributes.
- * @property supportsSessionID Whether to support session ID.
- * @property canForwardRequest Whether the web server can forward a request.
+ * @property supportsSessionIDs Whether to support session IDs.
+ * @property canForwardRequests Whether the web server can forward requests.
  */
 @ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(properties = ["logback.access.config=classpath:logback-access.capture.xml"])
 sealed class BasicEventsTest(
         private val supportsRequestParametersByFormData: Boolean,
         private val supportsRequestAttributes: Boolean,
-        private val supportsSessionID: Boolean,
-        private val canForwardRequest: Boolean,
+        private val supportsSessionIDs: Boolean,
+        private val canForwardRequests: Boolean,
 ) {
 
     @Test
@@ -234,7 +234,7 @@ sealed class BasicEventsTest(
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        if (supportsSessionID) event.sessionID.shouldNotBeEmpty().shouldNotBe("-")
+        if (supportsSessionIDs) event.sessionID.shouldNotBeEmpty().shouldNotBe("-")
         else event.sessionID.shouldBe("-")
     }
 
@@ -308,7 +308,7 @@ sealed class BasicEventsTest(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
-        if (!canForwardRequest) return
+        if (!canForwardRequests) return
         val request = RequestEntity.get("/mock-controller/text-with-forward?a=value+@a").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
@@ -348,8 +348,8 @@ sealed class BasicEventsTest(
 class TomcatServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
         supportsRequestAttributes = true,
-        supportsSessionID = true,
-        canForwardRequest = true,
+        supportsSessionIDs = true,
+        canForwardRequests = true,
 )
 
 /**
@@ -359,8 +359,8 @@ class TomcatServletWebBasicEventsTest : BasicEventsTest(
 class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
         supportsRequestAttributes = false,
-        supportsSessionID = false,
-        canForwardRequest = false,
+        supportsSessionIDs = false,
+        canForwardRequests = false,
 )
 
 /**
@@ -370,8 +370,8 @@ class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
 class JettyServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
         supportsRequestAttributes = true,
-        supportsSessionID = true,
-        canForwardRequest = true,
+        supportsSessionIDs = true,
+        canForwardRequests = true,
 )
 
 /**
@@ -381,8 +381,8 @@ class JettyServletWebBasicEventsTest : BasicEventsTest(
 class JettyReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
         supportsRequestAttributes = false,
-        supportsSessionID = false,
-        canForwardRequest = false,
+        supportsSessionIDs = false,
+        canForwardRequests = false,
 )
 
 /**
@@ -392,8 +392,8 @@ class JettyReactiveWebBasicEventsTest : BasicEventsTest(
 class UndertowServletWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = true,
         supportsRequestAttributes = true,
-        supportsSessionID = true,
-        canForwardRequest = true,
+        supportsSessionIDs = true,
+        canForwardRequests = true,
 )
 
 /**
@@ -403,6 +403,6 @@ class UndertowServletWebBasicEventsTest : BasicEventsTest(
 class UndertowReactiveWebBasicEventsTest : BasicEventsTest(
         supportsRequestParametersByFormData = false,
         supportsRequestAttributes = false,
-        supportsSessionID = false,
-        canForwardRequest = false,
+        supportsSessionIDs = false,
+        canForwardRequests = false,
 )
