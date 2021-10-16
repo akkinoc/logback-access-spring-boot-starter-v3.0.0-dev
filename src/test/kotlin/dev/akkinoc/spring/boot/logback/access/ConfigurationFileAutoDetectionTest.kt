@@ -159,3 +159,44 @@ class UndertowServletWebTestSpringConfigurationFileAutoDetectionTest : TestSprin
  */
 @UndertowReactiveWebTest
 class UndertowReactiveWebTestSpringConfigurationFileAutoDetectionTest : TestSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the case where the configuration file ("classpath:logback-access-spring.xml") is auto-detected.
+ */
+sealed class MainSpringConfigurationFileAutoDetectionTest : ConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainSpringConfigurationFileAutoDetectionTest] using the Tomcat servlet web server.
+ */
+@TomcatServletWebTest
+class TomcatServletWebMainSpringConfigurationFileAutoDetectionTest : MainSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainSpringConfigurationFileAutoDetectionTest] using the Tomcat reactive web server.
+ */
+@TomcatReactiveWebTest
+class TomcatReactiveWebMainSpringConfigurationFileAutoDetectionTest : MainSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainSpringConfigurationFileAutoDetectionTest] using the Jetty servlet web server.
+ */
+@JettyServletWebTest
+class JettyServletWebMainSpringConfigurationFileAutoDetectionTest : MainSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainSpringConfigurationFileAutoDetectionTest] using the Jetty reactive web server.
+ */
+@JettyReactiveWebTest
+class JettyReactiveWebMainSpringConfigurationFileAutoDetectionTest : MainSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainSpringConfigurationFileAutoDetectionTest] using the Undertow servlet web server.
+ */
+@UndertowServletWebTest
+class UndertowServletWebMainSpringConfigurationFileAutoDetectionTest : MainSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainSpringConfigurationFileAutoDetectionTest] using the Undertow reactive web server.
+ */
+@UndertowReactiveWebTest
+class UndertowReactiveWebMainSpringConfigurationFileAutoDetectionTest : MainSpringConfigurationFileAutoDetectionTest()
