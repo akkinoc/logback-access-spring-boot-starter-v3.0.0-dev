@@ -16,9 +16,18 @@ class LogbackAccessJoranConfigurator(private val environment: Environment) : Jor
 
     override fun addInstanceRules(store: RuleStore) {
         super.addInstanceRules(store)
-        store.addRule(ElementSelector("*/springProfile"), LogbackAccessJoranSpringProfileAction())
-        store.addRule(ElementSelector("*/springProfile/*"), NOPAction())
-        store.addRule(ElementSelector("configuration/springProperty"), LogbackAccessJoranSpringPropertyAction())
+        store.addRule(
+                ElementSelector("*/springProfile"),
+                LogbackAccessJoranSpringProfileAction(environment),
+        )
+        store.addRule(
+                ElementSelector("*/springProfile/*"),
+                NOPAction(),
+        )
+        store.addRule(
+                ElementSelector("configuration/springProperty"),
+                LogbackAccessJoranSpringPropertyAction(environment),
+        )
     }
 
 }
