@@ -13,16 +13,16 @@ import java.net.URLClassLoader
  * The test context customizer to configure the class loader.
  *
  * @property hiddenClasses The classes to hide.
- * @property additionalClassPath The class path to add.
+ * @property additionalClassPaths The class paths to add.
  */
 data class TestContextClassLoaderCustomizer(
         private val hiddenClasses: Set<Class<*>> = emptySet(),
-        private val additionalClassPath: URL? = null,
+        private val additionalClassPaths: List<URL> = emptyList(),
 ) : ContextCustomizer {
 
     override fun customizeContext(context: ConfigurableApplicationContext, config: MergedContextConfiguration) {
         hideClasses(context)
-        addClassPath(context)
+        addClassPaths(context)
         log.debug("Customized the {}: {}", ConfigurableApplicationContext::class.simpleName, context)
     }
 
@@ -37,13 +37,13 @@ data class TestContextClassLoaderCustomizer(
     }
 
     /**
-     * Adds the specified class path to the class loader.
+     * Adds the specified class paths to the class loader.
      *
      * @param context The test context.
      */
-    private fun addClassPath(context: ConfigurableApplicationContext) {
-        if (additionalClassPath == null) return
-        val urls = arrayOf(additionalClassPath)
+    private fun addClassPaths(context: ConfigurableApplicationContext) {
+        if (additionalClassPaths.isEmpty()) return
+        val urls = additionalClassPaths.toTypedArray()
         val parent = context.classLoader
         checkNotNull(parent) { "Failed to get the current class loader: $context" }
         context.classLoader = URLClassLoader(urls, parent)

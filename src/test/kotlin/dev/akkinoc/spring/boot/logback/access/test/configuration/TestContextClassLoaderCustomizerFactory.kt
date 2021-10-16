@@ -32,7 +32,7 @@ class TestContextClassLoaderCustomizerFactory : ContextCustomizerFactory {
     ): TestContextClassLoaderCustomizer {
         val testContextClassLoaderCustomizer = TestContextClassLoaderCustomizer(
                 hiddenClasses = getHiddenClasses(testClass),
-                additionalClassPath = getAdditionalClassPath(testClass),
+                additionalClassPaths = getAdditionalClassPaths(testClass),
         )
         log.debug(
                 "Creating the {}: {}",
@@ -67,16 +67,22 @@ class TestContextClassLoaderCustomizerFactory : ContextCustomizerFactory {
     }
 
     /**
-     * Gets the class path to add to the class loader.
+     * Gets the class paths to add to the class loader.
      * Returns a URL containing the test class name as the path so that resources can be prepared for each test class.
+     * If the test class is inherited, returns URLs for all super classes as well.
      *
      * @param testClass The test class.
      * @return The additional class path.
      */
-    private fun getAdditionalClassPath(testClass: Class<*>): URL? {
-        val path = convertClassNameToResourcePath(testClass.name) + "/"
-        val resource = ClassPathResource(path)
-        return resource.takeIf { it.exists() }?.url
+    private fun getAdditionalClassPaths(testClass: Class<*>): List<URL> {
+        return generateSequence(testClass) { it.superclass }
+                .takeWhile { it != Any::class.java }
+                .mapNotNull {
+                    val path = convertClassNameToResourcePath(testClass.name) + "/"
+                    val resource = ClassPathResource(path)
+                    resource.takeIf { it.exists() }?.url
+                }
+                .toList()
     }
 
     companion object {
