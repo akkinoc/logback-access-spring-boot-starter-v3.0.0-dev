@@ -1,6 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access
 
-import dev.akkinoc.spring.boot.logback.access.test.assertion.Assertions.assertLogbackAccessEvents
+import dev.akkinoc.spring.boot.logback.access.test.assertion.Assertions.assertLogbackAccessEventsEventually
 import dev.akkinoc.spring.boot.logback.access.test.type.JettyReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.JettyServletWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.TomcatReactiveWebTest
@@ -58,7 +58,7 @@ sealed class BasicTest {
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val regex = Regex("""^127\.0\.0\.1 - - \[.+] "GET /mock-controller/text HTTP/1\.1" 200 9$""")
-        assertLogbackAccessEvents { capture.out.lines().shouldHaveSingleElement { it matches regex } }
+        assertLogbackAccessEventsEventually { capture.out.lines().shouldHaveSingleElement { it matches regex } }
     }
 
 }

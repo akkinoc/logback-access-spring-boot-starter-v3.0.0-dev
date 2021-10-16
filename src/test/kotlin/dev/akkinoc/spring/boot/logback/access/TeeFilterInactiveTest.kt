@@ -52,7 +52,7 @@ sealed class TeeFilterInactiveTest(
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
-        val event = Assertions.assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        val event = Assertions.assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
         if (supportsRequestContents) event.requestContent.shouldBeEmpty()
         if (supportsResponseContents) event.responseContent.shouldBeEmpty()
     }

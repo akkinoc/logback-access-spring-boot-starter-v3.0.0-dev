@@ -1,6 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access
 
-import dev.akkinoc.spring.boot.logback.access.test.assertion.Assertions.assertLogbackAccessEvents
+import dev.akkinoc.spring.boot.logback.access.test.assertion.Assertions.assertLogbackAccessEventsEventually
 import dev.akkinoc.spring.boot.logback.access.test.extension.EventsCapture
 import dev.akkinoc.spring.boot.logback.access.test.extension.EventsCaptureExtension
 import dev.akkinoc.spring.boot.logback.access.test.type.JettyReactiveWebTest
@@ -51,7 +51,7 @@ sealed class TeeFilterActiveTest(
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
-        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        val event = assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
         if (supportsRequestContents) event.requestContent.shouldBe("posted-text")
         if (supportsResponseContents) event.responseContent.shouldBe("mock-text")
     }
