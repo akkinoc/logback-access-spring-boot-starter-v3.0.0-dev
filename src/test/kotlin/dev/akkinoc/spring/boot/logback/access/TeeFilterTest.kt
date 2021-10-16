@@ -54,7 +54,7 @@ sealed class TeeFilterTest(
     }
 
     @Test
-    fun `Appends a Logback-access event with a request content in text`(
+    fun `Appends a Logback-access event with a request content`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
