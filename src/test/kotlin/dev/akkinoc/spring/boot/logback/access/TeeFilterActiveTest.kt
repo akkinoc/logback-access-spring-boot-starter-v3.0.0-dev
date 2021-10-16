@@ -82,7 +82,8 @@ sealed class TeeFilterHostIncludedTest(
         @DynamicPropertySource
         @JvmStatic
         fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
-            registry.add("logback.access.tee-filter.includes") { getLocalHost().hostName }
+            val host = getLocalHost().hostName
+            registry.add("logback.access.tee-filter.includes") { host }
         }
 
     }
@@ -167,7 +168,8 @@ sealed class TeeFilterHostNotExcludedTest(
         @DynamicPropertySource
         @JvmStatic
         fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
-            registry.add("logback.access.tee-filter.excludes") { "non-${getLocalHost().hostName}" }
+            val host = getLocalHost().hostName
+            registry.add("logback.access.tee-filter.excludes") { "non-$host" }
         }
 
     }
