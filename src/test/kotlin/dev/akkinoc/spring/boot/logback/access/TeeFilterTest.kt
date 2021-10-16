@@ -27,10 +27,12 @@ import org.springframework.test.context.TestPropertySource
  * @property supportsResponseContents Whether to support response contents.
  */
 @ExtendWith(EventsCaptureExtension::class)
-@TestPropertySource(properties = [
-    "logback.access.config=classpath:logback-access.capture.xml",
-    "logback.access.tee-filter.enabled=true",
-])
+@TestPropertySource(
+        properties = [
+            "logback.access.config=classpath:logback-access.capture.xml",
+            "logback.access.tee-filter.enabled=true",
+        ]
+)
 sealed class TeeFilterTest(
         private val supportsRequestContents: Boolean,
         private val supportsResponseContents: Boolean,
