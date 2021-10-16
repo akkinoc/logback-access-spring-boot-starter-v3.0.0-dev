@@ -14,10 +14,10 @@ import org.xml.sax.Attributes
  */
 class LogbackAccessJoranSpringPropertyAction(private val environment: Environment) : Action() {
 
-    override fun begin(context: InterpretationContext, name: String, attributes: Attributes) {
+    override fun begin(ic: InterpretationContext, name: String, attrs: Attributes) {
     }
 
-    override fun end(context: InterpretationContext, name: String) {
+    override fun end(ic: InterpretationContext, name: String) {
     }
 
 }
