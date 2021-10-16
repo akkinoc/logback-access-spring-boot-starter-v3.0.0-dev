@@ -77,3 +77,44 @@ class UndertowServletWebTestConfigurationFileAutoDetectionTest : TestConfigurati
  */
 @UndertowReactiveWebTest
 class UndertowReactiveWebTestConfigurationFileAutoDetectionTest : TestConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the case where the configuration file ("logback-access.xml") is auto-detected.
+ */
+sealed class MainConfigurationFileAutoDetectionTest : ConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainConfigurationFileAutoDetectionTest] using the Tomcat servlet web server.
+ */
+@TomcatServletWebTest
+class TomcatServletWebMainConfigurationFileAutoDetectionTest : MainConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainConfigurationFileAutoDetectionTest] using the Tomcat reactive web server.
+ */
+@TomcatReactiveWebTest
+class TomcatReactiveWebMainConfigurationFileAutoDetectionTest : MainConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainConfigurationFileAutoDetectionTest] using the Jetty servlet web server.
+ */
+@JettyServletWebTest
+class JettyServletWebMainConfigurationFileAutoDetectionTest : MainConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainConfigurationFileAutoDetectionTest] using the Jetty reactive web server.
+ */
+@JettyReactiveWebTest
+class JettyReactiveWebMainConfigurationFileAutoDetectionTest : MainConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainConfigurationFileAutoDetectionTest] using the Undertow servlet web server.
+ */
+@UndertowServletWebTest
+class UndertowServletWebMainConfigurationFileAutoDetectionTest : MainConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [MainConfigurationFileAutoDetectionTest] using the Undertow reactive web server.
+ */
+@UndertowReactiveWebTest
+class UndertowReactiveWebMainConfigurationFileAutoDetectionTest : MainConfigurationFileAutoDetectionTest()
