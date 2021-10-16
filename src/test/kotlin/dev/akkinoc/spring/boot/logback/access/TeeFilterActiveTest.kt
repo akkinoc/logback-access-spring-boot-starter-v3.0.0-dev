@@ -145,7 +145,7 @@ class UndertowReactiveWebTeeFilterHostIncludedTest : TeeFilterHostIncludedTest(
 )
 
 /**
- * Tests the case where the current host is included in the tee filter's exclusion host list.
+ * Tests the case where the current host is not included in the tee filter's exclusion host list.
  *
  * @property supportsRequestContents Whether to support request contents.
  * @property supportsResponseContents Whether to support response contents.
