@@ -11,6 +11,7 @@ import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
@@ -18,6 +19,7 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.longs.shouldBeBetween
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.longs.shouldBePositive
 import io.kotest.matchers.longs.shouldBeZero
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
@@ -115,7 +117,6 @@ sealed class BasicEventTest(
                 .build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
-        response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.requestHeaderMap["a"].shouldBe("value @a")
         event.requestHeaderMap["b"].shouldBe("value1 @b")
@@ -140,7 +141,6 @@ sealed class BasicEventTest(
                 .build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
-        response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.getCookie("a").shouldBe("value+%40a")
         event.getCookie("b").shouldBeEmpty()
@@ -154,7 +154,6 @@ sealed class BasicEventTest(
         val request = RequestEntity.get("/mock-controller/text?a=value+@a&b=value1+@b&b=value2+@b&c=").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
-        response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.method.shouldBe("GET")
         event.requestURI.shouldBe("/mock-controller/text")
@@ -179,7 +178,6 @@ sealed class BasicEventTest(
                 .body("a=value+%40a&b=value1+%40b&b=value2+%40b&c=")
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
-        response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.method.shouldBe("POST")
         event.requestURI.shouldBe("/mock-controller/form-data")
@@ -209,7 +207,6 @@ sealed class BasicEventTest(
         val request = RequestEntity.get("/mock-controller/text-with-request-attributes").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
-        response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         if (supportsRequestAttributes) {
             event.getAttribute("a").shouldBe("value @a")
@@ -232,7 +229,6 @@ sealed class BasicEventTest(
         val request = RequestEntity.get("/mock-controller/text-with-session").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
-        response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         if (supportsSessionIDs) event.sessionID.shouldNotBeEmpty().shouldNotBe("-")
         else event.sessionID.shouldBe("-")
@@ -246,7 +242,6 @@ sealed class BasicEventTest(
         val request = RequestEntity.get("/mock-controller/text-with-response-headers").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
-        response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.responseHeaderMap["a"].shouldBe("value @a")
         event.responseHeaderMap["b"].shouldBe("value1 @b")
@@ -320,6 +315,7 @@ sealed class BasicEventTest(
         event.queryString.shouldBe("?a=value+@a")
         event.requestURL.shouldBe("GET /mock-controller/text-with-forward?a=value+@a HTTP/1.1")
         event.statusCode.shouldBe(200)
+        event.contentLength.shouldBe(9L)
     }
 
     @Test
@@ -330,6 +326,7 @@ sealed class BasicEventTest(
         val request = RequestEntity.get("/mock-controller/unknown?a=value+@a").build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(404)
+        response.hasBody().shouldBeTrue()
         val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         event.protocol.shouldBe("HTTP/1.1")
         event.method.shouldBe("GET")
@@ -337,6 +334,7 @@ sealed class BasicEventTest(
         event.queryString.shouldBe("?a=value+@a")
         event.requestURL.shouldBe("GET /mock-controller/unknown?a=value+@a HTTP/1.1")
         event.statusCode.shouldBe(404)
+        event.contentLength.shouldBePositive()
     }
 
 }
