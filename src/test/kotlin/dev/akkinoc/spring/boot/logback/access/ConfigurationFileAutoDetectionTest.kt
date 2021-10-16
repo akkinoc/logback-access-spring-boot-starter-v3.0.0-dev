@@ -38,7 +38,7 @@ sealed class ConfigurationFileAutoDetectionTest {
 }
 
 /**
- * Tests the case where the configuration file ("logback-access-test.xml") is auto-detected.
+ * Tests the case where the configuration file ("classpath:logback-access-test.xml") is auto-detected.
  */
 sealed class TestConfigurationFileAutoDetectionTest : ConfigurationFileAutoDetectionTest()
 
@@ -79,7 +79,7 @@ class UndertowServletWebTestConfigurationFileAutoDetectionTest : TestConfigurati
 class UndertowReactiveWebTestConfigurationFileAutoDetectionTest : TestConfigurationFileAutoDetectionTest()
 
 /**
- * Tests the case where the configuration file ("logback-access.xml") is auto-detected.
+ * Tests the case where the configuration file ("classpath:logback-access.xml") is auto-detected.
  */
 sealed class MainConfigurationFileAutoDetectionTest : ConfigurationFileAutoDetectionTest()
 
@@ -118,3 +118,44 @@ class UndertowServletWebMainConfigurationFileAutoDetectionTest : MainConfigurati
  */
 @UndertowReactiveWebTest
 class UndertowReactiveWebMainConfigurationFileAutoDetectionTest : MainConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the case where the configuration file ("classpath:logback-access-test-spring.xml") is auto-detected.
+ */
+sealed class TestSpringConfigurationFileAutoDetectionTest : ConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [TestSpringConfigurationFileAutoDetectionTest] using the Tomcat servlet web server.
+ */
+@TomcatServletWebTest
+class TomcatServletWebTestSpringConfigurationFileAutoDetectionTest : TestSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [TestSpringConfigurationFileAutoDetectionTest] using the Tomcat reactive web server.
+ */
+@TomcatReactiveWebTest
+class TomcatReactiveWebTestSpringConfigurationFileAutoDetectionTest : TestSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [TestSpringConfigurationFileAutoDetectionTest] using the Jetty servlet web server.
+ */
+@JettyServletWebTest
+class JettyServletWebTestSpringConfigurationFileAutoDetectionTest : TestSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [TestSpringConfigurationFileAutoDetectionTest] using the Jetty reactive web server.
+ */
+@JettyReactiveWebTest
+class JettyReactiveWebTestSpringConfigurationFileAutoDetectionTest : TestSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [TestSpringConfigurationFileAutoDetectionTest] using the Undertow servlet web server.
+ */
+@UndertowServletWebTest
+class UndertowServletWebTestSpringConfigurationFileAutoDetectionTest : TestSpringConfigurationFileAutoDetectionTest()
+
+/**
+ * Tests the [TestSpringConfigurationFileAutoDetectionTest] using the Undertow reactive web server.
+ */
+@UndertowReactiveWebTest
+class UndertowReactiveWebTestSpringConfigurationFileAutoDetectionTest : TestSpringConfigurationFileAutoDetectionTest()
