@@ -52,6 +52,24 @@ sealed class TeeFilterTest(
     }
 
     @Test
+    fun `Appends a Logback-access event with a request content by text`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.post("/mock-controller/text")
+                .header("content-type", "text/plain")
+                .body("posted-text")
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(200)
+        response.body.shouldBe("mock-text")
+        val event = Assertions.assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        if (supportsRequestContents) event.requestContent.shouldBe("posted-text")
+        else event.requestContent.shouldBeEmpty()
+        if (supportsResponseContents) event.responseContent.shouldBe("mock-text")
+        else event.responseContent.shouldBeEmpty()
+    }
+
+    @Test
     fun `Appends a Logback-access event with a request content by form data`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,

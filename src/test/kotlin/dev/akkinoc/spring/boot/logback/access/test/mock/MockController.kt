@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
@@ -83,15 +84,28 @@ class MockController {
     }
 
     /**
+     * Posts the text.
+     *
+     * @param posted The posted text.
+     * @return A text.
+     */
+    @PostMapping("/text")
+    fun postText(@RequestBody posted: String): String {
+        val response = "mock-text"
+        log.debug("Posting the text: {} => {}", posted, response)
+        return response
+    }
+
+    /**
      * Posts the form data.
      *
-     * @param data The form data.
+     * @param posted The posted form data.
      * @return A text.
      */
     @PostMapping("/form-data")
-    fun postFormData(@ModelAttribute data: FormData): String {
+    fun postFormData(@ModelAttribute posted: FormData): String {
         val response = "mock-text"
-        log.debug("Posting the form data: {} => {}", data, response)
+        log.debug("Posting the form data: {} => {}", posted, response)
         return response
     }
 
