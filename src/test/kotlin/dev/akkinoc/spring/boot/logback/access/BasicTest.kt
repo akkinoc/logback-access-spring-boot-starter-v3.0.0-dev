@@ -24,6 +24,7 @@ import org.springframework.http.RequestEntity
 /**
  * Tests the case where the configuration is the default.
  */
+@ExtendWith(OutputCaptureExtension::class)
 sealed class BasicTest {
 
     @Test
@@ -48,7 +49,6 @@ sealed class BasicTest {
     }
 
     @Test
-    @ExtendWith(OutputCaptureExtension::class)
     fun `Appends a Logback-access event`(
             @Autowired rest: TestRestTemplate,
             capture: CapturedOutput,
