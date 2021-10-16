@@ -77,11 +77,10 @@ class TestContextClassLoaderCustomizerFactory : ContextCustomizerFactory {
     private fun getAdditionalClassPaths(testClass: Class<*>): List<URL> {
         return generateSequence(testClass) { it.superclass }
                 .takeWhile { it != Any::class.java }
-                .mapNotNull {
-                    val path = convertClassNameToResourcePath(testClass.name) + "/"
-                    val resource = ClassPathResource(path)
-                    resource.takeIf { it.exists() }?.url
-                }
+                .map { convertClassNameToResourcePath(it.name) }
+                .map { ClassPathResource("$it/") }
+                .filter { it.exists() }
+                .map { it.url }
                 .toList()
     }
 
