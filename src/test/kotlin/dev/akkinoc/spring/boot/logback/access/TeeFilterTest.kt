@@ -1,6 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access
 
-import dev.akkinoc.spring.boot.logback.access.test.assertion.Assertions
+import dev.akkinoc.spring.boot.logback.access.test.assertion.Assertions.assertLogbackAccessEvents
 import dev.akkinoc.spring.boot.logback.access.test.extension.EventsCapture
 import dev.akkinoc.spring.boot.logback.access.test.extension.EventsCaptureExtension
 import dev.akkinoc.spring.boot.logback.access.test.type.JettyReactiveWebTest
@@ -9,6 +9,7 @@ import dev.akkinoc.spring.boot.logback.access.test.type.TomcatReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.TomcatServletWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
@@ -47,10 +48,9 @@ sealed class TeeFilterTest(
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
-        val event = Assertions.assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
-        event.requestContent.shouldBeEmpty()
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        if (supportsRequestContents) event.requestContent.shouldBeEmpty()
         if (supportsResponseContents) event.responseContent.shouldBe("mock-text")
-        else event.responseContent.shouldBeEmpty()
     }
 
     @Test
@@ -64,11 +64,9 @@ sealed class TeeFilterTest(
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
-        val event = Assertions.assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         if (supportsRequestContents) event.requestContent.shouldBe("posted-text")
-        else event.requestContent.shouldBeEmpty()
         if (supportsResponseContents) event.responseContent.shouldBe("mock-text")
-        else event.responseContent.shouldBeEmpty()
     }
 
     @Test
@@ -82,11 +80,23 @@ sealed class TeeFilterTest(
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
-        val event = Assertions.assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
         if (supportsRequestContents) event.requestContent.shouldBe("a=value+%40a&b=value1+%40b&b=value2+%40b&c=")
-        else event.requestContent.shouldBeEmpty()
         if (supportsResponseContents) event.responseContent.shouldBe("mock-text")
-        else event.responseContent.shouldBeEmpty()
+    }
+
+    @Test
+    fun `Appends a Logback-access event with a response content in image`(
+            @Autowired rest: TestRestTemplate,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-static/image.svg").build()
+        val response = rest.exchange<ByteArray>(request)
+        response.statusCodeValue.shouldBe(200)
+        response.hasBody().shouldBeTrue()
+        val event = assertLogbackAccessEvents { capture.shouldBeSingleton().single() }
+        if (supportsRequestContents) event.requestContent.shouldBeEmpty()
+        if (supportsResponseContents) event.responseContent.shouldBe("[IMAGE CONTENTS SUPPRESSED]")
     }
 
 }
