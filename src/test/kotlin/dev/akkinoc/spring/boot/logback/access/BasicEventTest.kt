@@ -39,7 +39,7 @@ import java.lang.System.currentTimeMillis
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 /**
- * Tests the appended Logback-access events in the case where the configuration is the default.
+ * Tests the appended Logback-access event in the case where the configuration is the default.
  *
  * @property supportsRequestParametersByFormData Whether to support request parameters by form data.
  * @property supportsRequestAttributes Whether to support request attributes.
@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
  */
 @ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(properties = ["logback.access.config=classpath:logback-access.capture.xml"])
-sealed class BasicEventsTest(
+sealed class BasicEventTest(
         private val supportsRequestParametersByFormData: Boolean,
         private val supportsRequestAttributes: Boolean,
         private val supportsSessionIDs: Boolean,
@@ -342,10 +342,10 @@ sealed class BasicEventsTest(
 }
 
 /**
- * Tests the [BasicEventsTest] using the Tomcat servlet web server.
+ * Tests the [BasicEventTest] using the Tomcat servlet web server.
  */
 @TomcatServletWebTest
-class TomcatServletWebBasicEventsTest : BasicEventsTest(
+class TomcatServletWebBasicEventTest : BasicEventTest(
         supportsRequestParametersByFormData = true,
         supportsRequestAttributes = true,
         supportsSessionIDs = true,
@@ -353,10 +353,10 @@ class TomcatServletWebBasicEventsTest : BasicEventsTest(
 )
 
 /**
- * Tests the [BasicEventsTest] using the Tomcat reactive web server.
+ * Tests the [BasicEventTest] using the Tomcat reactive web server.
  */
 @TomcatReactiveWebTest
-class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
+class TomcatReactiveWebBasicEventTest : BasicEventTest(
         supportsRequestParametersByFormData = false,
         supportsRequestAttributes = false,
         supportsSessionIDs = false,
@@ -364,10 +364,10 @@ class TomcatReactiveWebBasicEventsTest : BasicEventsTest(
 )
 
 /**
- * Tests the [BasicEventsTest] using the Jetty servlet web server.
+ * Tests the [BasicEventTest] using the Jetty servlet web server.
  */
 @JettyServletWebTest
-class JettyServletWebBasicEventsTest : BasicEventsTest(
+class JettyServletWebBasicEventTest : BasicEventTest(
         supportsRequestParametersByFormData = true,
         supportsRequestAttributes = true,
         supportsSessionIDs = true,
@@ -375,10 +375,10 @@ class JettyServletWebBasicEventsTest : BasicEventsTest(
 )
 
 /**
- * Tests the [BasicEventsTest] using the Jetty reactive web server.
+ * Tests the [BasicEventTest] using the Jetty reactive web server.
  */
 @JettyReactiveWebTest
-class JettyReactiveWebBasicEventsTest : BasicEventsTest(
+class JettyReactiveWebBasicEventTest : BasicEventTest(
         supportsRequestParametersByFormData = false,
         supportsRequestAttributes = false,
         supportsSessionIDs = false,
@@ -386,10 +386,10 @@ class JettyReactiveWebBasicEventsTest : BasicEventsTest(
 )
 
 /**
- * Tests the [BasicEventsTest] using the Undertow servlet web server.
+ * Tests the [BasicEventTest] using the Undertow servlet web server.
  */
 @UndertowServletWebTest
-class UndertowServletWebBasicEventsTest : BasicEventsTest(
+class UndertowServletWebBasicEventTest : BasicEventTest(
         supportsRequestParametersByFormData = true,
         supportsRequestAttributes = true,
         supportsSessionIDs = true,
@@ -397,10 +397,10 @@ class UndertowServletWebBasicEventsTest : BasicEventsTest(
 )
 
 /**
- * Tests the [BasicEventsTest] using the Undertow reactive web server.
+ * Tests the [BasicEventTest] using the Undertow reactive web server.
  */
 @UndertowReactiveWebTest
-class UndertowReactiveWebBasicEventsTest : BasicEventsTest(
+class UndertowReactiveWebBasicEventTest : BasicEventTest(
         supportsRequestParametersByFormData = false,
         supportsRequestAttributes = false,
         supportsSessionIDs = false,
