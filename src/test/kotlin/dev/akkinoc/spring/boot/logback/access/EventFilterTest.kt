@@ -22,7 +22,7 @@ import org.springframework.http.RequestEntity
 import org.springframework.test.context.TestPropertySource
 
 /**
- * Tests the case where the event filter is configured.
+ * Tests the case where the event filter is used in the configuration file.
  */
 @ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(properties = ["logback.access.config=classpath:logback-access-test.filter.capture.xml"])

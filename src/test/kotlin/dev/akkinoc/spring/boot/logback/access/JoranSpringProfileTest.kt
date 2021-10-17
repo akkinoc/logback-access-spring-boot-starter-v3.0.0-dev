@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
 
 /**
- * Tests the case where using `<springProfile>` tags in the configuration file.
+ * Tests the case where the `<springProfile>` tags are used in the configuration file.
  */
 @ExtendWith(OutputCaptureExtension::class)
 @ActiveProfiles(
