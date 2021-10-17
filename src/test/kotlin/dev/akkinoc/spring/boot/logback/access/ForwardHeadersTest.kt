@@ -23,7 +23,12 @@ import org.springframework.test.context.TestPropertySource
  * Tests the case where forward headers are effective.
  */
 @ExtendWith(EventsCaptureExtension::class)
-@TestPropertySource(properties = ["logback.access.config=classpath:logback-access-test.capture.xml"])
+@TestPropertySource(
+        properties = [
+            "server.forward-headers-strategy=native",
+            "logback.access.config=classpath:logback-access-test.capture.xml",
+        ]
+)
 sealed class ForwardHeadersTest {
 
     @Test
@@ -32,10 +37,13 @@ sealed class ForwardHeadersTest {
             capture: EventsCapture,
     ) {
         val request = RequestEntity.get("/mock-controller/text")
+                .header("x-forwarded-for", "1.2.3.4")
                 .build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         val event = assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
+        event.remoteAddr.shouldBe("1.2.3.4")
+        event.remoteHost.shouldBe("1.2.3.4")
     }
 
 }
