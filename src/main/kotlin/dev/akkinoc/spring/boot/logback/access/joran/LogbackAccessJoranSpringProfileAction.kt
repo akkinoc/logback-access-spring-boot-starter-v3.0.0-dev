@@ -47,10 +47,7 @@ class LogbackAccessJoranSpringProfileAction(private val environment: Environment
     override fun end(ic: InterpretationContext, elem: String) {
         if (--depth != 0) return
         ic.removeInPlayListener(this)
-        if (accepts) {
-            val events = events.subList(1, events.lastIndex)
-            ic.joranInterpreter.eventPlayer.addEventsDynamically(events, 1)
-        }
+        if (accepts) ic.joranInterpreter.eventPlayer.addEventsDynamically(events.subList(1, events.lastIndex), 1)
         events.clear()
     }
 
