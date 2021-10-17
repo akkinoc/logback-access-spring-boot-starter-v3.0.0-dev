@@ -35,9 +35,9 @@ class LogbackAccessJoranSpringProfileAction(private val environment: Environment
      */
     private var events: MutableList<SaxEvent> = mutableListOf()
 
-    override fun begin(ic: InterpretationContext, name: String, attrs: Attributes) {
+    override fun begin(ic: InterpretationContext, elem: String, attrs: Attributes) {
         if (++depth != 1) return
-        val names = trimArrayElements(commaDelimitedListToStringArray(attrs.getValue("name")))
+        val names = trimArrayElements(commaDelimitedListToStringArray(attrs.getValue(NAME_ATTRIBUTE)))
         names.indices.forEach { names[it] = substVars(names[it], ic, context) }
         accepts = names.isNotEmpty() && environment.acceptsProfiles(Profiles.of(*names))
         ic.addInPlayListener(this)
