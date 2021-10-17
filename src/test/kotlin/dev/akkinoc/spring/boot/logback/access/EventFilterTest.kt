@@ -25,7 +25,7 @@ import org.springframework.test.context.TestPropertySource
  * Tests the case where the event filter is configured.
  */
 @ExtendWith(EventsCaptureExtension::class)
-@TestPropertySource(properties = ["logback.access.config=classpath:logback-access.filter.capture.xml"])
+@TestPropertySource(properties = ["logback.access.config=classpath:logback-access-test.filter.capture.xml"])
 sealed class EventFilterTest {
 
     @Test

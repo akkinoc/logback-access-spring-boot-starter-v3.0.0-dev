@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
  * @property canForwardRequests Whether the web server can forward requests.
  */
 @ExtendWith(EventsCaptureExtension::class)
-@TestPropertySource(properties = ["logback.access.config=classpath:logback-access.capture.xml"])
+@TestPropertySource(properties = ["logback.access.config=classpath:logback-access-test.capture.xml"])
 sealed class BasicEventTest(
         private val supportsRequestParametersByFormData: Boolean,
         private val supportsRequestAttributes: Boolean,

@@ -31,7 +31,7 @@ import java.net.InetAddress.getLocalHost
 @ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(
         properties = [
-            "logback.access.config=classpath:logback-access.capture.xml",
+            "logback.access.config=classpath:logback-access-test.capture.xml",
             "logback.access.tee-filter.enabled=true",
         ]
 )
