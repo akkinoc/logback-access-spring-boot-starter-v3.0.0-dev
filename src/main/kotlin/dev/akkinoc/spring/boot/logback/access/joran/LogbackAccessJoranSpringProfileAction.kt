@@ -37,7 +37,8 @@ class LogbackAccessJoranSpringProfileAction(private val environment: Environment
 
     override fun begin(ic: InterpretationContext, elem: String, attrs: Attributes) {
         if (++depth != 1) return
-        val names = trimArrayElements(commaDelimitedListToStringArray(attrs.getValue(NAME_ATTRIBUTE)))
+        val name = attrs.getValue(NAME_ATTRIBUTE)
+        val names = trimArrayElements(commaDelimitedListToStringArray(name))
         names.indices.forEach { names[it] = substVars(names[it], ic, context) }
         accepts = names.isNotEmpty() && environment.acceptsProfiles(Profiles.of(*names))
         ic.addInPlayListener(this)
