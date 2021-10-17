@@ -20,6 +20,7 @@ import javax.servlet.RequestDispatcher.FORWARD_QUERY_STRING
 import javax.servlet.RequestDispatcher.FORWARD_REQUEST_URI
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import kotlin.LazyThreadSafetyMode.NONE
 import kotlin.text.Charsets.UTF_8
 
 /**
@@ -58,71 +59,71 @@ class LogbackAccessUndertowEventSource(
 
     override val threadName: String = currentThread().name
 
-    override val serverName: String by lazy {
+    override val serverName: String by lazy(NONE) {
         exchange.hostName
     }
 
-    override val localPort: Int by lazy {
+    override val localPort: Int by lazy(NONE) {
         exchange.destinationAddress.port
     }
 
-    override val remoteAddr: String by lazy {
+    override val remoteAddr: String by lazy(NONE) {
         val sourceAddr = exchange.sourceAddress
         val addr = sourceAddr.address ?: return@lazy sourceAddr.hostString
         addr.hostAddress
     }
 
-    override val remoteHost: String by lazy {
+    override val remoteHost: String by lazy(NONE) {
         exchange.sourceAddress.hostString
     }
 
-    override val remoteUser: String? by lazy {
+    override val remoteUser: String? by lazy(NONE) {
         val securityContext = exchange.securityContext ?: return@lazy null
         val account = securityContext.authenticatedAccount ?: return@lazy null
         account.principal.name
     }
 
-    override val protocol: String by lazy {
+    override val protocol: String by lazy(NONE) {
         "${exchange.protocol}"
     }
 
-    override val method: String by lazy {
+    override val method: String by lazy(NONE) {
         "${exchange.requestMethod}"
     }
 
-    override val requestURI: String by lazy {
+    override val requestURI: String by lazy(NONE) {
         request?.getAttribute(FORWARD_REQUEST_URI) as String? ?: exchange.requestURI
     }
 
-    override val queryString: String by lazy {
+    override val queryString: String by lazy(NONE) {
         val query = request?.getAttribute(FORWARD_QUERY_STRING) as String? ?: exchange.queryString
         if (query.isEmpty()) "" else "?$query"
     }
 
-    override val requestURL: String by lazy {
+    override val requestURL: String by lazy(NONE) {
         "$method $requestURI$queryString $protocol"
     }
 
-    override val requestHeaderMap: Map<String, String> by lazy {
+    override val requestHeaderMap: Map<String, String> by lazy(NONE) {
         val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
         exchange.requestHeaders.associateTo(headers) { "${it.headerName}" to it.first }
         unmodifiableMap(headers)
     }
 
-    override val cookieMap: Map<String, String> by lazy {
+    override val cookieMap: Map<String, String> by lazy(NONE) {
         val cookies = linkedMapOf<String, String>()
         exchange.requestCookies().associateTo(cookies) { it.name to it.value }
         unmodifiableMap(cookies)
     }
 
-    override val requestParameterMap: Map<String, List<String>> by lazy {
+    override val requestParameterMap: Map<String, List<String>> by lazy(NONE) {
         val params = linkedMapOf<String, List<String>>()
         if (request != null) request.parameterMap.mapValuesTo(params) { unmodifiableList(it.value.asList()) }
         else exchange.queryParameters.mapValuesTo(params) { unmodifiableList(it.value.toList()) }
         unmodifiableMap(params)
     }
 
-    override val attributeMap: Map<String, String> by lazy {
+    override val attributeMap: Map<String, String> by lazy(NONE) {
         val attrs = linkedMapOf<String, String>()
         if (request != null) {
             request.attributeNames.asSequence()
@@ -132,11 +133,11 @@ class LogbackAccessUndertowEventSource(
         unmodifiableMap(attrs)
     }
 
-    override val sessionID: String? by lazy {
+    override val sessionID: String? by lazy(NONE) {
         request?.getSession(false)?.id
     }
 
-    override val requestContent: String? by lazy {
+    override val requestContent: String? by lazy(NONE) {
         val bytes = request?.getAttribute(LB_INPUT_BUFFER) as ByteArray?
         if (bytes == null && request != null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
@@ -147,21 +148,21 @@ class LogbackAccessUndertowEventSource(
         bytes?.let { String(it, UTF_8) }
     }
 
-    override val statusCode: Int by lazy {
+    override val statusCode: Int by lazy(NONE) {
         exchange.statusCode
     }
 
-    override val responseHeaderMap: Map<String, String> by lazy {
+    override val responseHeaderMap: Map<String, String> by lazy(NONE) {
         val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
         exchange.responseHeaders.associateTo(headers) { "${it.headerName}" to it.first }
         unmodifiableMap(headers)
     }
 
-    override val contentLength: Long by lazy {
+    override val contentLength: Long by lazy(NONE) {
         exchange.responseBytesSent
     }
 
-    override val responseContent: String? by lazy {
+    override val responseContent: String? by lazy(NONE) {
         if (response != null && isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
         val bytes = request?.getAttribute(LB_OUTPUT_BUFFER) as ByteArray?
         bytes?.let { String(it, UTF_8) }
