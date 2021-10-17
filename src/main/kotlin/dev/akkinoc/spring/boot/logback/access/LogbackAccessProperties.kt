@@ -74,8 +74,10 @@ constructor(
      *  Whether to enable the tee filter.
      * @property includes
      *  The host names to activate.
+     *  By default, all hosts are activated.
      * @property excludes
      *  The host names to deactivate.
+     *  By default, all hosts are activated.
      */
     data class TeeFilter
     @JvmOverloads

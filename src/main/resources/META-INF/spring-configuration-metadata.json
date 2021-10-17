@@ -50,13 +50,13 @@
       "name": "logback.access.tee-filter.includes",
       "type": "java.lang.String",
       "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties$TeeFilter",
-      "description": "The host names to activate."
+      "description": "The host names to activate. By default, all hosts are activated."
     },
     {
       "name": "logback.access.tee-filter.excludes",
       "type": "java.lang.String",
       "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties$TeeFilter",
-      "description": "The host names to deactivate."
+      "description": "The host names to deactivate. By default, all hosts are activated."
     }
   ],
   "hints": [
