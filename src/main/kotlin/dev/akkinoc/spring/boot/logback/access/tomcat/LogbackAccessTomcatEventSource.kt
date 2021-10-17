@@ -7,8 +7,12 @@ import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
+import org.apache.catalina.AccessLog.PROTOCOL_ATTRIBUTE
+import org.apache.catalina.AccessLog.REMOTE_ADDR_ATTRIBUTE
+import org.apache.catalina.AccessLog.REMOTE_HOST_ATTRIBUTE
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
+import org.apache.catalina.valves.RemoteIpValve
 import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.Thread.currentThread
@@ -21,6 +25,7 @@ import kotlin.text.Charsets.UTF_8
 /**
  * The Logback-access event source for the Tomcat web server.
  *
+ * @property requestAttributesEnabled Whether to enable request attributes to work with [RemoteIpValve].
  * @see ch.qos.logback.access.spi.AccessEvent
  * @see ch.qos.logback.access.tomcat.TomcatServerAdapter
  * @see ch.qos.logback.access.PatternLayout
@@ -31,6 +36,7 @@ import kotlin.text.Charsets.UTF_8
 class LogbackAccessTomcatEventSource(
         override val request: Request,
         override val response: Response,
+        private val requestAttributesEnabled: Boolean,
 ) : LogbackAccessEventSource() {
 
     override val serverAdapter: ServerAdapter = TomcatServerAdapter(request, response)
@@ -50,10 +56,18 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val remoteAddr: String by lazy(NONE) {
+        if (requestAttributesEnabled) {
+            val attr = request.getAttribute(REMOTE_ADDR_ATTRIBUTE) as String?
+            if (attr != null) return@lazy attr
+        }
         request.remoteAddr
     }
 
     override val remoteHost: String by lazy(NONE) {
+        if (requestAttributesEnabled) {
+            val attr = request.getAttribute(REMOTE_HOST_ATTRIBUTE) as String?
+            if (attr != null) return@lazy attr
+        }
         request.remoteHost
     }
 
@@ -62,6 +76,10 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val protocol: String by lazy(NONE) {
+        if (requestAttributesEnabled) {
+            val attr = request.getAttribute(PROTOCOL_ATTRIBUTE) as String?
+            if (attr != null) return@lazy attr
+        }
         request.protocol
     }
 

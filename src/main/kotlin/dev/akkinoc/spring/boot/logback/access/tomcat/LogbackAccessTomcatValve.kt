@@ -6,6 +6,7 @@ import org.apache.catalina.AccessLog
 import org.apache.catalina.Valve
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
+import org.apache.catalina.valves.RemoteIpValve
 import org.apache.catalina.valves.ValveBase
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
@@ -22,7 +23,7 @@ class LogbackAccessTomcatValve(
 ) : ValveBase(true), AccessLog {
 
     /**
-     * Whether to enable request attributes.
+     * Whether to enable request attributes to work with [RemoteIpValve].
      */
     private var requestAttributesEnabled: Boolean = false
 
@@ -56,7 +57,7 @@ class LogbackAccessTomcatValve(
                 time,
                 logbackAccessContext,
         )
-        val source = LogbackAccessTomcatEventSource(request, response)
+        val source = LogbackAccessTomcatEventSource(request, response, getRequestAttributesEnabled())
         val event = LogbackAccessEvent(source)
         logbackAccessContext.emit(event)
     }
