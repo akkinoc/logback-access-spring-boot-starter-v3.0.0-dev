@@ -20,7 +20,7 @@ import org.springframework.http.RequestEntity
 import org.springframework.test.context.TestPropertySource
 
 /**
- * Tests the case where the `<springProperty>` tags are used in the configuration file.
+ * Tests the case where `<springProperty>` tags are used in the configuration file.
  */
 @ExtendWith(OutputCaptureExtension::class)
 @TestPropertySource(
