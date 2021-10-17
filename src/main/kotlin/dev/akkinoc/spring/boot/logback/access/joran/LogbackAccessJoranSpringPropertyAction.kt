@@ -25,6 +25,6 @@ class LogbackAccessJoranSpringPropertyAction(private val environment: Environmen
         setProperty(ic, name, value, scope)
     }
 
-    override fun end(ic: InterpretationContext, name: String) = Unit
+    override fun end(ic: InterpretationContext, elem: String) = Unit
 
 }

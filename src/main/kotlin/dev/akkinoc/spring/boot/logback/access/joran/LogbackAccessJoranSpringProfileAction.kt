@@ -43,7 +43,7 @@ class LogbackAccessJoranSpringProfileAction(private val environment: Environment
         ic.addInPlayListener(this)
     }
 
-    override fun end(ic: InterpretationContext, name: String) {
+    override fun end(ic: InterpretationContext, elem: String) {
         if (--depth != 0) return
         ic.removeInPlayListener(this)
         if (accepts) {
