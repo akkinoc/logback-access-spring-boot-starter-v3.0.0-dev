@@ -10,6 +10,7 @@ import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import org.apache.catalina.AccessLog.PROTOCOL_ATTRIBUTE
 import org.apache.catalina.AccessLog.REMOTE_ADDR_ATTRIBUTE
 import org.apache.catalina.AccessLog.REMOTE_HOST_ATTRIBUTE
+import org.apache.catalina.AccessLog.SERVER_NAME_ATTRIBUTE
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
 import org.apache.catalina.valves.RemoteIpValve
@@ -48,6 +49,10 @@ class LogbackAccessTomcatEventSource(
     override val threadName: String = currentThread().name
 
     override val serverName: String by lazy(NONE) {
+        if (requestAttributesEnabled) {
+            val attr = request.getAttribute(SERVER_NAME_ATTRIBUTE) as String?
+            if (attr != null) return@lazy attr
+        }
         request.serverName
     }
 

@@ -37,11 +37,13 @@ sealed class ForwardHeadersTest {
             capture: EventsCapture,
     ) {
         val request = RequestEntity.get("/mock-controller/text")
+                .header("x-forwarded-host", "forwarded-host")
                 .header("x-forwarded-for", "1.2.3.4")
                 .build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         val event = assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
+        event.serverName.shouldBe("forwarded-host")
         event.remoteAddr.shouldBe("1.2.3.4")
         event.remoteHost.shouldBe("1.2.3.4")
     }
