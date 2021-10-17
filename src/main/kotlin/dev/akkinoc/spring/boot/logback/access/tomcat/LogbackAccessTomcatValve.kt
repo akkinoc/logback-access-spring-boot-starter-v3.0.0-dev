@@ -35,6 +35,14 @@ class LogbackAccessTomcatValve(
         requestAttributesEnabled = value
     }
 
+    override fun initInternal() {
+        super.initInternal()
+        val props = logbackAccessContext.properties.tomcat
+        val requestAttributesEnabled = props.requestAttributesEnabled
+                ?: container.pipeline.valves.any { it is RemoteIpValve }
+        setRequestAttributesEnabled(requestAttributesEnabled)
+    }
+
     override fun invoke(request: Request, response: Response) {
         log.debug(
                 "Handling the {}/{}: {} => {} @{}",
