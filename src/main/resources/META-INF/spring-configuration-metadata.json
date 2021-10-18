@@ -35,7 +35,7 @@
     },
     {
       "name": "logback.access.local-port-strategy",
-      "type": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties$LocalPortStrategy",
+      "type": "dev.akkinoc.spring.boot.logback.access.value.LocalPortStrategy",
       "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties",
       "description": "The strategy to change the behavior of IAccessEvent.getLocalPort."
     },
