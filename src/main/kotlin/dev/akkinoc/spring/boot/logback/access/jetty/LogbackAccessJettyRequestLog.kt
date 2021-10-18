@@ -28,7 +28,11 @@ class LogbackAccessJettyRequestLog(
                 response,
                 logbackAccessContext,
         )
-        val source = LogbackAccessJettyEventSource(request, response)
+        val source = LogbackAccessJettyEventSource(
+                request = request,
+                response = response,
+                localPortStrategy = logbackAccessContext.properties.localPortStrategy,
+        )
         val event = LogbackAccessEvent(source)
         logbackAccessContext.emit(event)
     }

@@ -7,6 +7,7 @@ import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
+import dev.akkinoc.spring.boot.logback.access.value.LocalPortStrategy
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.Response
 import java.lang.String.CASE_INSENSITIVE_ORDER
@@ -21,6 +22,7 @@ import kotlin.text.Charsets.UTF_8
 /**
  * The Logback-access event source for the Jetty web server.
  *
+ * @property localPortStrategy The strategy to change the behavior of [localPort].
  * @see ch.qos.logback.access.spi.AccessEvent
  * @see ch.qos.logback.access.jetty.JettyServerAdapter
  * @see ch.qos.logback.access.PatternLayout
@@ -29,6 +31,7 @@ import kotlin.text.Charsets.UTF_8
 class LogbackAccessJettyEventSource(
         override val request: Request,
         override val response: Response,
+        private val localPortStrategy: LocalPortStrategy,
 ) : LogbackAccessEventSource() {
 
     override val serverAdapter: ServerAdapter = JettyServerAdapter(request, response)
@@ -44,7 +47,10 @@ class LogbackAccessJettyEventSource(
     }
 
     override val localPort: Int by lazy(NONE) {
-        request.localPort
+        when (localPortStrategy) {
+            LocalPortStrategy.LOCAL -> request.localPort
+            LocalPortStrategy.SERVER -> request.serverPort
+        }
     }
 
     override val remoteAddr: String by lazy(NONE) {

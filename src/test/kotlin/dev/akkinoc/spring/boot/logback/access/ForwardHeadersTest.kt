@@ -20,7 +20,7 @@ import org.springframework.http.RequestEntity
 import org.springframework.test.context.TestPropertySource
 
 /**
- * Tests the case where forward headers are effective.
+ * Tests the case where forward headers are enabled.
  */
 @ExtendWith(EventsCaptureExtension::class)
 @TestPropertySource(
@@ -38,14 +38,18 @@ sealed class ForwardHeadersTest {
     ) {
         val request = RequestEntity.get("/mock-controller/text")
                 .header("x-forwarded-host", "forwarded-host")
+                .header("x-forwarded-port", "12345")
                 .header("x-forwarded-for", "1.2.3.4")
+                .header("x-forwarded-proto", "https")
                 .build()
         val response = rest.exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         val event = assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
         event.serverName.shouldBe("forwarded-host")
+        event.localPort.shouldBe(12345)
         event.remoteAddr.shouldBe("1.2.3.4")
         event.remoteHost.shouldBe("1.2.3.4")
+        event.protocol.shouldBe("HTTP/1.1")
     }
 
 }

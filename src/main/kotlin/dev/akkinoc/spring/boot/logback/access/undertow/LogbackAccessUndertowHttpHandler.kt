@@ -44,7 +44,10 @@ class LogbackAccessUndertowHttpHandler(
                 exchange,
                 logbackAccessContext,
         )
-        val source = LogbackAccessUndertowEventSource(exchange)
+        val source = LogbackAccessUndertowEventSource(
+                exchange = exchange,
+                localPortStrategy = logbackAccessContext.properties.localPortStrategy,
+        )
         val event = LogbackAccessEvent(source)
         logbackAccessContext.emit(event)
         next.proceed()

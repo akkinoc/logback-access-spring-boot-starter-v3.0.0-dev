@@ -7,10 +7,12 @@ import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
+import dev.akkinoc.spring.boot.logback.access.value.LocalPortStrategy
 import org.apache.catalina.AccessLog.PROTOCOL_ATTRIBUTE
 import org.apache.catalina.AccessLog.REMOTE_ADDR_ATTRIBUTE
 import org.apache.catalina.AccessLog.REMOTE_HOST_ATTRIBUTE
 import org.apache.catalina.AccessLog.SERVER_NAME_ATTRIBUTE
+import org.apache.catalina.AccessLog.SERVER_PORT_ATTRIBUTE
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
 import org.apache.catalina.valves.RemoteIpValve
@@ -26,6 +28,7 @@ import kotlin.text.Charsets.UTF_8
 /**
  * The Logback-access event source for the Tomcat web server.
  *
+ * @property localPortStrategy The strategy to change the behavior of [localPort].
  * @property requestAttributesEnabled Whether to enable request attributes to work with [RemoteIpValve].
  * @see ch.qos.logback.access.spi.AccessEvent
  * @see ch.qos.logback.access.tomcat.TomcatServerAdapter
@@ -37,6 +40,7 @@ import kotlin.text.Charsets.UTF_8
 class LogbackAccessTomcatEventSource(
         override val request: Request,
         override val response: Response,
+        private val localPortStrategy: LocalPortStrategy,
         private val requestAttributesEnabled: Boolean,
 ) : LogbackAccessEventSource() {
 
@@ -57,7 +61,18 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val localPort: Int by lazy(NONE) {
-        request.localPort
+        when (localPortStrategy) {
+            LocalPortStrategy.LOCAL -> {
+                request.localPort
+            }
+            LocalPortStrategy.SERVER -> {
+                if (requestAttributesEnabled) {
+                    val attr = request.getAttribute(SERVER_PORT_ATTRIBUTE) as Int?
+                    if (attr != null) return@lazy attr
+                }
+                request.serverPort
+            }
+        }
     }
 
     override val remoteAddr: String by lazy(NONE) {

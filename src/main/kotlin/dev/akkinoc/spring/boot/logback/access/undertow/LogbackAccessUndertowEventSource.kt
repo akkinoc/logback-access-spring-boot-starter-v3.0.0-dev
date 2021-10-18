@@ -6,6 +6,7 @@ import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
+import dev.akkinoc.spring.boot.logback.access.value.LocalPortStrategy
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.handlers.ServletRequestContext
 import java.lang.String.CASE_INSENSITIVE_ORDER
@@ -27,6 +28,7 @@ import kotlin.text.Charsets.UTF_8
  * The Logback-access event source for the Undertow web server.
  *
  * @property exchange The request/response exchange.
+ * @property localPortStrategy The strategy to change the behavior of [localPort].
  * @see ch.qos.logback.access.spi.AccessEvent
  * @see ch.qos.logback.access.PatternLayout
  * @see io.undertow.servlet.spec.HttpServletRequestImpl
@@ -35,6 +37,7 @@ import kotlin.text.Charsets.UTF_8
  */
 class LogbackAccessUndertowEventSource(
         private val exchange: HttpServerExchange,
+        private val localPortStrategy: LocalPortStrategy,
 ) : LogbackAccessEventSource() {
 
     override val request: HttpServletRequest? = run {
@@ -64,7 +67,10 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val localPort: Int by lazy(NONE) {
-        exchange.destinationAddress.port
+        when (localPortStrategy) {
+            LocalPortStrategy.LOCAL -> exchange.destinationAddress.port
+            LocalPortStrategy.SERVER -> exchange.hostPort
+        }
     }
 
     override val remoteAddr: String by lazy(NONE) {
