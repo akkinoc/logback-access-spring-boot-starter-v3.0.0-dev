@@ -34,7 +34,7 @@
       "description": "The location of the configuration file. Auto-detected by default: 1. \"classpath:logback-access-test.xml\" 2. \"classpath:logback-access.xml\" 3. \"classpath:logback-access-test-spring.xml\" 4. \"classpath:logback-access-spring.xml\" 5. \"classpath:dev/akkinoc/spring/boot/logback/access/logback-access-spring.xml\""
     },
     {
-      "name": "logback.access.tomcat.enable-request-attributes",
+      "name": "logback.access.tomcat.request-attributes-enabled",
       "type": "java.lang.Boolean",
       "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties$Tomcat",
       "description": "Whether to enable request attributes to work with RemoteIpValve. Defaults to the presence of RemoteIpValve enabled by the property \"server.forward-headers-strategy=native\"."
