@@ -57,14 +57,14 @@ constructor(
     /**
      * The properties for the Tomcat web server.
      *
-     * @property requestAttributesEnabled
+     * @property enableRequestAttributes
      *  Whether to enable request attributes to work with [RemoteIpValve].
      *  Defaults to the presence of [RemoteIpValve] enabled by the property "server.forward-headers-strategy=native".
      */
     data class Tomcat
     @JvmOverloads
     constructor(
-            val requestAttributesEnabled: Boolean? = null,
+            val enableRequestAttributes: Boolean? = null,
     )
 
     /**
