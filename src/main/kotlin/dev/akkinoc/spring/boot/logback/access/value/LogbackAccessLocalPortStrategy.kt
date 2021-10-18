@@ -6,7 +6,7 @@ import javax.servlet.ServletRequest
 /**
  * The strategy to change the behavior of [IAccessEvent.getLocalPort].
  */
-enum class LocalPortStrategy {
+enum class LogbackAccessLocalPortStrategy {
 
     /**
      * Returns the port number of the interface on which the request was received.

@@ -1,7 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access
 
 import ch.qos.logback.access.spi.IAccessEvent
-import dev.akkinoc.spring.boot.logback.access.value.LocalPortStrategy
+import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
 import org.apache.catalina.valves.RemoteIpValve
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
@@ -33,7 +33,7 @@ data class LogbackAccessProperties
 constructor(
         val enabled: Boolean = true,
         val config: String? = null,
-        val localPortStrategy: LocalPortStrategy = LocalPortStrategy.SERVER,
+        val localPortStrategy: LogbackAccessLocalPortStrategy = LogbackAccessLocalPortStrategy.SERVER,
         val tomcat: Tomcat = Tomcat(),
         val teeFilter: TeeFilter = TeeFilter(),
 ) {

@@ -7,7 +7,7 @@ import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
-import dev.akkinoc.spring.boot.logback.access.value.LocalPortStrategy
+import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
 import org.apache.catalina.AccessLog.PROTOCOL_ATTRIBUTE
 import org.apache.catalina.AccessLog.REMOTE_ADDR_ATTRIBUTE
 import org.apache.catalina.AccessLog.REMOTE_HOST_ATTRIBUTE
@@ -40,7 +40,7 @@ import kotlin.text.Charsets.UTF_8
 class LogbackAccessTomcatEventSource(
         override val request: Request,
         override val response: Response,
-        private val localPortStrategy: LocalPortStrategy,
+        private val localPortStrategy: LogbackAccessLocalPortStrategy,
         private val requestAttributesEnabled: Boolean,
 ) : LogbackAccessEventSource() {
 
@@ -62,10 +62,10 @@ class LogbackAccessTomcatEventSource(
 
     override val localPort: Int by lazy(NONE) {
         when (localPortStrategy) {
-            LocalPortStrategy.LOCAL -> {
+            LogbackAccessLocalPortStrategy.LOCAL -> {
                 request.localPort
             }
-            LocalPortStrategy.SERVER -> {
+            LogbackAccessLocalPortStrategy.SERVER -> {
                 if (requestAttributesEnabled) {
                     val attr = request.getAttribute(SERVER_PORT_ATTRIBUTE) as Int?
                     if (attr != null) return@lazy attr
