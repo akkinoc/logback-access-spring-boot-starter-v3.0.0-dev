@@ -1,4 +1,4 @@
-package dev.akkinoc.spring.boot.logback.access
+package dev.akkinoc.spring.boot.logback.access.tee
 
 import dev.akkinoc.spring.boot.logback.access.test.assertion.Assertions.assertLogbackAccessEventsEventually
 import dev.akkinoc.spring.boot.logback.access.test.extension.EventsCapture
@@ -11,7 +11,6 @@ import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldBeEmpty
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,10 +20,10 @@ import org.springframework.http.RequestEntity
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.TestPropertySource
-import java.net.InetAddress
+import java.net.InetAddress.getLocalHost
 
 /**
- * Tests the case where the tee filter is inactive.
+ * Tests the case where the tee filter is active.
  *
  * @property supportsRequestContents Whether to support request contents.
  * @property supportsResponseContents Whether to support response contents.
@@ -36,7 +35,7 @@ import java.net.InetAddress
             "logback.access.tee-filter.enabled=true",
         ]
 )
-sealed class TeeFilterInactiveTest(
+sealed class TeeFilterActiveTest(
         private val supportsRequestContents: Boolean,
         private val supportsResponseContents: Boolean,
 ) {
@@ -53,22 +52,22 @@ sealed class TeeFilterInactiveTest(
         response.statusCodeValue.shouldBe(200)
         response.body.shouldBe("mock-text")
         val event = assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
-        if (supportsRequestContents) event.requestContent.shouldBeEmpty()
-        if (supportsResponseContents) event.responseContent.shouldBeEmpty()
+        if (supportsRequestContents) event.requestContent.shouldBe("posted-text")
+        if (supportsResponseContents) event.responseContent.shouldBe("mock-text")
     }
 
 }
 
 /**
- * Tests the case where the current host is not included in the tee filter's inclusion hosts.
+ * Tests the case where the current host is included in the tee filter's inclusion hosts.
  *
  * @property supportsRequestContents Whether to support request contents.
  * @property supportsResponseContents Whether to support response contents.
  */
-sealed class TeeFilterHostNotIncludedTest(
+sealed class TeeFilterHostIncludedTest(
         supportsRequestContents: Boolean,
         supportsResponseContents: Boolean,
-) : TeeFilterInactiveTest(
+) : TeeFilterActiveTest(
         supportsRequestContents = supportsRequestContents,
         supportsResponseContents = supportsResponseContents,
 ) {
@@ -83,8 +82,8 @@ sealed class TeeFilterHostNotIncludedTest(
         @DynamicPropertySource
         @JvmStatic
         fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
-            val host = InetAddress.getLocalHost().hostName
-            registry.add("logback.access.tee-filter.includes") { "non-$host" }
+            val host = getLocalHost().hostName
+            registry.add("logback.access.tee-filter.includes") { host }
         }
 
     }
@@ -92,69 +91,69 @@ sealed class TeeFilterHostNotIncludedTest(
 }
 
 /**
- * Tests the [TeeFilterHostNotIncludedTest] using the Tomcat servlet web server.
+ * Tests the [TeeFilterHostIncludedTest] using the Tomcat servlet web server.
  */
 @TomcatServletWebTest
-class TomcatServletWebTeeFilterHostNotIncludedTest : TeeFilterHostNotIncludedTest(
+class TomcatServletWebTeeFilterHostIncludedTest : TeeFilterHostIncludedTest(
         supportsRequestContents = true,
         supportsResponseContents = true,
 )
 
 /**
- * Tests the [TeeFilterHostNotIncludedTest] using the Tomcat reactive web server.
+ * Tests the [TeeFilterHostIncludedTest] using the Tomcat reactive web server.
  */
 @TomcatReactiveWebTest
-class TomcatReactiveWebTeeFilterHostNotIncludedTest : TeeFilterHostNotIncludedTest(
+class TomcatReactiveWebTeeFilterHostIncludedTest : TeeFilterHostIncludedTest(
         supportsRequestContents = false,
         supportsResponseContents = false,
 )
 
 /**
- * Tests the [TeeFilterHostNotIncludedTest] using the Jetty servlet web server.
+ * Tests the [TeeFilterHostIncludedTest] using the Jetty servlet web server.
  */
 @JettyServletWebTest
-class JettyServletWebTeeFilterHostNotIncludedTest : TeeFilterHostNotIncludedTest(
+class JettyServletWebTeeFilterHostIncludedTest : TeeFilterHostIncludedTest(
         supportsRequestContents = true,
         supportsResponseContents = true,
 )
 
 /**
- * Tests the [TeeFilterHostNotIncludedTest] using the Jetty reactive web server.
+ * Tests the [TeeFilterHostIncludedTest] using the Jetty reactive web server.
  */
 @JettyReactiveWebTest
-class JettyReactiveWebTeeFilterHostNotIncludedTest : TeeFilterHostNotIncludedTest(
+class JettyReactiveWebTeeFilterHostIncludedTest : TeeFilterHostIncludedTest(
         supportsRequestContents = false,
         supportsResponseContents = false,
 )
 
 /**
- * Tests the [TeeFilterHostNotIncludedTest] using the Undertow servlet web server.
+ * Tests the [TeeFilterHostIncludedTest] using the Undertow servlet web server.
  */
 @UndertowServletWebTest
-class UndertowServletWebTeeFilterHostNotIncludedTest : TeeFilterHostNotIncludedTest(
+class UndertowServletWebTeeFilterHostIncludedTest : TeeFilterHostIncludedTest(
         supportsRequestContents = true,
         supportsResponseContents = false,
 )
 
 /**
- * Tests the [TeeFilterHostNotIncludedTest] using the Undertow reactive web server.
+ * Tests the [TeeFilterHostIncludedTest] using the Undertow reactive web server.
  */
 @UndertowReactiveWebTest
-class UndertowReactiveWebTeeFilterHostNotIncludedTest : TeeFilterHostNotIncludedTest(
+class UndertowReactiveWebTeeFilterHostIncludedTest : TeeFilterHostIncludedTest(
         supportsRequestContents = false,
         supportsResponseContents = false,
 )
 
 /**
- * Tests the case where the current host is included in the tee filter's exclusion hosts.
+ * Tests the case where the current host is not included in the tee filter's exclusion hosts.
  *
  * @property supportsRequestContents Whether to support request contents.
  * @property supportsResponseContents Whether to support response contents.
  */
-sealed class TeeFilterHostExcludedTest(
+sealed class TeeFilterHostNotExcludedTest(
         supportsRequestContents: Boolean,
         supportsResponseContents: Boolean,
-) : TeeFilterInactiveTest(
+) : TeeFilterActiveTest(
         supportsRequestContents = supportsRequestContents,
         supportsResponseContents = supportsResponseContents,
 ) {
@@ -169,8 +168,8 @@ sealed class TeeFilterHostExcludedTest(
         @DynamicPropertySource
         @JvmStatic
         fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
-            val host = InetAddress.getLocalHost().hostName
-            registry.add("logback.access.tee-filter.excludes") { host }
+            val host = getLocalHost().hostName
+            registry.add("logback.access.tee-filter.excludes") { "non-$host" }
         }
 
     }
@@ -178,55 +177,55 @@ sealed class TeeFilterHostExcludedTest(
 }
 
 /**
- * Tests the [TeeFilterHostExcludedTest] using the Tomcat servlet web server.
+ * Tests the [TeeFilterHostNotExcludedTest] using the Tomcat servlet web server.
  */
 @TomcatServletWebTest
-class TomcatServletWebTeeFilterHostExcludedTest : TeeFilterHostExcludedTest(
+class TomcatServletWebTeeFilterHostNotExcludedTest : TeeFilterHostNotExcludedTest(
         supportsRequestContents = true,
         supportsResponseContents = true,
 )
 
 /**
- * Tests the [TeeFilterHostExcludedTest] using the Tomcat reactive web server.
+ * Tests the [TeeFilterHostNotExcludedTest] using the Tomcat reactive web server.
  */
 @TomcatReactiveWebTest
-class TomcatReactiveWebTeeFilterHostExcludedTest : TeeFilterHostExcludedTest(
+class TomcatReactiveWebTeeFilterHostNotExcludedTest : TeeFilterHostNotExcludedTest(
         supportsRequestContents = false,
         supportsResponseContents = false,
 )
 
 /**
- * Tests the [TeeFilterHostExcludedTest] using the Jetty servlet web server.
+ * Tests the [TeeFilterHostNotExcludedTest] using the Jetty servlet web server.
  */
 @JettyServletWebTest
-class JettyServletWebTeeFilterHostExcludedTest : TeeFilterHostExcludedTest(
+class JettyServletWebTeeFilterHostNotExcludedTest : TeeFilterHostNotExcludedTest(
         supportsRequestContents = true,
         supportsResponseContents = true,
 )
 
 /**
- * Tests the [TeeFilterHostExcludedTest] using the Jetty reactive web server.
+ * Tests the [TeeFilterHostNotExcludedTest] using the Jetty reactive web server.
  */
 @JettyReactiveWebTest
-class JettyReactiveWebTeeFilterHostExcludedTest : TeeFilterHostExcludedTest(
+class JettyReactiveWebTeeFilterHostNotExcludedTest : TeeFilterHostNotExcludedTest(
         supportsRequestContents = false,
         supportsResponseContents = false,
 )
 
 /**
- * Tests the [TeeFilterHostExcludedTest] using the Undertow servlet web server.
+ * Tests the [TeeFilterHostNotExcludedTest] using the Undertow servlet web server.
  */
 @UndertowServletWebTest
-class UndertowServletWebTeeFilterHostExcludedTest : TeeFilterHostExcludedTest(
+class UndertowServletWebTeeFilterHostNotExcludedTest : TeeFilterHostNotExcludedTest(
         supportsRequestContents = true,
         supportsResponseContents = false,
 )
 
 /**
- * Tests the [TeeFilterHostExcludedTest] using the Undertow reactive web server.
+ * Tests the [TeeFilterHostNotExcludedTest] using the Undertow reactive web server.
  */
 @UndertowReactiveWebTest
-class UndertowReactiveWebTeeFilterHostExcludedTest : TeeFilterHostExcludedTest(
+class UndertowReactiveWebTeeFilterHostNotExcludedTest : TeeFilterHostNotExcludedTest(
         supportsRequestContents = false,
         supportsResponseContents = false,
 )
