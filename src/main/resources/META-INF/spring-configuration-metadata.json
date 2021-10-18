@@ -34,6 +34,12 @@
       "description": "The location of the configuration file. Auto-detected by default: 1. \"classpath:logback-access-test.xml\" 2. \"classpath:logback-access.xml\" 3. \"classpath:logback-access-test-spring.xml\" 4. \"classpath:logback-access-spring.xml\" 5. \"classpath:dev/akkinoc/spring/boot/logback/access/logback-access-spring.xml\""
     },
     {
+      "name": "logback.access.local-port-strategy",
+      "type": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties$LocalPortStrategy",
+      "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties",
+      "description": "The strategy to change the behavior of IAccessEvent.getLocalPort."
+    },
+    {
       "name": "logback.access.tomcat.request-attributes-enabled",
       "type": "java.lang.Boolean",
       "sourceType": "dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties$Tomcat",
