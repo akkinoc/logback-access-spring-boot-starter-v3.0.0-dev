@@ -34,7 +34,7 @@ import org.springframework.test.context.TestPropertySource
 sealed class JoranSpringProfileTest {
 
     @Test
-    fun `Appends a Logback-access event`(
+    fun `Appends a Logback-access event according to the configuration file that contains springProfile tags`(
             @Autowired rest: TestRestTemplate,
             capture: CapturedOutput,
     ) {
