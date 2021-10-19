@@ -20,16 +20,11 @@ import org.springframework.http.RequestEntity
 import org.springframework.test.context.TestPropertySource
 
 /**
- * Tests the case where forward headers are enabled.
+ * Tests the case where forward headers are supported.
  */
 @ExtendWith(EventsCaptureExtension::class)
-@TestPropertySource(
-        properties = [
-            "server.forward-headers-strategy=native",
-            "logback.access.config=classpath:logback-access-test.capture.xml",
-        ]
-)
-sealed class ForwardHeadersTest {
+@TestPropertySource(properties = ["logback.access.config=classpath:logback-access-test.capture.xml"])
+sealed class ForwardHeadersSupportTest {
 
     @Test
     fun `Appends a Logback-access event`(
@@ -55,37 +50,50 @@ sealed class ForwardHeadersTest {
 }
 
 /**
- * Tests the [ForwardHeadersTest] using the Tomcat servlet web server.
+ * Tests the case where forward headers are supported natively.
+ */
+@TestPropertySource(properties = ["server.forward-headers-strategy=native"])
+sealed class ForwardHeadersNativeSupportTest : ForwardHeadersSupportTest()
+
+/**
+ * Tests the [ForwardHeadersNativeSupportTest] using the Tomcat servlet web server.
  */
 @TomcatServletWebTest
-class TomcatServletWebForwardHeadersTest : ForwardHeadersTest()
+class TomcatServletWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
 
 /**
- * Tests the [ForwardHeadersTest] using the Tomcat reactive web server.
+ * Tests the [ForwardHeadersNativeSupportTest] using the Tomcat reactive web server.
  */
 @TomcatReactiveWebTest
-class TomcatReactiveWebForwardHeadersTest : ForwardHeadersTest()
+class TomcatReactiveWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
 
 /**
- * Tests the [ForwardHeadersTest] using the Jetty servlet web server.
+ * Tests the [ForwardHeadersNativeSupportTest] using the Jetty servlet web server.
  */
 @JettyServletWebTest
-class JettyServletWebForwardHeadersTest : ForwardHeadersTest()
+class JettyServletWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
 
 /**
- * Tests the [ForwardHeadersTest] using the Jetty reactive web server.
+ * Tests the [ForwardHeadersNativeSupportTest] using the Jetty reactive web server.
  */
 @JettyReactiveWebTest
-class JettyReactiveWebForwardHeadersTest : ForwardHeadersTest()
+class JettyReactiveWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
 
 /**
- * Tests the [ForwardHeadersTest] using the Undertow servlet web server.
+ * Tests the [ForwardHeadersNativeSupportTest] using the Undertow servlet web server.
  */
 @UndertowServletWebTest
-class UndertowServletWebForwardHeadersTest : ForwardHeadersTest()
+class UndertowServletWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
 
 /**
- * Tests the [ForwardHeadersTest] using the Undertow reactive web server.
+ * Tests the [ForwardHeadersNativeSupportTest] using the Undertow reactive web server.
  */
 @UndertowReactiveWebTest
-class UndertowReactiveWebForwardHeadersTest : ForwardHeadersTest()
+class UndertowReactiveWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
+
+// TODO: Add support for forward headers supported by framework.
+// /**
+//  * Tests the case where forward headers are supported by framework.
+//  */
+// @TestPropertySource(properties = ["server.forward-headers-strategy=framework"])
+// sealed class ForwardHeadersNativeSupportTest : ForwardHeadersSupportTest()
