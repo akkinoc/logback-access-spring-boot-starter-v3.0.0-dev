@@ -34,7 +34,7 @@ import org.springframework.test.context.TestPropertySource
 sealed class LocalPortNoRewriteTest {
 
     @Test
-    fun `Appends a Logback-access event`(
+    fun `Does not rewrite the local port of the appended Logback-access event with forward headers`(
             @Autowired rest: TestRestTemplate,
             @LocalServerPort port: Int,
             capture: EventsCapture,

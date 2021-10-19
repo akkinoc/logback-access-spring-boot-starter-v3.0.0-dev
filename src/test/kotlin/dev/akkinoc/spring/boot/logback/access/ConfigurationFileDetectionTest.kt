@@ -25,7 +25,7 @@ import org.springframework.http.RequestEntity
 sealed class ConfigurationFileDetectionTest {
 
     @Test
-    fun `Appends a Logback-access event`(
+    fun `Appends a Logback-access event according to the detected configuration file`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {

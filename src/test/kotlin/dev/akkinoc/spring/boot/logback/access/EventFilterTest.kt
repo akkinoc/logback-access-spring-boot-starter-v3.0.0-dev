@@ -29,7 +29,7 @@ import org.springframework.test.context.TestPropertySource
 sealed class EventFilterTest {
 
     @Test
-    fun `Appends a Logback-access event because it was accepted by the filter`(
+    fun `If the filter accepts a Logback-access event, appends it`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -42,7 +42,7 @@ sealed class EventFilterTest {
     }
 
     @Test
-    fun `Appends a Logback-access event because it was passed by the filter`(
+    fun `If the filter passes a Logback-access event, appends it`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -55,7 +55,7 @@ sealed class EventFilterTest {
     }
 
     @Test
-    fun `Does not append a Logback-access event because it was denied by the filter`(
+    fun `If the filter denies a Logback-access event, does not append it`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {

@@ -27,7 +27,7 @@ import org.springframework.test.context.TestPropertySource
 sealed class ForwardHeadersSupportTest {
 
     @Test
-    fun `Appends a Logback-access event`(
+    fun `Rewrites some properties of the appended Logback-access event with forward headers`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
