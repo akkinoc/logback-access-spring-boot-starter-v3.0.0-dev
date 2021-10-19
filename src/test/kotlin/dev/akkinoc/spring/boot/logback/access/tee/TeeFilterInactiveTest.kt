@@ -34,7 +34,7 @@ import java.net.InetAddress
         properties = [
             "logback.access.config=classpath:logback-access-test.capture.xml",
             "logback.access.tee-filter.enabled=true",
-        ]
+        ],
 )
 sealed class TeeFilterInactiveTest(
         private val supportsRequestContents: Boolean,

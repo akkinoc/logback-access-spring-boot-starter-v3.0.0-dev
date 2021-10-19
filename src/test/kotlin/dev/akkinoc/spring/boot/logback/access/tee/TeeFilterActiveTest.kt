@@ -33,7 +33,7 @@ import java.net.InetAddress.getLocalHost
         properties = [
             "logback.access.config=classpath:logback-access-test.capture.xml",
             "logback.access.tee-filter.enabled=true",
-        ]
+        ],
 )
 sealed class TeeFilterActiveTest(
         private val supportsRequestContents: Boolean,

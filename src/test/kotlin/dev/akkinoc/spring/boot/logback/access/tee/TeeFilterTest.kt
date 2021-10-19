@@ -32,7 +32,7 @@ import org.springframework.test.context.TestPropertySource
         properties = [
             "logback.access.config=classpath:logback-access-test.capture.xml",
             "logback.access.tee-filter.enabled=true",
-        ]
+        ],
 )
 sealed class TeeFilterTest(
         private val supportsRequestContents: Boolean,
