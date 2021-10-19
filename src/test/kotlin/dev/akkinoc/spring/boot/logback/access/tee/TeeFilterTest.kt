@@ -40,7 +40,7 @@ sealed class TeeFilterTest(
 ) {
 
     @Test
-    fun `Appends a Logback-access event`(
+    fun `Appends a Logback-access event through the tee filter`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -54,7 +54,7 @@ sealed class TeeFilterTest(
     }
 
     @Test
-    fun `Appends a Logback-access event with a request content`(
+    fun `Appends a Logback-access event with a request content through the tee filter`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -70,7 +70,7 @@ sealed class TeeFilterTest(
     }
 
     @Test
-    fun `Appends a Logback-access event with a request content in form data`(
+    fun `Appends a Logback-access event with a form data request content through the tee filter`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
@@ -86,7 +86,7 @@ sealed class TeeFilterTest(
     }
 
     @Test
-    fun `Appends a Logback-access event with a response content in image`(
+    fun `Appends a Logback-access event with an image response content through the tee filter`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
