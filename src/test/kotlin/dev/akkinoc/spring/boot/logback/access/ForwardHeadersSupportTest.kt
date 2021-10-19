@@ -53,47 +53,47 @@ sealed class ForwardHeadersSupportTest {
  * Tests the case where forward headers are supported natively.
  */
 @TestPropertySource(properties = ["server.forward-headers-strategy=native"])
-sealed class ForwardHeadersNativeSupportTest : ForwardHeadersSupportTest()
+sealed class NativeForwardHeadersSupportTest : ForwardHeadersSupportTest()
 
 /**
- * Tests the [ForwardHeadersNativeSupportTest] using the Tomcat servlet web server.
+ * Tests the [NativeForwardHeadersSupportTest] using the Tomcat servlet web server.
  */
 @TomcatServletWebTest
-class TomcatServletWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
+class TomcatServletWebNativeForwardHeadersSupportTest : NativeForwardHeadersSupportTest()
 
 /**
- * Tests the [ForwardHeadersNativeSupportTest] using the Tomcat reactive web server.
+ * Tests the [NativeForwardHeadersSupportTest] using the Tomcat reactive web server.
  */
 @TomcatReactiveWebTest
-class TomcatReactiveWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
+class TomcatReactiveWebNativeForwardHeadersSupportTest : NativeForwardHeadersSupportTest()
 
 /**
- * Tests the [ForwardHeadersNativeSupportTest] using the Jetty servlet web server.
+ * Tests the [NativeForwardHeadersSupportTest] using the Jetty servlet web server.
  */
 @JettyServletWebTest
-class JettyServletWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
+class JettyServletWebNativeForwardHeadersSupportTest : NativeForwardHeadersSupportTest()
 
 /**
- * Tests the [ForwardHeadersNativeSupportTest] using the Jetty reactive web server.
+ * Tests the [NativeForwardHeadersSupportTest] using the Jetty reactive web server.
  */
 @JettyReactiveWebTest
-class JettyReactiveWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
+class JettyReactiveWebNativeForwardHeadersSupportTest : NativeForwardHeadersSupportTest()
 
 /**
- * Tests the [ForwardHeadersNativeSupportTest] using the Undertow servlet web server.
+ * Tests the [NativeForwardHeadersSupportTest] using the Undertow servlet web server.
  */
 @UndertowServletWebTest
-class UndertowServletWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
+class UndertowServletWebNativeForwardHeadersSupportTest : NativeForwardHeadersSupportTest()
 
 /**
- * Tests the [ForwardHeadersNativeSupportTest] using the Undertow reactive web server.
+ * Tests the [NativeForwardHeadersSupportTest] using the Undertow reactive web server.
  */
 @UndertowReactiveWebTest
-class UndertowReactiveWebForwardHeadersNativeSupportTest : ForwardHeadersNativeSupportTest()
+class UndertowReactiveWebNativeForwardHeadersSupportTest : NativeForwardHeadersSupportTest()
 
 // TODO: Add support for forward headers supported by framework.
 // /**
 //  * Tests the case where forward headers are supported by framework.
 //  */
 // @TestPropertySource(properties = ["server.forward-headers-strategy=framework"])
-// sealed class ForwardHeadersNativeSupportTest : ForwardHeadersSupportTest()
+// sealed class FrameworkForwardHeadersSupportTest : ForwardHeadersSupportTest()
