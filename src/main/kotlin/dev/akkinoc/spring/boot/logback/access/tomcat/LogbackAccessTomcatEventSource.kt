@@ -29,7 +29,7 @@ import kotlin.text.Charsets.UTF_8
  * The Logback-access event source for the Tomcat web server.
  *
  * @property localPortStrategy The strategy to change the behavior of [localPort].
- * @property requestAttributesEnabled Whether to enable request attributes to work with [RemoteIpValve].
+ * @property requestAttributesEnabled Whether to enable the request attributes to work with [RemoteIpValve].
  * @see ch.qos.logback.access.spi.AccessEvent
  * @see ch.qos.logback.access.tomcat.TomcatServerAdapter
  * @see ch.qos.logback.access.PatternLayout

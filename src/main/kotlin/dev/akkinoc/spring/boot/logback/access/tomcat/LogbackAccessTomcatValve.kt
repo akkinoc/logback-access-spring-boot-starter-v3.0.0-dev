@@ -23,7 +23,7 @@ class LogbackAccessTomcatValve(
 ) : ValveBase(true), AccessLog {
 
     /**
-     * Whether to enable request attributes to work with [RemoteIpValve].
+     * Whether to enable the request attributes to work with [RemoteIpValve].
      */
     private var requestAttributesEnabled: Boolean = false
 
