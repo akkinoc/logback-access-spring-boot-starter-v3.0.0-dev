@@ -41,7 +41,7 @@ sealed class TeeFilterActiveTest(
 ) {
 
     @Test
-    fun `Appends a Logback-access event via the tee filter`(
+    fun `Appends a Logback-access event through the tee filter`(
             @Autowired rest: TestRestTemplate,
             capture: EventsCapture,
     ) {
