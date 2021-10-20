@@ -34,7 +34,10 @@ class LogbackAccessUndertowWebServerFactoryCustomizer(
      * @param builder The [Builder].
      */
     private fun customize(builder: Builder) {
-        builder.setServerOption(UndertowOptions.RECORD_REQUEST_START_TIME, true)
+        builder.setServerOption(
+                UndertowOptions.RECORD_REQUEST_START_TIME,
+                logbackAccessContext.properties.undertow.recordRequestStartTime,
+        )
         log.debug(
                 "Customized the {}: {} @{}",
                 Builder::class.simpleName,
