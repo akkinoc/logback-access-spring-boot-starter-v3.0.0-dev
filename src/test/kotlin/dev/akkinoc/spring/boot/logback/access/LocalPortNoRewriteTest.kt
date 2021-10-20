@@ -55,6 +55,23 @@ sealed class LocalPortNoRewriteTest {
         event.protocol.shouldBe("HTTP/1.1")
     }
 
+    @Test
+    fun `Does not rewrite the local port of the appended Logback-access event without forward headers`(
+            @Autowired rest: TestRestTemplate,
+            @LocalServerPort port: Int,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/text").build()
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(200)
+        val event = assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
+        event.serverName.shouldBe("localhost")
+        event.localPort.shouldBe(port)
+        event.remoteAddr.shouldBe("127.0.0.1")
+        event.remoteHost.shouldBe("127.0.0.1")
+        event.protocol.shouldBe("HTTP/1.1")
+    }
+
 }
 
 /**

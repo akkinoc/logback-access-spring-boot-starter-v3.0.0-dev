@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.exchange
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.RequestEntity
 import org.springframework.test.context.TestPropertySource
 
@@ -44,6 +45,23 @@ sealed class ForwardHeadersSupportTest {
         event.localPort.shouldBe(12345)
         event.remoteAddr.shouldBe("1.2.3.4")
         event.remoteHost.shouldBe("1.2.3.4")
+        event.protocol.shouldBe("HTTP/1.1")
+    }
+
+    @Test
+    fun `Does not rewrite some properties of the appended Logback-access event without forward headers`(
+            @Autowired rest: TestRestTemplate,
+            @LocalServerPort port: Int,
+            capture: EventsCapture,
+    ) {
+        val request = RequestEntity.get("/mock-controller/text").build()
+        val response = rest.exchange<String>(request)
+        response.statusCodeValue.shouldBe(200)
+        val event = assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
+        event.serverName.shouldBe("localhost")
+        event.localPort.shouldBe(port)
+        event.remoteAddr.shouldBe("127.0.0.1")
+        event.remoteHost.shouldBe("127.0.0.1")
         event.protocol.shouldBe("HTTP/1.1")
     }
 
