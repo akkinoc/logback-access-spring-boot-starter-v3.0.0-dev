@@ -7,6 +7,7 @@ import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
+import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
 import org.apache.catalina.AccessLog.PROTOCOL_ATTRIBUTE
 import org.apache.catalina.AccessLog.REMOTE_ADDR_ATTRIBUTE
@@ -92,6 +93,8 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val remoteUser: String? by lazy(NONE) {
+        val attr = request.getAttribute(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE_NAME) as String?
+        if (attr != null) return@lazy attr
         request.remoteUser
     }
 

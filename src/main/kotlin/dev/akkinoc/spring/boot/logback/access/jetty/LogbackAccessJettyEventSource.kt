@@ -7,6 +7,7 @@ import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
+import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.Response
@@ -62,6 +63,8 @@ class LogbackAccessJettyEventSource(
     }
 
     override val remoteUser: String? by lazy(NONE) {
+        val attr = request.getAttribute(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE_NAME) as String?
+        if (attr != null) return@lazy attr
         request.remoteUser
     }
 

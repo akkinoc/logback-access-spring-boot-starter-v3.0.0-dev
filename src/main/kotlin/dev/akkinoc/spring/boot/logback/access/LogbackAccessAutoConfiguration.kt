@@ -1,6 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access
 
 import dev.akkinoc.spring.boot.logback.access.jetty.LogbackAccessJettyConfiguration
+import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilterConfiguration
 import dev.akkinoc.spring.boot.logback.access.tee.LogbackAccessTeeServletFilterConfiguration
 import dev.akkinoc.spring.boot.logback.access.tomcat.LogbackAccessTomcatConfiguration
 import dev.akkinoc.spring.boot.logback.access.undertow.LogbackAccessUndertowConfiguration
@@ -35,6 +36,7 @@ import org.springframework.core.io.ResourceLoader
         LogbackAccessUndertowConfiguration::class,
         LogbackAccessUndertowServletConfiguration::class,
         LogbackAccessUndertowReactiveConfiguration::class,
+        LogbackAccessSecurityServletFilterConfiguration::class,
         LogbackAccessTeeServletFilterConfiguration::class,
 )
 class LogbackAccessAutoConfiguration {

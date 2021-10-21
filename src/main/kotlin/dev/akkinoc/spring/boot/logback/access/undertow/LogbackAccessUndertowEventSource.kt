@@ -6,6 +6,7 @@ import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
+import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.handlers.ServletRequestContext
@@ -84,6 +85,8 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val remoteUser: String? by lazy(NONE) {
+        val attr = request?.getAttribute(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE_NAME) as String?
+        if (attr != null) return@lazy attr
         val securityContext = exchange.securityContext ?: return@lazy null
         val account = securityContext.authenticatedAccount ?: return@lazy null
         account.principal.name
