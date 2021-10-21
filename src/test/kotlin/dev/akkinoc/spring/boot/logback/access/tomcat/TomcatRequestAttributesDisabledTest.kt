@@ -30,7 +30,7 @@ import org.springframework.test.context.TestPropertySource
 sealed class TomcatRequestAttributesDisabledTest {
 
     @Test
-    fun `Does not rewrite some properties of the appended Logback-access event with forward headers`(
+    fun `Does not rewrite some attributes of the appended Logback-access event with forward headers`(
             @Autowired rest: TestRestTemplate,
             @LocalServerPort port: Int,
             capture: EventsCapture,
@@ -47,7 +47,7 @@ sealed class TomcatRequestAttributesDisabledTest {
     }
 
     @Test
-    fun `Does not rewrite some properties of the appended Logback-access event without forward headers`(
+    fun `Does not rewrite some attributes of the appended Logback-access event without forward headers`(
             @Autowired rest: TestRestTemplate,
             @LocalServerPort port: Int,
             capture: EventsCapture,
