@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils.trimArrayElements
 import org.xml.sax.Attributes
 
 /**
- * The Joran action to support `<springProfile>` tags.
+ * The [Action] to support `<springProfile>` tags.
  * Allows a section to only be enabled when a specific profile is active.
  *
  * @property environment The environment.
@@ -40,6 +40,7 @@ class LogbackAccessJoranSpringProfileAction(private val environment: Environment
         val name = trimArrayElements(commaDelimitedListToStringArray(attrs.getValue(NAME_ATTRIBUTE)))
         name.indices.forEach { name[it] = substVars(name[it], ic, context) }
         accepts = name.isNotEmpty() && environment.acceptsProfiles(Profiles.of(*name))
+        events.clear()
         ic.addInPlayListener(this)
     }
 
@@ -47,7 +48,6 @@ class LogbackAccessJoranSpringProfileAction(private val environment: Environment
         if (--depth != 0) return
         ic.removeInPlayListener(this)
         if (accepts) ic.joranInterpreter.eventPlayer.addEventsDynamically(events.subList(1, events.lastIndex), 1)
-        events.clear()
     }
 
     override fun inPlay(event: SaxEvent) {

@@ -8,7 +8,7 @@ import org.springframework.core.env.Environment
 import org.xml.sax.Attributes
 
 /**
- * The Joran action to support `<springProperty>` tags.
+ * The [Action] to support `<springProperty>` tags.
  * Allows properties to be sourced from the environment.
  *
  * @property environment The environment.

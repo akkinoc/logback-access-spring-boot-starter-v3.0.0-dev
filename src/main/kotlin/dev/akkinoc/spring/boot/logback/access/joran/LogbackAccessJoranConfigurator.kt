@@ -7,7 +7,7 @@ import ch.qos.logback.core.joran.spi.RuleStore
 import org.springframework.core.env.Environment
 
 /**
- * The [JoranConfigurator] that supports additional rules.
+ * The [JoranConfigurator] to support additional rules.
  *
  * @property environment The environment.
  * @see org.springframework.boot.logging.logback.SpringBootJoranConfigurator
