@@ -31,16 +31,14 @@ class LogbackAccessUndertowReactiveWebServerFactory(
     // I couldn't find an extension point for Undertow HttpHandler, so I'm using reflection to customize it.
 
     override fun getWebServer(httpHandler: HttpHandler): WebServer {
-        val server = super.getWebServer(httpHandler).let { server ->
-            server as UndertowWebServer
-            val builder = server.extractField<Builder>("builder")
-            val httpHandlerFactories = mutableListOf<HttpHandlerFactory>().apply {
-                addAll(server.extractField<Iterable<HttpHandlerFactory>>("httpHandlerFactories"))
-                add { LogbackAccessUndertowHttpHandler(logbackAccessContext, it) }
-            }
-            val autoStart = server.extractField<Boolean>("autoStart")
-            UndertowWebServer(builder, httpHandlerFactories, autoStart)
+        val originalServer = super.getWebServer(httpHandler) as UndertowWebServer
+        val builder = originalServer.extractField<Builder>("builder")
+        val httpHandlerFactories = mutableListOf<HttpHandlerFactory>().apply {
+            addAll(originalServer.extractField<Iterable<HttpHandlerFactory>>("httpHandlerFactories"))
+            add { LogbackAccessUndertowHttpHandler(logbackAccessContext, it) }
         }
+        val autoStart = originalServer.extractField<Boolean>("autoStart")
+        val server = UndertowWebServer(builder, httpHandlerFactories, autoStart)
         log.debug(
                 "Customized the {}: {} @{}",
                 WebServer::class.simpleName,
