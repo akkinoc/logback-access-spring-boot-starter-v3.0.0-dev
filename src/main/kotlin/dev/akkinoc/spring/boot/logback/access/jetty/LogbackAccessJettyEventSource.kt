@@ -1,7 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access.jetty
 
-import ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER
-import ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER
+import ch.qos.logback.access.AccessConstants
 import ch.qos.logback.access.jetty.JettyServerAdapter
 import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
@@ -109,7 +108,8 @@ class LogbackAccessJettyEventSource(
     override val attributeMap: Map<String, String> by lazy(NONE) {
         val attrs = linkedMapOf<String, String>()
         request.attributeNames.asSequence()
-                .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
+                .filter { it != AccessConstants.LB_INPUT_BUFFER }
+                .filter { it != AccessConstants.LB_OUTPUT_BUFFER }
                 .associateWithTo(attrs) { "${request.getAttribute(it)}" }
         unmodifiableMap(attrs)
     }
@@ -119,7 +119,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val requestContent: String? by lazy(NONE) {
-        val bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray?
+        val bytes = request.getAttribute(AccessConstants.LB_INPUT_BUFFER) as ByteArray?
         if (bytes == null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
@@ -145,7 +145,7 @@ class LogbackAccessJettyEventSource(
 
     override val responseContent: String? by lazy(NONE) {
         if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray?
+        val bytes = request.getAttribute(AccessConstants.LB_OUTPUT_BUFFER) as ByteArray?
         bytes?.let { String(it, UTF_8) }
     }
 
