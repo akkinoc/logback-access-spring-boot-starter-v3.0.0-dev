@@ -23,24 +23,23 @@ class LogbackAccessTomcatValve(
 ) : ValveBase(true), AccessLog {
 
     /**
-     * Whether to enable the request attributes to work with [RemoteIpValve].
+     * The value of [getRequestAttributesEnabled] and [setRequestAttributesEnabled].
      */
-    private var requestAttributesEnabled: Boolean = false
+    private var requestAttributesEnabledValue: Boolean = false
 
     override fun getRequestAttributesEnabled(): Boolean {
-        return requestAttributesEnabled
+        return requestAttributesEnabledValue
     }
 
     override fun setRequestAttributesEnabled(value: Boolean) {
-        requestAttributesEnabled = value
+        requestAttributesEnabledValue = value
     }
 
     override fun initInternal() {
         super.initInternal()
         val props = logbackAccessContext.properties.tomcat
-        val requestAttributesEnabled = props.requestAttributesEnabled
+        requestAttributesEnabled = props.requestAttributesEnabled
                 ?: container.pipeline.valves.any { it is RemoteIpValve }
-        setRequestAttributesEnabled(requestAttributesEnabled)
         log.debug("Initialized the {}: {}", LogbackAccessTomcatValve::class.simpleName, this)
     }
 
@@ -70,7 +69,7 @@ class LogbackAccessTomcatValve(
                 request = request,
                 response = response,
                 localPortStrategy = logbackAccessContext.properties.localPortStrategy,
-                requestAttributesEnabled = getRequestAttributesEnabled(),
+                requestAttributesEnabled = requestAttributesEnabled,
         )
         val event = LogbackAccessEvent(source)
         logbackAccessContext.emit(event)
