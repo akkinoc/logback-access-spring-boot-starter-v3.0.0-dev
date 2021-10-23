@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 import java.util.Collections.enumeration
 import java.util.Enumeration
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -43,7 +43,7 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
 
     override fun getElapsedSeconds(): Long {
         val millis = source.elapsedTime ?: return SENTINEL.toLong()
-        return TimeUnit.MILLISECONDS.toSeconds(millis)
+        return MILLISECONDS.toSeconds(millis)
     }
 
     override fun getThreadName(): String {
