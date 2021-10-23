@@ -80,8 +80,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val remoteUser: String? by lazy(LazyThreadSafetyMode.NONE) {
-        val attr = request?.getAttribute(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE) as String?
-        if (attr != null) return@lazy attr
+        request?.getAttribute<String>(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE)?.also { return@lazy it }
         val securityContext = exchange.securityContext ?: return@lazy null
         val account = securityContext.authenticatedAccount ?: return@lazy null
         account.principal.name
@@ -96,11 +95,11 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestURI: String by lazy(LazyThreadSafetyMode.NONE) {
-        request?.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI) as String? ?: exchange.requestURI
+        request?.getAttribute<String>(RequestDispatcher.FORWARD_REQUEST_URI) ?: exchange.requestURI
     }
 
     override val queryString: String by lazy(LazyThreadSafetyMode.NONE) {
-        val query = request?.getAttribute(RequestDispatcher.FORWARD_QUERY_STRING) as String? ?: exchange.queryString
+        val query = request?.getAttribute<String>(RequestDispatcher.FORWARD_QUERY_STRING) ?: exchange.queryString
         if (query.isEmpty()) "" else "?$query"
     }
 
@@ -143,7 +142,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestContent: String? by lazy(LazyThreadSafetyMode.NONE) {
-        val bytes = request?.getAttribute(AccessConstants.LB_INPUT_BUFFER) as ByteArray?
+        val bytes = request?.getAttribute<ByteArray>(AccessConstants.LB_INPUT_BUFFER)
         if (bytes == null && request != null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
@@ -169,8 +168,20 @@ class LogbackAccessUndertowEventSource(
 
     override val responseContent: String? by lazy(LazyThreadSafetyMode.NONE) {
         if (response != null && isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request?.getAttribute(AccessConstants.LB_OUTPUT_BUFFER) as ByteArray?
+        val bytes = request?.getAttribute<ByteArray>(AccessConstants.LB_OUTPUT_BUFFER)
         bytes?.let { String(it, Charsets.UTF_8) }
+    }
+
+    /**
+     * Gets the request attribute.
+     *
+     * @receiver The request.
+     * @param <T> The request attribute type.
+     * @param name The request attribute name.
+     * @return The request attribute value.
+     */
+    private inline fun <reified T> HttpServletRequest.getAttribute(name: String): T? {
+        return getAttribute(name) as T?
     }
 
 }
