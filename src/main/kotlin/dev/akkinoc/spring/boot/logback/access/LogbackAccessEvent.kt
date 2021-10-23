@@ -42,7 +42,8 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     }
 
     override fun getElapsedSeconds(): Long {
-        return source.elapsedTime?.let { MILLISECONDS.toSeconds(it) } ?: SENTINEL.toLong()
+        val millis = source.elapsedTime ?: return SENTINEL.toLong()
+        return MILLISECONDS.toSeconds(millis)
     }
 
     override fun getThreadName(): String {
@@ -114,7 +115,8 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     }
 
     override fun getRequestParameter(key: String): Array<String> {
-        return source.requestParameterMap[key]?.toTypedArray() ?: arrayOf(NA)
+        val values = source.requestParameterMap[key] ?: return arrayOf(NA)
+        return values.toTypedArray()
     }
 
     override fun getAttribute(key: String): String {
