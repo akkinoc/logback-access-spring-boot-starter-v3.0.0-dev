@@ -20,27 +20,27 @@ import org.slf4j.LoggerFactory.getLogger
 class EventsCaptureExtension :
         BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
-    override fun beforeAll(context: ExtensionContext) {
-        val id = context.uniqueId
-        captures[id] = context.getAccessEventsCapture()
-        log.debug("Started the {}: {} @{}", EventsCapture::class.simpleName, id, context)
+    override fun beforeAll(extensionContext: ExtensionContext) {
+        val id = extensionContext.uniqueId
+        captures[id] = extensionContext.getAccessEventsCapture()
+        log.debug("Started the {}: {} @{}", EventsCapture::class.simpleName, id, extensionContext)
     }
 
-    override fun afterAll(context: ExtensionContext) {
-        val id = context.uniqueId
-        log.debug("Finishing the {}: {} @{}", EventsCapture::class.simpleName, id, context)
+    override fun afterAll(extensionContext: ExtensionContext) {
+        val id = extensionContext.uniqueId
+        log.debug("Finishing the {}: {} @{}", EventsCapture::class.simpleName, id, extensionContext)
         captures -= id
     }
 
-    override fun beforeEach(context: ExtensionContext) {
-        val id = context.uniqueId
-        captures[id] = context.getAccessEventsCapture()
-        log.debug("Started the {}: {} @{}", EventsCapture::class.simpleName, id, context)
+    override fun beforeEach(extensionContext: ExtensionContext) {
+        val id = extensionContext.uniqueId
+        captures[id] = extensionContext.getAccessEventsCapture()
+        log.debug("Started the {}: {} @{}", EventsCapture::class.simpleName, id, extensionContext)
     }
 
-    override fun afterEach(context: ExtensionContext) {
-        val id = context.uniqueId
-        log.debug("Finishing the {}: {} @{}", EventsCapture::class.simpleName, id, context)
+    override fun afterEach(extensionContext: ExtensionContext) {
+        val id = extensionContext.uniqueId
+        log.debug("Finishing the {}: {} @{}", EventsCapture::class.simpleName, id, extensionContext)
         captures -= id
     }
 
