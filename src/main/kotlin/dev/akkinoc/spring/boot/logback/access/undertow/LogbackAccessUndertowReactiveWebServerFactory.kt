@@ -58,7 +58,7 @@ class LogbackAccessUndertowReactiveWebServerFactory(
      */
     private inline fun <reified T> UndertowWebServer.extractField(name: String): T {
         val field = findField(UndertowWebServer::class.java, name)
-        checkNotNull(field) { "Failed to get the field: UndertowWebServer.$name" }
+        checkNotNull(field) { "Failed to extract the field: UndertowWebServer.$name" }
         makeAccessible(field)
         return getField(field, this) as T
     }
