@@ -32,6 +32,7 @@
             <appender-ref ref="additional_nested_console"/>
         </springProfile>
     </springProfile>
+    <springProfile name="!logback-access-test-disable-empty"/>
     <springProfile name="">
         <appender name="ignored_console" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
