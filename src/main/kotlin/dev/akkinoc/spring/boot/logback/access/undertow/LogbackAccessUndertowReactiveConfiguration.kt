@@ -29,7 +29,6 @@ class LogbackAccessUndertowReactiveConfiguration {
      * @param logbackAccessContext The Logback-access context.
      * @param undertowBuilderCustomizers The Undertow builder customizers.
      * @return The [ReactiveWebServerFactory] for the Undertow reactive web server.
-     * @see org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryConfiguration.EmbeddedUndertow.undertowReactiveWebServerFactory
      */
     @Bean
     @ConditionalOnMissingBean(ReactiveWebServerFactory::class)
