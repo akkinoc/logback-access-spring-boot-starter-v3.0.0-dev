@@ -1,13 +1,18 @@
 package dev.akkinoc.spring.boot.logback.access.tomcat
 
-import ch.qos.logback.access.AccessConstants
+import ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER
+import ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER
 import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
-import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter
+import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter.Companion.REMOTE_USER_ATTRIBUTE
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
-import org.apache.catalina.AccessLog
+import org.apache.catalina.AccessLog.PROTOCOL_ATTRIBUTE
+import org.apache.catalina.AccessLog.REMOTE_ADDR_ATTRIBUTE
+import org.apache.catalina.AccessLog.REMOTE_HOST_ATTRIBUTE
+import org.apache.catalina.AccessLog.SERVER_NAME_ATTRIBUTE
+import org.apache.catalina.AccessLog.SERVER_PORT_ATTRIBUTE
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
 import org.apache.catalina.valves.RemoteIpValve
@@ -16,6 +21,7 @@ import java.lang.Thread.currentThread
 import java.net.URLEncoder.encode
 import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
+import kotlin.text.Charsets.UTF_8
 
 /**
  * The Logback-access event source for the Tomcat web server.
@@ -45,31 +51,31 @@ class LogbackAccessTomcatEventSource(
     override val threadName: String = currentThread().name
 
     override val serverName: String by lazy(LazyThreadSafetyMode.NONE) {
-        request.getAccessLogAttribute<String>(AccessLog.SERVER_NAME_ATTRIBUTE) ?: request.serverName
+        request.getAccessLogAttribute<String>(SERVER_NAME_ATTRIBUTE) ?: request.serverName
     }
 
     override val localPort: Int by lazy(LazyThreadSafetyMode.NONE) {
         when (localPortStrategy) {
             LogbackAccessLocalPortStrategy.LOCAL -> request.localPort
             LogbackAccessLocalPortStrategy.SERVER ->
-                request.getAccessLogAttribute<Int>(AccessLog.SERVER_PORT_ATTRIBUTE) ?: request.serverPort
+                request.getAccessLogAttribute<Int>(SERVER_PORT_ATTRIBUTE) ?: request.serverPort
         }
     }
 
     override val remoteAddr: String by lazy(LazyThreadSafetyMode.NONE) {
-        request.getAccessLogAttribute<String>(AccessLog.REMOTE_ADDR_ATTRIBUTE) ?: request.remoteAddr
+        request.getAccessLogAttribute<String>(REMOTE_ADDR_ATTRIBUTE) ?: request.remoteAddr
     }
 
     override val remoteHost: String by lazy(LazyThreadSafetyMode.NONE) {
-        request.getAccessLogAttribute<String>(AccessLog.REMOTE_HOST_ATTRIBUTE) ?: request.remoteHost
+        request.getAccessLogAttribute<String>(REMOTE_HOST_ATTRIBUTE) ?: request.remoteHost
     }
 
     override val remoteUser: String? by lazy(LazyThreadSafetyMode.NONE) {
-        request.getAttribute<String>(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE) ?: request.remoteUser
+        request.getAttribute<String>(REMOTE_USER_ATTRIBUTE) ?: request.remoteUser
     }
 
     override val protocol: String by lazy(LazyThreadSafetyMode.NONE) {
-        request.getAccessLogAttribute<String>(AccessLog.PROTOCOL_ATTRIBUTE) ?: request.protocol
+        request.getAccessLogAttribute<String>(PROTOCOL_ATTRIBUTE) ?: request.protocol
     }
 
     override val method: String by lazy(LazyThreadSafetyMode.NONE) {
@@ -109,8 +115,7 @@ class LogbackAccessTomcatEventSource(
     override val attributeMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
         val attrs = linkedMapOf<String, String>()
         request.attributeNames.asSequence()
-                .filter { it != AccessConstants.LB_INPUT_BUFFER }
-                .filter { it != AccessConstants.LB_OUTPUT_BUFFER }
+                .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
                 .associateWithTo(attrs) { "${request.getAttribute<Any>(it)}" }
         unmodifiableMap(attrs)
     }
@@ -120,14 +125,14 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val requestContent: String? by lazy(LazyThreadSafetyMode.NONE) {
-        val bytes = request.getAttribute<ByteArray>(AccessConstants.LB_INPUT_BUFFER)
+        val bytes = request.getAttribute<ByteArray>(LB_INPUT_BUFFER)
         if (bytes == null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
-                    .map { (key, value) -> encode(key, Charsets.UTF_8) to encode(value, Charsets.UTF_8) }
+                    .map { (key, value) -> encode(key, UTF_8) to encode(value, UTF_8) }
                     .joinToString("&") { (key, value) -> "$key=$value" }
         }
-        bytes?.let { String(it, Charsets.UTF_8) }
+        bytes?.let { String(it, UTF_8) }
     }
 
     override val statusCode: Int by lazy(LazyThreadSafetyMode.NONE) {
@@ -146,8 +151,8 @@ class LogbackAccessTomcatEventSource(
 
     override val responseContent: String? by lazy(LazyThreadSafetyMode.NONE) {
         if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request.getAttribute<ByteArray>(AccessConstants.LB_OUTPUT_BUFFER)
-        bytes?.let { String(it, Charsets.UTF_8) }
+        val bytes = request.getAttribute<ByteArray>(LB_OUTPUT_BUFFER)
+        bytes?.let { String(it, UTF_8) }
     }
 
     /**

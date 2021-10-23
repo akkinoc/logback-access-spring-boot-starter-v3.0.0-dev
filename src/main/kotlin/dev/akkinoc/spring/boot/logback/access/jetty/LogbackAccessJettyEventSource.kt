@@ -1,11 +1,12 @@
 package dev.akkinoc.spring.boot.logback.access.jetty
 
-import ch.qos.logback.access.AccessConstants
+import ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER
+import ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER
 import ch.qos.logback.access.jetty.JettyServerAdapter
 import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
-import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter
+import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter.Companion.REMOTE_USER_ATTRIBUTE
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.Response
@@ -14,6 +15,7 @@ import java.lang.Thread.currentThread
 import java.net.URLEncoder.encode
 import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
+import kotlin.text.Charsets.UTF_8
 
 /**
  * The Logback-access event source for the Jetty web server.
@@ -58,7 +60,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val remoteUser: String? by lazy(LazyThreadSafetyMode.NONE) {
-        request.getAttribute<String>(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE) ?: request.remoteUser
+        request.getAttribute<String>(REMOTE_USER_ATTRIBUTE) ?: request.remoteUser
     }
 
     override val protocol: String by lazy(LazyThreadSafetyMode.NONE) {
@@ -102,8 +104,7 @@ class LogbackAccessJettyEventSource(
     override val attributeMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
         val attrs = linkedMapOf<String, String>()
         request.attributeNames.asSequence()
-                .filter { it != AccessConstants.LB_INPUT_BUFFER }
-                .filter { it != AccessConstants.LB_OUTPUT_BUFFER }
+                .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
                 .associateWithTo(attrs) { "${request.getAttribute<Any>(it)}" }
         unmodifiableMap(attrs)
     }
@@ -113,14 +114,14 @@ class LogbackAccessJettyEventSource(
     }
 
     override val requestContent: String? by lazy(LazyThreadSafetyMode.NONE) {
-        val bytes = request.getAttribute<ByteArray>(AccessConstants.LB_INPUT_BUFFER)
+        val bytes = request.getAttribute<ByteArray>(LB_INPUT_BUFFER)
         if (bytes == null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
-                    .map { (key, value) -> encode(key, Charsets.UTF_8) to encode(value, Charsets.UTF_8) }
+                    .map { (key, value) -> encode(key, UTF_8) to encode(value, UTF_8) }
                     .joinToString("&") { (key, value) -> "$key=$value" }
         }
-        bytes?.let { String(it, Charsets.UTF_8) }
+        bytes?.let { String(it, UTF_8) }
     }
 
     override val statusCode: Int by lazy(LazyThreadSafetyMode.NONE) {
@@ -139,8 +140,8 @@ class LogbackAccessJettyEventSource(
 
     override val responseContent: String? by lazy(LazyThreadSafetyMode.NONE) {
         if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request.getAttribute<ByteArray>(AccessConstants.LB_OUTPUT_BUFFER)
-        bytes?.let { String(it, Charsets.UTF_8) }
+        val bytes = request.getAttribute<ByteArray>(LB_OUTPUT_BUFFER)
+        bytes?.let { String(it, UTF_8) }
     }
 
     /**
