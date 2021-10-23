@@ -1,5 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access
 
+import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.access.spi.ServerAdapter
 import java.io.Serializable
 import javax.servlet.http.HttpServletRequest
@@ -7,140 +8,142 @@ import javax.servlet.http.HttpServletResponse
 
 /**
  * The Logback-access event source.
+ * Represents the attributes of [IAccessEvent] by Kotlin properties,
+ * which helps to implement subclasses with Kotlin delegated properties (especially [lazy]).
  *
- * @see LogbackAccessEvent
+ * @see ch.qos.logback.access.spi.IAccessEvent
  */
 abstract class LogbackAccessEventSource {
 
     /**
-     * The value of [LogbackAccessEvent.getRequest].
+     * The value of [IAccessEvent.getRequest].
      */
     abstract val request: HttpServletRequest?
 
     /**
-     * The value of [LogbackAccessEvent.getResponse].
+     * The value of [IAccessEvent.getResponse].
      */
     abstract val response: HttpServletResponse?
 
     /**
-     * The value of [LogbackAccessEvent.getServerAdapter].
+     * The value of [IAccessEvent.getServerAdapter].
      */
     abstract val serverAdapter: ServerAdapter?
 
     /**
-     * The value of [LogbackAccessEvent.getTimeStamp].
+     * The value of [IAccessEvent.getTimeStamp].
      */
     abstract val timeStamp: Long
 
     /**
-     * The value of [LogbackAccessEvent.getElapsedTime] and [LogbackAccessEvent.getElapsedSeconds].
+     * The value of [IAccessEvent.getElapsedTime] and [IAccessEvent.getElapsedSeconds].
      */
     abstract val elapsedTime: Long?
 
     /**
-     * The value of [LogbackAccessEvent.getThreadName].
+     * The value of [IAccessEvent.getThreadName].
      */
     abstract val threadName: String
 
     /**
-     * The value of [LogbackAccessEvent.getServerName].
+     * The value of [IAccessEvent.getServerName].
      */
     abstract val serverName: String
 
     /**
-     * The value of [LogbackAccessEvent.getLocalPort].
+     * The value of [IAccessEvent.getLocalPort].
      */
     abstract val localPort: Int
 
     /**
-     * The value of [LogbackAccessEvent.getRemoteAddr].
+     * The value of [IAccessEvent.getRemoteAddr].
      */
     abstract val remoteAddr: String
 
     /**
-     * The value of [LogbackAccessEvent.getRemoteHost].
+     * The value of [IAccessEvent.getRemoteHost].
      */
     abstract val remoteHost: String
 
     /**
-     * The value of [LogbackAccessEvent.getRemoteUser].
+     * The value of [IAccessEvent.getRemoteUser].
      */
     abstract val remoteUser: String?
 
     /**
-     * The value of [LogbackAccessEvent.getProtocol].
+     * The value of [IAccessEvent.getProtocol].
      */
     abstract val protocol: String
 
     /**
-     * The value of [LogbackAccessEvent.getMethod].
+     * The value of [IAccessEvent.getMethod].
      */
     abstract val method: String
 
     /**
-     * The value of [LogbackAccessEvent.getRequestURI].
+     * The value of [IAccessEvent.getRequestURI].
      */
     abstract val requestURI: String
 
     /**
-     * The value of [LogbackAccessEvent.getQueryString].
+     * The value of [IAccessEvent.getQueryString].
      */
     abstract val queryString: String
 
     /**
-     * The value of [LogbackAccessEvent.getRequestURL].
+     * The value of [IAccessEvent.getRequestURL].
      */
     abstract val requestURL: String
 
     /**
-     * The value of [LogbackAccessEvent.getRequestHeaderMap],
-     * [LogbackAccessEvent.getRequestHeaderNames] and [LogbackAccessEvent.getRequestHeader].
+     * The value of [IAccessEvent.getRequestHeaderMap],
+     * [IAccessEvent.getRequestHeaderNames] and [IAccessEvent.getRequestHeader].
      */
     abstract val requestHeaderMap: Map<String, String>
 
     /**
-     * The value of [LogbackAccessEvent.getCookie].
+     * The value of [IAccessEvent.getCookie].
      */
     abstract val cookieMap: Map<String, String>
 
     /**
-     * The value of [LogbackAccessEvent.getRequestParameterMap] and [LogbackAccessEvent.getRequestParameter].
+     * The value of [IAccessEvent.getRequestParameterMap] and [IAccessEvent.getRequestParameter].
      */
     abstract val requestParameterMap: Map<String, List<String>>
 
     /**
-     * The value of [LogbackAccessEvent.getAttribute].
+     * The value of [IAccessEvent.getAttribute].
      */
     abstract val attributeMap: Map<String, String>
 
     /**
-     * The value of [LogbackAccessEvent.getSessionID].
+     * The value of [IAccessEvent.getSessionID].
      */
     abstract val sessionID: String?
 
     /**
-     * The value of [LogbackAccessEvent.getRequestContent].
+     * The value of [IAccessEvent.getRequestContent].
      */
     abstract val requestContent: String?
 
     /**
-     * The value of [LogbackAccessEvent.getStatusCode].
+     * The value of [IAccessEvent.getStatusCode].
      */
     abstract val statusCode: Int
 
     /**
-     * The value of [LogbackAccessEvent.getResponseHeaderMap],
-     * [LogbackAccessEvent.getResponseHeaderNameList] and [LogbackAccessEvent.getResponseHeader].
+     * The value of [IAccessEvent.getResponseHeaderMap],
+     * [IAccessEvent.getResponseHeaderNameList] and [IAccessEvent.getResponseHeader].
      */
     abstract val responseHeaderMap: Map<String, String>
 
     /**
-     * The value of [LogbackAccessEvent.getContentLength].
+     * The value of [IAccessEvent.getContentLength].
      */
     abstract val contentLength: Long
 
     /**
-     * The value of [LogbackAccessEvent.getResponseContent].
+     * The value of [IAccessEvent.getResponseContent].
      */
     abstract val responseContent: String?
 
