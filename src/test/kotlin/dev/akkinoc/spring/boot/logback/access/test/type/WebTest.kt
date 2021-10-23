@@ -2,8 +2,8 @@ package dev.akkinoc.spring.boot.logback.access.test.type
 
 import dev.akkinoc.spring.boot.logback.access.test.configuration.WebTestConfiguration
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.context.annotation.Import
+import org.springframework.test.context.TestPropertySource
 
 /**
  * Indicates a Spring Boot based test using the Tomcat servlet web server.
@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Import
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@SpringBootTest(properties = ["spring.main.web-application-type=servlet"], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["spring.main.web-application-type=servlet"])
 @Import(WebTestConfiguration::class)
 annotation class TomcatServletWebTest
 
@@ -21,7 +22,8 @@ annotation class TomcatServletWebTest
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@SpringBootTest(properties = ["spring.main.web-application-type=reactive"], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["spring.main.web-application-type=reactive"])
 @Import(WebTestConfiguration::class)
 annotation class TomcatReactiveWebTest
 
@@ -31,7 +33,8 @@ annotation class TomcatReactiveWebTest
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@SpringBootTest(properties = ["spring.main.web-application-type=servlet"], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["spring.main.web-application-type=servlet"])
 @Import(WebTestConfiguration::class)
 annotation class JettyServletWebTest
 
@@ -41,7 +44,8 @@ annotation class JettyServletWebTest
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@SpringBootTest(properties = ["spring.main.web-application-type=reactive"], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["spring.main.web-application-type=reactive"])
 @Import(WebTestConfiguration::class)
 annotation class JettyReactiveWebTest
 
@@ -51,7 +55,8 @@ annotation class JettyReactiveWebTest
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@SpringBootTest(properties = ["spring.main.web-application-type=servlet"], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["spring.main.web-application-type=servlet"])
 @Import(WebTestConfiguration::class)
 annotation class UndertowServletWebTest
 
@@ -61,7 +66,8 @@ annotation class UndertowServletWebTest
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@SpringBootTest(properties = ["spring.main.web-application-type=reactive"], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["spring.main.web-application-type=reactive"])
 @Import(WebTestConfiguration::class)
 annotation class UndertowReactiveWebTest
 
@@ -71,6 +77,7 @@ annotation class UndertowReactiveWebTest
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@SpringBootTest(properties = ["spring.main.web-application-type=reactive"], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = ["spring.main.web-application-type=reactive"])
 @Import(WebTestConfiguration::class)
 annotation class NettyReactiveWebTest
