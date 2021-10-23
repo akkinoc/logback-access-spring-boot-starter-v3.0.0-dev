@@ -45,7 +45,7 @@ class LogbackAccessContext(
     }
 
     /**
-     * Logs that the Logback-access status has been added.
+     * Logs the Logback-access status.
      *
      * @param status The Logback-access status.
      */
