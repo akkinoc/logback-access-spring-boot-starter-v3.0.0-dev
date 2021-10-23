@@ -9,7 +9,6 @@ import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServ
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
 import io.undertow.server.HttpServerExchange
 import io.undertow.servlet.handlers.ServletRequestContext
-import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import java.lang.Thread.currentThread
@@ -111,7 +110,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestHeaderMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
-        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        val headers = sortedMapOf<String, String>(String.CASE_INSENSITIVE_ORDER)
         exchange.requestHeaders.associateTo(headers) { "${it.headerName}" to it.first }
         unmodifiableMap(headers)
     }
@@ -160,7 +159,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val responseHeaderMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
-        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        val headers = sortedMapOf<String, String>(String.CASE_INSENSITIVE_ORDER)
         exchange.responseHeaders.associateTo(headers) { "${it.headerName}" to it.first }
         unmodifiableMap(headers)
     }

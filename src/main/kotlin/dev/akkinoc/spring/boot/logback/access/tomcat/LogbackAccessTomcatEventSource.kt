@@ -12,7 +12,6 @@ import org.apache.catalina.AccessLog
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
 import org.apache.catalina.valves.RemoteIpValve
-import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.Thread.currentThread
 import java.net.URLEncoder.encode
@@ -92,7 +91,7 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val requestHeaderMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
-        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        val headers = sortedMapOf<String, String>(String.CASE_INSENSITIVE_ORDER)
         request.headerNames.asSequence().associateWithTo(headers) { request.getHeader(it) }
         unmodifiableMap(headers)
     }
@@ -138,7 +137,7 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val responseHeaderMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
-        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        val headers = sortedMapOf<String, String>(String.CASE_INSENSITIVE_ORDER)
         response.headerNames.associateWithTo(headers) { response.getHeader(it) }
         unmodifiableMap(headers)
     }

@@ -10,7 +10,6 @@ import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServ
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.Response
-import java.lang.String.CASE_INSENSITIVE_ORDER
 import java.lang.System.currentTimeMillis
 import java.lang.Thread.currentThread
 import java.net.URLEncoder.encode
@@ -87,7 +86,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val requestHeaderMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
-        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        val headers = sortedMapOf<String, String>(String.CASE_INSENSITIVE_ORDER)
         request.headerNames.asSequence().associateWithTo(headers) { request.getHeader(it) }
         unmodifiableMap(headers)
     }
@@ -133,7 +132,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val responseHeaderMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
-        val headers = sortedMapOf<String, String>(CASE_INSENSITIVE_ORDER)
+        val headers = sortedMapOf<String, String>(String.CASE_INSENSITIVE_ORDER)
         response.headerNames.associateWithTo(headers) { response.getHeader(it) }
         unmodifiableMap(headers)
     }
