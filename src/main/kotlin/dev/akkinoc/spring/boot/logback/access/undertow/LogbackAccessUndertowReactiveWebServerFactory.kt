@@ -1,7 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access.undertow
 
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessContext
-import io.undertow.Undertow
+import io.undertow.Undertow.Builder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.boot.web.embedded.undertow.HttpHandlerFactory
@@ -33,7 +33,7 @@ class LogbackAccessUndertowReactiveWebServerFactory(
     override fun getWebServer(httpHandler: HttpHandler): WebServer {
         val server = super.getWebServer(httpHandler).let { server ->
             server as UndertowWebServer
-            val builder = server.extractField<Undertow.Builder>("builder")
+            val builder = server.extractField<Builder>("builder")
             val httpHandlerFactories = mutableListOf<HttpHandlerFactory>().apply {
                 addAll(server.extractField<Iterable<HttpHandlerFactory>>("httpHandlerFactories"))
                 add { LogbackAccessUndertowHttpHandler(logbackAccessContext, it) }
