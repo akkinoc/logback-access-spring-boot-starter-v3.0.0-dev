@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils.trimArrayElements
 import org.xml.sax.Attributes
 
 /**
- * The [Action] to support `<springProfile>` tags.
+ * The Joran [Action] to support `<springProfile>` tags.
  * Allows a section to only be enabled when a specific profile is active.
  *
  * @property environment The environment.
