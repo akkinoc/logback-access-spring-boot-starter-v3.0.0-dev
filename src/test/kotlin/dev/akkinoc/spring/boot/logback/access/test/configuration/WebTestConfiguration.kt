@@ -6,8 +6,6 @@ import dev.akkinoc.spring.boot.logback.access.test.mock.MockServletController
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type.REACTIVE
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type.SERVLET
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 
@@ -35,7 +33,7 @@ class WebTestConfiguration {
      * @return The mock controller for testing using the servlet web server.
      */
     @Bean
-    @ConditionalOnWebApplication(type = SERVLET)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     fun mockServletController(): MockServletController {
         val mockServletController = MockServletController()
         log.debug("Providing the {}: {}", MockServletController::class.simpleName, mockServletController)
@@ -48,7 +46,7 @@ class WebTestConfiguration {
      * @return The mock controller for testing using the reactive web server.
      */
     @Bean
-    @ConditionalOnWebApplication(type = REACTIVE)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
     fun mockReactiveController(): MockReactiveController {
         val mockReactiveController = MockReactiveController()
         log.debug("Providing the {}: {}", MockReactiveController::class.simpleName, mockReactiveController)

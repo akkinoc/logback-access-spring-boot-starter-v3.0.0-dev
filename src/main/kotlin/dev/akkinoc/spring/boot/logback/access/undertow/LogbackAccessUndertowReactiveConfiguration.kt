@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type.REACTIVE
 import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration
 import org.springframework.boot.web.embedded.undertow.UndertowBuilderCustomizer
 import org.springframework.boot.web.reactive.server.ReactiveWebServerFactory
@@ -19,7 +18,7 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Undertow::class)
-@ConditionalOnWebApplication(type = REACTIVE)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 class LogbackAccessUndertowReactiveConfiguration {
 
     /**
