@@ -1,7 +1,7 @@
 package dev.akkinoc.spring.boot.logback.access
 
 import ch.qos.logback.access.spi.AccessContext
-import ch.qos.logback.core.spi.FilterReply.DENY
+import ch.qos.logback.core.spi.FilterReply
 import ch.qos.logback.core.status.Status
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties.Companion.DEFAULT_CONFIGS
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessProperties.Companion.FALLBACK_CONFIG
@@ -61,7 +61,7 @@ class LogbackAccessContext(
     fun emit(event: LogbackAccessEvent) {
         val filterReply = raw.getFilterChainDecision(event)
         log.debug("Emitting the {}: {} {} @{}", LogbackAccessEvent::class.simpleName, filterReply, event, this)
-        if (filterReply != DENY) raw.callAppenders(event)
+        if (filterReply != FilterReply.DENY) raw.callAppenders(event)
     }
 
     override fun close() {
