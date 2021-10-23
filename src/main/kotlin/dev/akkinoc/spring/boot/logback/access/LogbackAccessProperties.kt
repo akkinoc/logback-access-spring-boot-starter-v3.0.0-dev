@@ -47,7 +47,7 @@ constructor(
         /**
          * The default locations of the configuration file.
          */
-        @JvmStatic
+        @JvmField
         val DEFAULT_CONFIGS: List<String> = listOf(
                 "classpath:logback-access-test.xml",
                 "classpath:logback-access.xml",
@@ -58,8 +58,7 @@ constructor(
         /**
          * The fallback location of the configuration file.
          */
-        @JvmStatic
-        val FALLBACK_CONFIG: String = "classpath:dev/akkinoc/spring/boot/logback/access/logback-access-spring.xml"
+        const val FALLBACK_CONFIG: String = "classpath:dev/akkinoc/spring/boot/logback/access/logback-access-spring.xml"
 
     }
 

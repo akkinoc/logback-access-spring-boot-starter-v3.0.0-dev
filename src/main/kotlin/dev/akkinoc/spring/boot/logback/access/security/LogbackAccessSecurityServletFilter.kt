@@ -22,7 +22,7 @@ class LogbackAccessSecurityServletFilter : Filter {
         /**
          * The attribute name for the remote user.
          */
-        @JvmStatic
+        @JvmField
         val REMOTE_USER_ATTRIBUTE_NAME: String = "${LogbackAccessSecurityServletFilter::class.qualifiedName}.remoteUser"
 
     }
