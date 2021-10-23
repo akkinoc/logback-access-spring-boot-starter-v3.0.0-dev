@@ -71,7 +71,7 @@ class TestContextClassLoaderCustomizerFactory : ContextCustomizerFactory {
      * If the test class is inherited, returns URLs for all super classes as well.
      *
      * @param testClass The test class.
-     * @return The additional class paths.
+     * @return The class paths to add to the class loader.
      */
     private fun getAdditionalClassPaths(testClass: Class<*>): List<URL> {
         return generateSequence(testClass) { it.superclass }
