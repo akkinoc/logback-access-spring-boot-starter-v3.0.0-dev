@@ -85,7 +85,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val remoteUser: String? by lazy(NONE) {
-        val attr = request?.getAttribute(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE_NAME) as String?
+        val attr = request?.getAttribute(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE) as String?
         if (attr != null) return@lazy attr
         val securityContext = exchange.securityContext ?: return@lazy null
         val account = securityContext.authenticatedAccount ?: return@lazy null
