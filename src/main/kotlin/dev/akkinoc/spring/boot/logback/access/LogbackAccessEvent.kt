@@ -160,7 +160,7 @@ class LogbackAccessEvent(private var source: LogbackAccessEventSource) : IAccess
     override fun toString(): String = "${this::class.simpleName}($requestURL $statusCode)"
 
     /**
-     * @see Serializable
+     * @see java.io.Serializable
      */
     @Throws(IOException::class)
     private fun writeObject(out: ObjectOutputStream) {
