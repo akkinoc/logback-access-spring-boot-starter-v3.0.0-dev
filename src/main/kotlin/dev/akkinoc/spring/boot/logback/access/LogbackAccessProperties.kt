@@ -79,8 +79,8 @@ constructor(
      * The properties for the Undertow web server.
      *
      * @property recordRequestStartTime
-     *  Whether to enable the [UndertowOptions.RECORD_REQUEST_START_TIME].
-     *  It is used to measure [IAccessEvent.getElapsedTime] and [IAccessEvent.getElapsedSeconds].
+     *  Whether to enable [UndertowOptions.RECORD_REQUEST_START_TIME].
+     *  Used to measure [IAccessEvent.getElapsedTime] and [IAccessEvent.getElapsedSeconds].
      */
     data class Undertow
     @JvmOverloads
