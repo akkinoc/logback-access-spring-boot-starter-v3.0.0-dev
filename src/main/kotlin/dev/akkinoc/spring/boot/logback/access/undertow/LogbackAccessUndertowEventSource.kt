@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit.NANOSECONDS
 import javax.servlet.RequestDispatcher
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import kotlin.text.Charsets.UTF_8
 
 /**
  * The Logback-access event source for the Undertow web server.
@@ -148,10 +147,10 @@ class LogbackAccessUndertowEventSource(
         if (bytes == null && request != null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
-                    .map { (key, value) -> encode(key, UTF_8) to encode(value, UTF_8) }
+                    .map { (key, value) -> encode(key, Charsets.UTF_8) to encode(value, Charsets.UTF_8) }
                     .joinToString("&") { (key, value) -> "$key=$value" }
         }
-        bytes?.let { String(it, UTF_8) }
+        bytes?.let { String(it, Charsets.UTF_8) }
     }
 
     override val statusCode: Int by lazy(LazyThreadSafetyMode.NONE) {
@@ -171,7 +170,7 @@ class LogbackAccessUndertowEventSource(
     override val responseContent: String? by lazy(LazyThreadSafetyMode.NONE) {
         if (response != null && isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
         val bytes = request?.getAttribute(AccessConstants.LB_OUTPUT_BUFFER) as ByteArray?
-        bytes?.let { String(it, UTF_8) }
+        bytes?.let { String(it, Charsets.UTF_8) }
     }
 
 }

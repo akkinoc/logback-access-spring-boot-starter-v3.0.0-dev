@@ -17,7 +17,6 @@ import java.lang.Thread.currentThread
 import java.net.URLEncoder.encode
 import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
-import kotlin.text.Charsets.UTF_8
 
 /**
  * The Logback-access event source for the Tomcat web server.
@@ -126,10 +125,10 @@ class LogbackAccessTomcatEventSource(
         if (bytes == null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
-                    .map { (key, value) -> encode(key, UTF_8) to encode(value, UTF_8) }
+                    .map { (key, value) -> encode(key, Charsets.UTF_8) to encode(value, Charsets.UTF_8) }
                     .joinToString("&") { (key, value) -> "$key=$value" }
         }
-        bytes?.let { String(it, UTF_8) }
+        bytes?.let { String(it, Charsets.UTF_8) }
     }
 
     override val statusCode: Int by lazy(LazyThreadSafetyMode.NONE) {
@@ -149,7 +148,7 @@ class LogbackAccessTomcatEventSource(
     override val responseContent: String? by lazy(LazyThreadSafetyMode.NONE) {
         if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
         val bytes = request.getAttribute<ByteArray>(AccessConstants.LB_OUTPUT_BUFFER)
-        bytes?.let { String(it, UTF_8) }
+        bytes?.let { String(it, Charsets.UTF_8) }
     }
 
     /**
