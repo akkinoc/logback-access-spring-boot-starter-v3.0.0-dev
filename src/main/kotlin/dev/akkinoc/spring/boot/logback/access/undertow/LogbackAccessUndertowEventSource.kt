@@ -15,7 +15,7 @@ import java.lang.Thread.currentThread
 import java.net.URLEncoder.encode
 import java.util.Collections.unmodifiableList
 import java.util.Collections.unmodifiableMap
-import java.util.concurrent.TimeUnit.NANOSECONDS
+import java.util.concurrent.TimeUnit
 import javax.servlet.RequestDispatcher
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -53,7 +53,7 @@ class LogbackAccessUndertowEventSource(
     override val elapsedTime: Long? = run {
         val started = exchange.requestStartTime.takeIf { it != -1L } ?: return@run null
         val nanos = nanoTime() - started
-        NANOSECONDS.toMillis(nanos)
+        TimeUnit.NANOSECONDS.toMillis(nanos)
     }
 
     override val threadName: String = currentThread().name
