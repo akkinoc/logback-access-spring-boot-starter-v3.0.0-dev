@@ -12,7 +12,6 @@ import org.apache.catalina.startup.Tomcat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.core.annotation.MergedAnnotations
-import org.springframework.core.annotation.MergedAnnotations.SearchStrategy.TYPE_HIERARCHY
 import org.springframework.core.io.ClassPathResource
 import org.springframework.test.context.ContextConfigurationAttributes
 import org.springframework.test.context.ContextCustomizerFactory
@@ -50,7 +49,7 @@ class TestContextClassLoaderCustomizerFactory : ContextCustomizerFactory {
      * @return The classes to hide from the class loader.
      */
     private fun getHiddenClasses(testClass: Class<*>): Set<Class<*>> {
-        val annotations = MergedAnnotations.from(testClass, TYPE_HIERARCHY)
+        val annotations = MergedAnnotations.from(testClass, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY)
         val usesTomcat = annotations.isPresent(TomcatServletWebTest::class.java) ||
                 annotations.isPresent(TomcatReactiveWebTest::class.java)
         val usesJetty = annotations.isPresent(JettyServletWebTest::class.java) ||
