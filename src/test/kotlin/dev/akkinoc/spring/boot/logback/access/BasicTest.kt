@@ -7,6 +7,8 @@ import dev.akkinoc.spring.boot.logback.access.test.type.TomcatReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.TomcatServletWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowReactiveWebTest
 import dev.akkinoc.spring.boot.logback.access.test.type.UndertowServletWebTest
+import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -34,6 +36,9 @@ sealed class BasicTest {
         logbackAccessProperties.shouldNotBeNull()
         logbackAccessProperties.enabled.shouldBe(true)
         logbackAccessProperties.config.shouldBeNull()
+        logbackAccessProperties.localPortStrategy.shouldBe(LogbackAccessLocalPortStrategy.SERVER)
+        logbackAccessProperties.tomcat.requestAttributesEnabled.shouldBeNull()
+        logbackAccessProperties.undertow.recordRequestStartTime.shouldBeTrue()
         logbackAccessProperties.teeFilter.enabled.shouldBe(false)
         logbackAccessProperties.teeFilter.includes.shouldBeNull()
         logbackAccessProperties.teeFilter.excludes.shouldBeNull()
