@@ -14,7 +14,7 @@ object Assertions {
 
     /**
      * Asserts that the assertion function will eventually pass within a short time.
-     * It is used to assert Logback-access events that may be appended late.
+     * Used to assert Logback-access events that may be appended late.
      *
      * @param T The return value type of the assertion function.
      * @param assert The assertion function that is called repeatedly.
@@ -28,7 +28,7 @@ object Assertions {
 
     /**
      * Asserts that the assertion function will continually pass within a short time.
-     * It is used to assert Logback-access events that may be appended late.
+     * Used to assert Logback-access events that may be appended late.
      *
      * @param T The return value type of the assertion function.
      * @param assert The assertion function that is called repeatedly.

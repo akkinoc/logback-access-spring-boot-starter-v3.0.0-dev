@@ -10,14 +10,14 @@ enum class LogbackAccessLocalPortStrategy {
 
     /**
      * Returns the port number of the interface on which the request was received.
-     * If a servlet web server is used, this is the equivalent of [ServletRequest.getLocalPort].
+     * Equivalent to [ServletRequest.getLocalPort] when using a servlet web server.
      */
     LOCAL,
 
     /**
      * Returns the port number to which the request was sent.
-     * If a servlet web server is used, this is the equivalent of [ServletRequest.getServerPort].
-     * It helps to identify the destination port number used by the client when forward headers are enabled.
+     * Equivalent to [ServletRequest.getServerPort] when using a servlet web server.
+     * Helps to identify the destination port number used by the client when forward headers are enabled.
      */
     SERVER,
 
