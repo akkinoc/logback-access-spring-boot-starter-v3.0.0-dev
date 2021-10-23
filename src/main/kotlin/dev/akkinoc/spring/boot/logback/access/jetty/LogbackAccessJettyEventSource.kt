@@ -104,7 +104,7 @@ class LogbackAccessJettyEventSource(
         request.attributeNames.asSequence()
                 .filter { it != AccessConstants.LB_INPUT_BUFFER }
                 .filter { it != AccessConstants.LB_OUTPUT_BUFFER }
-                .associateWithTo(attrs) { "${request.getAttribute(it)}" }
+                .associateWithTo(attrs) { "${request.getAttribute<Any>(it)}" }
         unmodifiableMap(attrs)
     }
 
