@@ -1,7 +1,6 @@
 package dev.akkinoc.spring.boot.logback.access.tomcat
 
-import ch.qos.logback.access.AccessConstants.LB_INPUT_BUFFER
-import ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER
+import ch.qos.logback.access.AccessConstants
 import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
 import ch.qos.logback.access.spi.ServerAdapter
@@ -9,11 +8,7 @@ import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
-import org.apache.catalina.AccessLog.PROTOCOL_ATTRIBUTE
-import org.apache.catalina.AccessLog.REMOTE_ADDR_ATTRIBUTE
-import org.apache.catalina.AccessLog.REMOTE_HOST_ATTRIBUTE
-import org.apache.catalina.AccessLog.SERVER_NAME_ATTRIBUTE
-import org.apache.catalina.AccessLog.SERVER_PORT_ATTRIBUTE
+import org.apache.catalina.AccessLog
 import org.apache.catalina.connector.Request
 import org.apache.catalina.connector.Response
 import org.apache.catalina.valves.RemoteIpValve
@@ -54,56 +49,31 @@ class LogbackAccessTomcatEventSource(
     override val threadName: String = currentThread().name
 
     override val serverName: String by lazy(NONE) {
-        if (requestAttributesEnabled) {
-            val attr = request.getAttribute(SERVER_NAME_ATTRIBUTE) as String?
-            if (attr != null) return@lazy attr
-        }
-        request.serverName
+        request.getAccessLogAttribute<String>(AccessLog.SERVER_NAME_ATTRIBUTE) ?: request.serverName
     }
 
     override val localPort: Int by lazy(NONE) {
         when (localPortStrategy) {
-            LogbackAccessLocalPortStrategy.LOCAL -> {
-                request.localPort
-            }
-            LogbackAccessLocalPortStrategy.SERVER -> {
-                if (requestAttributesEnabled) {
-                    val attr = request.getAttribute(SERVER_PORT_ATTRIBUTE) as Int?
-                    if (attr != null) return@lazy attr
-                }
-                request.serverPort
-            }
+            LogbackAccessLocalPortStrategy.LOCAL -> request.localPort
+            LogbackAccessLocalPortStrategy.SERVER ->
+                request.getAccessLogAttribute<Int>(AccessLog.SERVER_PORT_ATTRIBUTE) ?: request.serverPort
         }
     }
 
     override val remoteAddr: String by lazy(NONE) {
-        if (requestAttributesEnabled) {
-            val attr = request.getAttribute(REMOTE_ADDR_ATTRIBUTE) as String?
-            if (attr != null) return@lazy attr
-        }
-        request.remoteAddr
+        request.getAccessLogAttribute<String>(AccessLog.REMOTE_ADDR_ATTRIBUTE) ?: request.remoteAddr
     }
 
     override val remoteHost: String by lazy(NONE) {
-        if (requestAttributesEnabled) {
-            val attr = request.getAttribute(REMOTE_HOST_ATTRIBUTE) as String?
-            if (attr != null) return@lazy attr
-        }
-        request.remoteHost
+        request.getAccessLogAttribute<String>(AccessLog.REMOTE_HOST_ATTRIBUTE) ?: request.remoteHost
     }
 
     override val remoteUser: String? by lazy(NONE) {
-        val attr = request.getAttribute(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE) as String?
-        if (attr != null) return@lazy attr
-        request.remoteUser
+        request.getAttribute<String>(LogbackAccessSecurityServletFilter.REMOTE_USER_ATTRIBUTE) ?: request.remoteUser
     }
 
     override val protocol: String by lazy(NONE) {
-        if (requestAttributesEnabled) {
-            val attr = request.getAttribute(PROTOCOL_ATTRIBUTE) as String?
-            if (attr != null) return@lazy attr
-        }
-        request.protocol
+        request.getAccessLogAttribute<String>(AccessLog.PROTOCOL_ATTRIBUTE) ?: request.protocol
     }
 
     override val method: String by lazy(NONE) {
@@ -143,7 +113,8 @@ class LogbackAccessTomcatEventSource(
     override val attributeMap: Map<String, String> by lazy(NONE) {
         val attrs = linkedMapOf<String, String>()
         request.attributeNames.asSequence()
-                .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
+                .filter { it != AccessConstants.LB_INPUT_BUFFER }
+                .filter { it != AccessConstants.LB_OUTPUT_BUFFER }
                 .associateWithTo(attrs) { "${request.getAttribute(it)}" }
         unmodifiableMap(attrs)
     }
@@ -153,7 +124,7 @@ class LogbackAccessTomcatEventSource(
     }
 
     override val requestContent: String? by lazy(NONE) {
-        val bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray?
+        val bytes = request.getAttribute<ByteArray>(AccessConstants.LB_INPUT_BUFFER)
         if (bytes == null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
@@ -179,8 +150,32 @@ class LogbackAccessTomcatEventSource(
 
     override val responseContent: String? by lazy(NONE) {
         if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray?
+        val bytes = request.getAttribute<ByteArray>(AccessConstants.LB_OUTPUT_BUFFER)
         bytes?.let { String(it, UTF_8) }
+    }
+
+    /**
+     * Gets the request attribute.
+     *
+     * @receiver The request.
+     * @param <T> The request attribute type.
+     * @param name The request attribute name.
+     * @return The request attribute value.
+     */
+    private inline fun <reified T> Request.getAttribute(name: String): T? {
+        return getAttribute(name) as T?
+    }
+
+    /**
+     * Gets the request attribute to work with [RemoteIpValve].
+     *
+     * @receiver The request.
+     * @param <T> The request attribute type.
+     * @param name The request attribute name.
+     * @return The request attribute value.
+     */
+    private inline fun <reified T> Request.getAccessLogAttribute(name: String): T? {
+        return if (requestAttributesEnabled) getAttribute<T>(name) else null
     }
 
 }
