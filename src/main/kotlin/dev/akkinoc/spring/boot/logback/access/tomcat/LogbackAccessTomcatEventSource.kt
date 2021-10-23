@@ -3,7 +3,6 @@ package dev.akkinoc.spring.boot.logback.access.tomcat
 import ch.qos.logback.access.AccessConstants
 import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
-import ch.qos.logback.access.spi.ServerAdapter
 import ch.qos.logback.access.tomcat.TomcatServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter
@@ -37,7 +36,7 @@ class LogbackAccessTomcatEventSource(
         private val requestAttributesEnabled: Boolean,
 ) : LogbackAccessEventSource() {
 
-    override val serverAdapter: ServerAdapter = TomcatServerAdapter(request, response)
+    override val serverAdapter: TomcatServerAdapter = TomcatServerAdapter(request, response)
 
     override val timeStamp: Long = currentTimeMillis()
 

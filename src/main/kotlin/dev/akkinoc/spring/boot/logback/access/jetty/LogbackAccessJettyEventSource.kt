@@ -4,7 +4,6 @@ import ch.qos.logback.access.AccessConstants
 import ch.qos.logback.access.jetty.JettyServerAdapter
 import ch.qos.logback.access.servlet.Util.isFormUrlEncoded
 import ch.qos.logback.access.servlet.Util.isImageResponse
-import ch.qos.logback.access.spi.ServerAdapter
 import dev.akkinoc.spring.boot.logback.access.LogbackAccessEventSource
 import dev.akkinoc.spring.boot.logback.access.security.LogbackAccessSecurityServletFilter
 import dev.akkinoc.spring.boot.logback.access.value.LogbackAccessLocalPortStrategy
@@ -31,7 +30,7 @@ class LogbackAccessJettyEventSource(
         private val localPortStrategy: LogbackAccessLocalPortStrategy,
 ) : LogbackAccessEventSource() {
 
-    override val serverAdapter: ServerAdapter = JettyServerAdapter(request, response)
+    override val serverAdapter: JettyServerAdapter = JettyServerAdapter(request, response)
 
     override val timeStamp: Long = currentTimeMillis()
 
