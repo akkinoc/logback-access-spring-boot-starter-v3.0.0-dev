@@ -60,7 +60,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val remoteUser: String? by lazy(LazyThreadSafetyMode.NONE) {
-        request.getAttribute<String>(REMOTE_USER_ATTRIBUTE) ?: request.remoteUser
+        request.getAttribute(REMOTE_USER_ATTRIBUTE) as String? ?: request.remoteUser
     }
 
     override val protocol: String by lazy(LazyThreadSafetyMode.NONE) {
@@ -105,7 +105,7 @@ class LogbackAccessJettyEventSource(
         val attrs = linkedMapOf<String, String>()
         request.attributeNames.asSequence()
                 .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
-                .associateWithTo(attrs) { "${request.getAttribute<Any>(it)}" }
+                .associateWithTo(attrs) { "${request.getAttribute(it)}" }
         unmodifiableMap(attrs)
     }
 
@@ -114,7 +114,7 @@ class LogbackAccessJettyEventSource(
     }
 
     override val requestContent: String? by lazy(LazyThreadSafetyMode.NONE) {
-        val bytes = request.getAttribute<ByteArray>(LB_INPUT_BUFFER)
+        val bytes = request.getAttribute(LB_INPUT_BUFFER) as ByteArray?
         if (bytes == null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
@@ -140,20 +140,8 @@ class LogbackAccessJettyEventSource(
 
     override val responseContent: String? by lazy(LazyThreadSafetyMode.NONE) {
         if (isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request.getAttribute<ByteArray>(LB_OUTPUT_BUFFER)
+        val bytes = request.getAttribute(LB_OUTPUT_BUFFER) as ByteArray?
         bytes?.let { String(it, UTF_8) }
-    }
-
-    /**
-     * Gets the request attribute.
-     *
-     * @receiver The request.
-     * @param <T> The request attribute type.
-     * @param name The request attribute name.
-     * @return The request attribute value.
-     */
-    private inline fun <reified T> Request.getAttribute(name: String): T? {
-        return getAttribute(name) as T?
     }
 
 }

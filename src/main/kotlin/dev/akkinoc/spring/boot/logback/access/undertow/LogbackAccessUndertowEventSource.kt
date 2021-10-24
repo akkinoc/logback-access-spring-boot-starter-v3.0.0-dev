@@ -83,7 +83,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val remoteUser: String? by lazy(LazyThreadSafetyMode.NONE) {
-        request?.getAttribute<String>(REMOTE_USER_ATTRIBUTE)?.also { return@lazy it }
+        request?.getAttribute(REMOTE_USER_ATTRIBUTE)?.also { return@lazy it as String? }
         val securityContext = exchange.securityContext ?: return@lazy null
         val account = securityContext.authenticatedAccount ?: return@lazy null
         account.principal.name
@@ -98,11 +98,11 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestURI: String by lazy(LazyThreadSafetyMode.NONE) {
-        request?.getAttribute<String>(FORWARD_REQUEST_URI) ?: exchange.requestURI
+        request?.getAttribute(FORWARD_REQUEST_URI) as String? ?: exchange.requestURI
     }
 
     override val queryString: String by lazy(LazyThreadSafetyMode.NONE) {
-        val query = request?.getAttribute<String>(FORWARD_QUERY_STRING) ?: exchange.queryString
+        val query = request?.getAttribute(FORWARD_QUERY_STRING) as String? ?: exchange.queryString
         if (query.isEmpty()) "" else "?$query"
     }
 
@@ -134,7 +134,7 @@ class LogbackAccessUndertowEventSource(
         if (request != null) {
             request.attributeNames.asSequence()
                     .filter { it !in setOf(LB_INPUT_BUFFER, LB_OUTPUT_BUFFER) }
-                    .associateWithTo(attrs) { "${request.getAttribute<Any>(it)}" }
+                    .associateWithTo(attrs) { "${request.getAttribute(it)}" }
         }
         unmodifiableMap(attrs)
     }
@@ -144,7 +144,7 @@ class LogbackAccessUndertowEventSource(
     }
 
     override val requestContent: String? by lazy(LazyThreadSafetyMode.NONE) {
-        val bytes = request?.getAttribute<ByteArray>(LB_INPUT_BUFFER)
+        val bytes = request?.getAttribute(LB_INPUT_BUFFER) as ByteArray?
         if (bytes == null && request != null && isFormUrlEncoded(request)) {
             return@lazy requestParameterMap.asSequence()
                     .flatMap { (key, values) -> values.asSequence().map { key to it } }
@@ -170,20 +170,8 @@ class LogbackAccessUndertowEventSource(
 
     override val responseContent: String? by lazy(LazyThreadSafetyMode.NONE) {
         if (response != null && isImageResponse(response)) return@lazy "[IMAGE CONTENTS SUPPRESSED]"
-        val bytes = request?.getAttribute<ByteArray>(LB_OUTPUT_BUFFER)
+        val bytes = request?.getAttribute(LB_OUTPUT_BUFFER) as ByteArray?
         bytes?.let { String(it, UTF_8) }
-    }
-
-    /**
-     * Gets the request attribute.
-     *
-     * @receiver The request.
-     * @param <T> The request attribute type.
-     * @param name The request attribute name.
-     * @return The request attribute value.
-     */
-    private inline fun <reified T> HttpServletRequest.getAttribute(name: String): T? {
-        return getAttribute(name) as T?
     }
 
 }
