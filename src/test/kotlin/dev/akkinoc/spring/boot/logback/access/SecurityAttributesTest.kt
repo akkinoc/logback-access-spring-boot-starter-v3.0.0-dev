@@ -25,7 +25,7 @@ import org.springframework.test.context.TestPropertySource
 /**
  * Tests the case where Spring Security is enabled.
  *
- * @property supportsRemoteUser Whether to support remote user.
+ * @property supportsRemoteUsers Whether to support remote users.
  */
 @ExtendWith(EventsCaptureExtension::class)
 @Import(SecurityAutoConfiguration::class, ReactiveSecurityAutoConfiguration::class)
@@ -37,7 +37,7 @@ import org.springframework.test.context.TestPropertySource
         ],
 )
 sealed class SecurityAttributesTest(
-        private val supportsRemoteUser: Boolean,
+        private val supportsRemoteUsers: Boolean,
 ) {
 
     @Test
@@ -49,7 +49,7 @@ sealed class SecurityAttributesTest(
         val response = rest.withBasicAuth("test-user", "test-password").exchange<String>(request)
         response.statusCodeValue.shouldBe(200)
         val event = assertLogbackAccessEventsEventually { capture.shouldBeSingleton().single() }
-        if (supportsRemoteUser) event.remoteUser.shouldBe("test-user")
+        if (supportsRemoteUsers) event.remoteUser.shouldBe("test-user")
         else event.remoteUser.shouldBe("-")
     }
 
@@ -60,7 +60,7 @@ sealed class SecurityAttributesTest(
  */
 @TomcatServletWebTest
 class TomcatServletWebSecurityAttributesTest : SecurityAttributesTest(
-        supportsRemoteUser = true,
+        supportsRemoteUsers = true,
 )
 
 /**
@@ -68,7 +68,7 @@ class TomcatServletWebSecurityAttributesTest : SecurityAttributesTest(
  */
 @TomcatReactiveWebTest
 class TomcatReactiveWebSecurityAttributesTest : SecurityAttributesTest(
-        supportsRemoteUser = false,
+        supportsRemoteUsers = false,
 )
 
 /**
@@ -76,7 +76,7 @@ class TomcatReactiveWebSecurityAttributesTest : SecurityAttributesTest(
  */
 @JettyServletWebTest
 class JettyServletWebSecurityAttributesTest : SecurityAttributesTest(
-        supportsRemoteUser = true,
+        supportsRemoteUsers = true,
 )
 
 /**
@@ -84,7 +84,7 @@ class JettyServletWebSecurityAttributesTest : SecurityAttributesTest(
  */
 @JettyReactiveWebTest
 class JettyReactiveWebSecurityAttributesTest : SecurityAttributesTest(
-        supportsRemoteUser = false,
+        supportsRemoteUsers = false,
 )
 
 /**
@@ -92,7 +92,7 @@ class JettyReactiveWebSecurityAttributesTest : SecurityAttributesTest(
  */
 @UndertowServletWebTest
 class UndertowServletWebSecurityAttributesTest : SecurityAttributesTest(
-        supportsRemoteUser = true,
+        supportsRemoteUsers = true,
 )
 
 /**
@@ -100,5 +100,5 @@ class UndertowServletWebSecurityAttributesTest : SecurityAttributesTest(
  */
 @UndertowReactiveWebTest
 class UndertowReactiveWebSecurityAttributesTest : SecurityAttributesTest(
-        supportsRemoteUser = false,
+        supportsRemoteUsers = false,
 )
