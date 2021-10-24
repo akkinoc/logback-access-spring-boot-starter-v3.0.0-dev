@@ -48,5 +48,3 @@ jobs:
         working-directory: examples/webflux-undertow-java
       - name: Upload the coverage report to Codecov
         uses: codecov/codecov-action@v2.1.0
-        with:
-          fail_ci_if_error: true
